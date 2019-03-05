@@ -26,7 +26,7 @@
         </material>
       </object>
     </transform>
-    <transform name="fourBladesT">
+    <transform name="fourBladesTrans">
       <set>
         <translate>0 1.5 0</translate>
       </set>

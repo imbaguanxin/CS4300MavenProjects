@@ -1,7 +1,0 @@
-<scene>
-  <instance name="sphere" path="models/sphere.obj"/>
-  <instance name="cone" path="models/cone.obj"/>
-  <instance name="cylinder" path="models/cylinder.obj"/>
-  <instance name="box" path="models/box.obj"/>
-
-</scene>
