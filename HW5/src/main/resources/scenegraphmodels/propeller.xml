@@ -1,0 +1,86 @@
+<scene>
+  <instance name="sphere" path="models/sphere.obj"/>
+  <instance name="box" path="models/box.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+
+  <group>
+    <transform>
+      <set>
+        <scale>2 3 2</scale>
+      </set>
+      <object instanceof="cylinder">
+        <material>
+          <color>.5 .5 .5</color>
+        </material>
+      </object>
+    </transform>
+    <transform>
+      <set>
+        <translate>0 3 0</translate>
+        <scale>2 1 2</scale>
+      </set>
+      <object instanceof="cone">
+        <material>
+          <color>.8 .8 .8</color>
+        </material>
+      </object>
+    </transform>
+    <transform name="fourBladesT">
+      <set>
+        <translate>0 1.5 0</translate>
+      </set>
+      <group name="fourBlades">
+        <transform name="bladeNorth">
+          <set>
+            <rotate>30 0 0 1</rotate>
+            <translate>0 0 -6.5</translate>
+            <scale>3 .3 10</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>.2 .2 .2</color>
+            </material>
+          </object>
+        </transform>
+        <transform name="bladeEast">
+          <set>
+            <rotate>-30 1 0 0</rotate>
+            <translate>6.5 0 0</translate>
+            <scale>10 .3 3</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>.2 .2 .2</color>
+            </material>
+          </object>
+        </transform>
+        <transform name="bladeSouth">
+          <set>
+            <rotate>-30 0 0 1</rotate>
+            <translate>0 0 6.5</translate>
+            <scale>3 .3 10</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>.2 .2 .2</color>
+            </material>
+          </object>
+        </transform>
+        <transform name="bladeWest">
+          <set>
+            <rotate>30 1 0 0</rotate>
+            <translate>-6.5 0 0</translate>
+            <scale>10 .3 3</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>.2 .2 .2</color>
+            </material>
+          </object>
+        </transform>
+      </group>
+    </transform>
+
+  </group>
+</scene>
