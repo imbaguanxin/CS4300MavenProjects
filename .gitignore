@@ -1,8 +1,5 @@
-
 HW2/.idea/.name
 *.class
-*.frag
-*.vert
 HW2/target/classes/Box.class
 HW2/target/classes/HollowCircle.class
 *.iml
@@ -20,3 +17,5 @@ HW2/.idea/encodings.xml
 HW2/.idea/misc.xml
 HW2/.idea/vcs.xml
 HW2/.idea/workspace.xml
+HW5/.idea/
+HW5/target/

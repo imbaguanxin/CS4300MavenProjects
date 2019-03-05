@@ -1,0 +1,76 @@
+<scene>
+  <instance name="box" path="models/box"></instance>
+  <group>
+    <!--Enable the following part to display coordinates-->
+    <!--<group name="coordinate" from="scenegraphmodels/coordinate.xml"></group>-->
+    <group name="window" from="scenegraphmodels/single-wall.xml"></group>
+    <transform name = "glass">
+      <set>
+        <scale>3 3 1.5</scale>
+      </set>
+      <object instanceof="box">
+        <material>
+          <color>0 1 0</color>
+        </material>
+      </object>
+    </transform>
+    <transform name = "bottom">
+      <set>
+        <translate>0 -1.75 0</translate>
+        <scale>4 .5 4</scale>
+      </set>
+      <object instanceof="box">
+        <material>
+          <color>.4 .8 1</color>
+        </material>
+      </object>
+    </transform>
+    <transform name="top">
+      <set>
+        <translate>0 1.75 0</translate>
+        <scale>4 .5 4</scale>
+      </set>
+      <object instanceof="box">
+        <material>
+          <color>.4 .8 1</color>
+        </material>
+      </object>
+    </transform>
+    <transform name="right">
+      <set>
+        <translate>1.75 0 0</translate>
+        <rotate>90 0 0 1</rotate>
+        <scale>4 .5 4</scale>
+      </set>
+      <object instanceof="box">
+        <material>
+          <color>.4 .8 1</color>
+        </material>
+      </object>
+    </transform>
+    <transform name="left">
+      <set>
+        <translate>-1.75 0 0</translate>
+        <rotate>90 0 0 1</rotate>
+        <scale>4 .5 4</scale>
+      </set>
+      <object instanceof="box">
+        <material>
+          <color>.4 .8 1</color>
+        </material>
+      </object>
+    </transform>
+    <transform name = "sill">
+      <set>
+        <translate>-2 -2.5 1.5</translate>
+        <scale>4 .5 2</scale>
+        <translate>.5 .5 .5</translate>
+      </set>
+      <object instanceof="box">
+        <material>
+          <color>0 0 1</color>
+        </material>
+      </object>
+    </transform>
+  </group>
+</scene>

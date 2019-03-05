@@ -1,0 +1,59 @@
+<scene>
+  <instance name="sphere" path="models/sphere"></instance>
+  <instance name="box" path="models/box"></instance>
+  <instance name="cylinder" path="models/cylinder"></instance>
+  <instance name="cone" path="models/cone"></instance>
+  <!--Enable the following part to display coordinates-->
+  <!--<group name="coordinate" from="scenegraphmodels/coordinate.xml"></group>-->
+  <transform>
+    <set>
+      <scale>35 35 35</scale>
+      <translate>0 1 0</translate>
+    </set>
+    <object instanceof = "sphere">
+      <material>
+        <color>.5 .5 .5</color>
+      </material>
+    </object>
+  </transform>
+  <transform>
+    <set>
+      <translate>0 60 0</translate>
+      <scale>10 50 10</scale>
+    </set>
+    <object instanceof = "cone">
+      <material>
+        <color>.8 .8 .8</color>
+      </material>
+    </object>
+  </transform>
+  <transform>
+    <set>
+      <translate>30 0 30</translate>
+      <scale>5 3 5</scale>
+    </set>
+    <group name = "pillar1" from = "scenegraphmodels/cone-pillar.xml"></group>
+  </transform>
+  <transform>
+    <set>
+      <translate>30 0 -30</translate>
+      <scale>5 3 5</scale>
+    </set>
+    <group name = "pillar2" from = "scenegraphmodels/cone-pillar.xml"></group>
+  </transform>
+  <transform>
+    <set>
+      <translate>-30 0 30</translate>
+      <scale>5 3 5</scale>
+    </set>
+    <group name = "pillar3" from = "scenegraphmodels/cone-pillar.xml"></group>
+  </transform>
+  <transform>
+    <set>
+      <translate>-30 0 -30</translate>
+      <scale>5 3 5</scale>
+    </set>
+    <group name = "pillar4" from = "scenegraphmodels/cone-pillar.xml"></group>
+  </transform>
+
+</scene>
