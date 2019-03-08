@@ -451,11 +451,11 @@ public class View {
           .importScenegraph(drone_in, new VertexAttribProducer());
       IScenegraph propeller = sgraph.SceneXMLReader
           .importScenegraph(propeller_in, new VertexAttribProducer());
-      float adder = 50 / (float) Math.sqrt(2);
+      float adder = 14 / (float) Math.sqrt(2);
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
-          new Vector3f(4 + adder, 7.25f, 3 + adder)));
+          new Vector3f(4 + adder, 7.5f, 3 + adder)));
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
-          new Vector3f(-(4 + adder), 7.25f, 3 + adder)));
+          new Vector3f(-(4 + adder), 7.75f, 3 + adder)));
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
           new Vector3f(4 + adder, 7.25f, -(3 + adder))));
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
@@ -547,10 +547,11 @@ public class View {
       passedInModelView.peek().
           translate(position.x, position.y, position.z);
       drone_scenegraph.draw(passedInModelView);
-      for (int i = 0; i < 1; i++) {
-        propellers.get(i).animate(time);
-        propellers.get(i).draw(passedInModelView);
-      }
+        propellers.get(0).animate(time);
+        propellers.get(0).draw(passedInModelView);
+      propellers.get(1).animate(time);
+      propellers.get(1).draw(passedInModelView);
+
       passedInModelView.push(new Matrix4f(passedInModelView.peek()));
       passedInModelView.peek().
           mul(trackBall);

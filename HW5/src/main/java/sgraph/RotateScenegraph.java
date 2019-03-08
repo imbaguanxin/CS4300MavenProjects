@@ -11,7 +11,7 @@ import util.PolygonMesh;
 public class RotateScenegraph<VertexType extends IVertexData> implements IScenegraph<VertexType> {
 
   private IScenegraph originalScenegraph;
-  private Vector3f axis;
+  private Vector3f axis, translate;
   private Matrix4f rotateMatrix, translateMatrix;
   private float angle;
 
@@ -20,6 +20,7 @@ public class RotateScenegraph<VertexType extends IVertexData> implements ISceneg
     this.axis = axis;
     this.rotateMatrix = new Matrix4f().identity();
     this.angle = (float) Math.toRadians(angularSpeed);
+    this.translate = new Vector3f(position);
     this.translateMatrix = new Matrix4f().identity().translate(position.x, position.y, position.z);
   }
 
@@ -45,20 +46,12 @@ public class RotateScenegraph<VertexType extends IVertexData> implements ISceneg
    */
   public void draw(Stack<Matrix4f> modelView) {
     Stack<Matrix4f> copy = (Stack<Matrix4f>) modelView.clone();
-    ArrayDeque<Matrix4f> temp = new ArrayDeque<>();
-    Matrix4f matrix = new Matrix4f().mul(translateMatrix).mul(rotateMatrix);
-    while (!copy.empty()) {
-      temp.add(new Matrix4f(copy.pop()));
-    }
-    System.out.println(matrix);
-    temp.getLast().mul(new Matrix4f(matrix));
-    Stack<Matrix4f> mv = new Stack<>();
-    mv.push(matrix);
-//    while(!temp.isEmpty()){
-//      mv.push(temp.removeLast());
-//    }
-    //copy.push(new Matrix4f().identity().mul(rotateMatrix));
-    originalScenegraph.draw(mv);
+    System.out.println(modelView.peek());
+    copy.push(copy.peek());
+    copy.peek().mul(translateMatrix).mul(rotateMatrix);
+//    System.out.println("run");
+    originalScenegraph.draw(copy);
+    copy.pop();
   }
 
   /**
