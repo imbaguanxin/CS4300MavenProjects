@@ -28,12 +28,16 @@ import sgraph.Scenegraph;
  */
 public class View {
 
+  private final float MAX_ANGLE_OF_VIEW = 150f;
+  private final float MIN_ANGLE_OF_VIEW = 20f;
+  private final float ANGLE_OF_VIEW_DIFF = 2f;
+
   private int WINDOW_WIDTH, WINDOW_HEIGHT;
   private Timer timer;
   private int time;
   private Stack<Matrix4f> modelViewDrone, modelViewWorld;
-  private Matrix4f projection, trackballTransform;
-  private float trackballRadius;
+  private Matrix4f projection, cameraProjection, trackballTransform;
+  private float angleOfView, aspect, trackballRadius;
   private Vector2f mousePos;
   private Vector3f cameraPosition, centerPosition;
   private Camera moving_camera;
@@ -50,6 +54,9 @@ public class View {
    * Construct a View object. Set up current position and rotation.
    */
   public View() {
+    angleOfView = 90f;
+    aspect = 1f;
+    cameraProjection = new Matrix4f();
     time = 0;
     projection = new Matrix4f();
     modelViewDrone = new Stack<>();
@@ -199,8 +206,10 @@ public class View {
 
     gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (isDroneMode) {
+      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       scenegraph.draw(modelViewDrone);
     } else {
+      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
       scenegraph.draw(modelViewWorld);
       moving_camera.draw(modelViewWorld);
     }
@@ -211,9 +220,11 @@ public class View {
     gl.glViewport(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
         WINDOW_HEIGHT / 3);
     if (isDroneMode) {
+      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
       scenegraph.draw(modelViewWorld);
       moving_camera.draw(modelViewWorld);
     } else {
+      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       scenegraph.draw(modelViewDrone);
     }
     gl.glDisable(gl.GL_SCISSOR_TEST);
@@ -311,8 +322,7 @@ public class View {
    * this key is pressed, False means this key is released
    */
   void keyAction(KeyEvent e, boolean pressed) {
-    int keyCode = e.getKeyCode();
-    switch (keyCode) {
+    switch (e.getKeyCode()) {
       case KeyEvent.VK_UP:
         this.cameraFlags[0] = pressed;
         break;
@@ -343,14 +353,41 @@ public class View {
       case KeyEvent.VK_C:
         this.cameraFlags[9] = pressed;
         break;
-      case KeyEvent.VK_SPACE:
+      // "add" key on main keyboard and number pad.
+      case KeyEvent.VK_EQUALS:
+        if (pressed & e.isShiftDown()) {
+          setAngleOfView(-ANGLE_OF_VIEW_DIFF);
+        }
         break;
-      case KeyEvent.VK_G:
+      case KeyEvent.VK_ADD:
+        if (pressed) {
+          setAngleOfView(-ANGLE_OF_VIEW_DIFF);
+        }
         break;
-      case KeyEvent.VK_T:
+      // "minus" key on main keyboard and number pad
+      case KeyEvent.VK_MINUS:
+        if (pressed & e.isShiftDown()) {
+          setAngleOfView(ANGLE_OF_VIEW_DIFF);
+        }
+        break;
+      case KeyEvent.VK_SUBTRACT:
+        if (pressed) {
+          setAngleOfView(ANGLE_OF_VIEW_DIFF);
+        }
+        break;
+      // Other keys should not detected as not available
+      case KeyEvent.VK_SPACE | KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:
         break;
       default:
-        System.out.println("This key is not available");
+        System.out.println("KeyEvent KeyCode: " + e.getKeyCode());
+    }
+  }
+
+  private void setAngleOfView(float diff) {
+    if (angleOfView + diff <= MAX_ANGLE_OF_VIEW && angleOfView + diff >= MIN_ANGLE_OF_VIEW) {
+      this.angleOfView = angleOfView + diff;
+      cameraProjection = new Matrix4f()
+          .perspective((float) Math.toRadians(angleOfView), aspect, .1f, 10000.0f);
     }
   }
 
@@ -366,8 +403,11 @@ public class View {
     GL gl = gla.getGL();
     WINDOW_WIDTH = width;
     WINDOW_HEIGHT = height;
+    aspect = (float) width / height;
+    cameraProjection = new Matrix4f()
+        .perspective((float) Math.toRadians(angleOfView), aspect, 0.1f, 10000.0f);
     projection = new Matrix4f()
-        .perspective((float) Math.toRadians(120.0f), (float) width / height, 0.1f, 10000.0f);
+        .perspective((float) Math.toRadians(120.0f), aspect, 0.1f, 10000.0f);
     // proj = new Matrix4f().ortho(-400,400,-400,400,0.1f,10000.0f);
 
   }
@@ -563,7 +603,7 @@ public class View {
       camera_scenegraph.draw(passedInModelView);
       passedInModelView.pop();
 
-      for(IScenegraph prop: propellers){
+      for (IScenegraph prop : propellers) {
         prop.animate(time);
         prop.draw(passedInModelView);
       }
