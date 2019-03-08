@@ -443,15 +443,22 @@ public class View {
       if (drone_scenegraph != null) {
         drone_scenegraph.dispose();
       }
+      for (IScenegraph prop : propellers) {
+        if (prop != null) {
+          prop.dispose();
+        }
+      }
 
       program.enable(gl);
       camera_scenegraph = sgraph.SceneXMLReader
           .importScenegraph(camera_in, new VertexAttribProducer());
       drone_scenegraph = sgraph.SceneXMLReader
           .importScenegraph(drone_in, new VertexAttribProducer());
+
       IScenegraph propeller = sgraph.SceneXMLReader
           .importScenegraph(propeller_in, new VertexAttribProducer());
       float adder = 14 / (float) Math.sqrt(2);
+
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
           new Vector3f(4 + adder, 7.5f, 3 + adder)));
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
@@ -469,8 +476,8 @@ public class View {
       renderer.initShaderProgram(program, shaderVarsToVertexAttribs);
       camera_scenegraph.setRenderer(renderer);
       drone_scenegraph.setRenderer(renderer);
-      for (int i = 0; i < 4; i++) {
-        propellers.get(i).setRenderer(renderer);
+      for (IScenegraph prop : propellers) {
+        prop.setRenderer(renderer);
       }
       program.disable(gl);
     }
@@ -512,10 +519,12 @@ public class View {
           position.sub(right);
           break;
         case DIRECTION_UP:
-          trackBall = new Matrix4f().identity().rotate(phi, right.x, right.y, right.z).mul(trackBall);
+          trackBall = new Matrix4f().identity().rotate(phi, right.x, right.y, right.z)
+              .mul(trackBall);
           break;
         case DIRECTION_DOWN:
-          trackBall = new Matrix4f().identity().rotate(-phi, right.x, right.y, right.z).mul(trackBall);
+          trackBall = new Matrix4f().identity().rotate(-phi, right.x, right.y, right.z)
+              .mul(trackBall);
           break;
         case DIRECTION_RIGHT:
           trackBall = new Matrix4f().identity().rotate(-phi, up.x, up.y, up.z).mul(trackBall);
@@ -547,16 +556,18 @@ public class View {
       passedInModelView.peek().
           translate(position.x, position.y, position.z);
       drone_scenegraph.draw(passedInModelView);
-        propellers.get(0).animate(time);
-        propellers.get(0).draw(passedInModelView);
-      propellers.get(1).animate(time);
-      propellers.get(1).draw(passedInModelView);
 
       passedInModelView.push(new Matrix4f(passedInModelView.peek()));
       passedInModelView.peek().
           mul(trackBall);
       camera_scenegraph.draw(passedInModelView);
       passedInModelView.pop();
+
+      for(IScenegraph prop: propellers){
+        prop.animate(time);
+        prop.draw(passedInModelView);
+      }
+
       passedInModelView.pop();
     }
   }
