@@ -499,6 +499,7 @@ public class View {
     void executeCamera(final int arg) throws IllegalArgumentException {
       float phi = (float) Math.PI / 120f;
       Vector4f right = trackBall.transform(new Vector4f(1, 0, 0, 0));
+      Vector4f up = trackBall.transform(new Vector4f(UP));
       Vector4f tempDir = trackBall.transform(new Vector4f(DIRECTION));
       switch (arg) {
         case POSITION_UP:
@@ -514,16 +515,16 @@ public class View {
           position.sub(right);
           break;
         case DIRECTION_UP:
-          trackBall = new Matrix4f().identity().rotateX(phi).mul(trackBall);
+          trackBall = new Matrix4f().identity().rotate(phi, right.x, right.y, right.z).mul(trackBall);
           break;
         case DIRECTION_DOWN:
-          trackBall = new Matrix4f().identity().rotateX(-phi).mul(trackBall);
+          trackBall = new Matrix4f().identity().rotate(-phi, right.x, right.y, right.z).mul(trackBall);
           break;
         case DIRECTION_RIGHT:
-          trackBall = new Matrix4f().identity().rotateY(-phi).mul(trackBall);
+          trackBall = new Matrix4f().identity().rotate(-phi, up.x, up.y, up.z).mul(trackBall);
           break;
         case DIRECTION_LEFT:
-          trackBall = new Matrix4f().identity().rotateY(phi).mul(trackBall);
+          trackBall = new Matrix4f().identity().rotate(phi, up.x, up.y, up.z).mul(trackBall);
           break;
         case ROTATE_CLOCK_WISE:
           trackBall = new Matrix4f().identity().rotate(phi, tempDir.x, tempDir.y, tempDir.z)
