@@ -59,7 +59,7 @@
 
         <transform name="camera holder">
           <set>
-            <translate>0 -6.5 0</translate>
+            <translate>0 -4.5 0</translate>
             <scale>.3 4 .3</scale>
           </set>
           <object instanceof="cylinder">

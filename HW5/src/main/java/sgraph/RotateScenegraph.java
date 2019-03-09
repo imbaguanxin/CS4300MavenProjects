@@ -45,7 +45,7 @@ public class RotateScenegraph<VertexType extends IVertexData> implements ISceneg
    * this stack as it navigates its tree.
    */
   public void draw(Stack<Matrix4f> modelView) {
-    modelView.push(modelView.peek());
+    modelView.push(new Matrix4f(modelView.peek()));
     modelView.peek().mul(translateMatrix).mul(rotateMatrix);
     originalScenegraph.draw(modelView);
     modelView.pop();

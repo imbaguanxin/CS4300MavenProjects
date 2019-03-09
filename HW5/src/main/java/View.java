@@ -208,6 +208,7 @@ public class View {
     if (isDroneMode) {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       scenegraph.draw(modelViewDrone);
+      moving_camera.drawDrone(modelViewDrone);
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
       scenegraph.draw(modelViewWorld);
@@ -226,6 +227,7 @@ public class View {
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       scenegraph.draw(modelViewDrone);
+      moving_camera.drawDrone(modelViewDrone);
     }
     gl.glDisable(gl.GL_SCISSOR_TEST);
 
@@ -500,13 +502,13 @@ public class View {
       float adder = 14 / (float) Math.sqrt(2);
 
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
-          new Vector3f(4 + adder, 7.5f, 3 + adder)));
+          new Vector3f(4 + adder, 7f, 3 + adder)));
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
-          new Vector3f(-(4 + adder), 7.75f, 3 + adder)));
+          new Vector3f(-(4 + adder), 7f, 3 + adder)));
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
-          new Vector3f(4 + adder, 7.25f, -(3 + adder))));
+          new Vector3f(4 + adder, 7f, -(3 + adder))));
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
-          new Vector3f(-(4 + adder), 7.25f, -(3 + adder))));
+          new Vector3f(-(4 + adder), 7f, -(3 + adder))));
       sgraph.IScenegraphRenderer renderer = new sgraph.GL3ScenegraphRenderer();
       renderer.setContext(gla);
       Map<String, String> shaderVarsToVertexAttribs = new HashMap<>();
@@ -592,16 +594,24 @@ public class View {
      */
     void draw(Stack<Matrix4f> passedInModelView) {
       //System.out.println(time);
+
+      passedInModelView.push(new Matrix4f(passedInModelView.peek()));
+      passedInModelView.peek().
+          translate(position.x, position.y, position.z)
+          .mul(trackBall);
+      camera_scenegraph.draw(passedInModelView);
+      passedInModelView.pop();
+
+      drawDrone(passedInModelView);
+
+    }
+
+    void drawDrone(Stack<Matrix4f> passedInModelView) {
+      //System.out.println(time);
       passedInModelView.push(new Matrix4f(passedInModelView.peek()));
       passedInModelView.peek().
           translate(position.x, position.y, position.z);
       drone_scenegraph.draw(passedInModelView);
-
-      passedInModelView.push(new Matrix4f(passedInModelView.peek()));
-      passedInModelView.peek().
-          mul(trackBall);
-      camera_scenegraph.draw(passedInModelView);
-      passedInModelView.pop();
 
       for (IScenegraph prop : propellers) {
         prop.animate(time);
