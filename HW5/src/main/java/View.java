@@ -2,6 +2,8 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.*;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.joml.Matrix4f;
@@ -14,6 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import org.joml.Vector4f;
+import sgraph.IScenegraph;
+import sgraph.RotateScenegraph;
+import sgraph.Scenegraph;
 
 /**
  * Created by ashesh on 9/18/2015.
@@ -29,6 +34,7 @@ public class View {
 
   private int WINDOW_WIDTH, WINDOW_HEIGHT;
   private Timer timer;
+  private int time;
   private Stack<Matrix4f> modelViewDrone, modelViewWorld;
   private Matrix4f projection, cameraProjection, trackballTransform;
   private float angleOfView, aspect, trackballRadius;
@@ -50,6 +56,7 @@ public class View {
   public View() {
     angleOfView = 90f;
     aspect = 1f;
+    time = 0;
     projection = new Matrix4f();
     cameraProjection = new Matrix4f();
     modelViewDrone = new Stack<>();
@@ -68,6 +75,7 @@ public class View {
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
+        time++;
         for (int i = 0; i < cameraFlags.length; i++) {
           if (cameraFlags[i]) {
             moving_camera.executeCamera(i);
@@ -200,6 +208,7 @@ public class View {
     if (isDroneMode) {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       scenegraph.draw(modelViewDrone);
+      moving_camera.drawDrone(modelViewDrone);
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
       scenegraph.draw(modelViewWorld);
@@ -218,6 +227,7 @@ public class View {
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       scenegraph.draw(modelViewDrone);
+      moving_camera.drawDrone(modelViewDrone);
     }
     gl.glDisable(gl.GL_SCISSOR_TEST);
 
@@ -361,12 +371,14 @@ public class View {
         if (pressed & e.isShiftDown()) {
           setAngleOfView(ANGLE_OF_VIEW_DIFF);
         }
+
         break;
       case KeyEvent.VK_SUBTRACT:
         if (pressed) {
           setAngleOfView(ANGLE_OF_VIEW_DIFF);
         }
         break;
+      // Other keys should not detected as not available
       case KeyEvent.VK_SPACE | KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:
         break;
       default:
@@ -435,12 +447,14 @@ public class View {
     private Vector4f position;
     // trackBall records the camera's posture.
     private Matrix4f trackBall;
-    sgraph.IScenegraph<VertexAttrib> camera_scenegraph;
+    sgraph.IScenegraph<VertexAttrib> camera_scenegraph, drone_scenegraph;
+    List<IScenegraph<VertexAttrib>> propellers;
 
     // Building a camera, which need initialization.
     Camera() {
       this.position = new Vector4f();
       this.trackBall = new Matrix4f().identity();
+      propellers = new ArrayList<>();
     }
 
     /**
@@ -454,7 +468,11 @@ public class View {
      */
     void initCamera(Vector3f position, Vector3f center, GLAutoDrawable gla) throws Exception {
       String camera_input = "scenegraphmodels/camera.xml";
-      InputStream in = getClass().getClassLoader().getResourceAsStream(camera_input);
+      String drone_input = "scenegraphmodels/drone.xml";
+      String propeller_input = "scenegraphmodels/propeller.xml";
+      InputStream camera_in = getClass().getClassLoader().getResourceAsStream(camera_input);
+      InputStream drone_in = getClass().getClassLoader().getResourceAsStream(drone_input);
+      InputStream propeller_in = getClass().getClassLoader().getResourceAsStream(propeller_input);
       this.position = new Vector4f(position.x, position.y, position.z, 1);
       this.trackBall = new Matrix4f().identity().lookAt(
           new Vector3f(0, 0, 0),
@@ -465,8 +483,33 @@ public class View {
       if (camera_scenegraph != null) {
         camera_scenegraph.dispose();
       }
+      if (drone_scenegraph != null) {
+        drone_scenegraph.dispose();
+      }
+      for (IScenegraph prop : propellers) {
+        if (prop != null) {
+          prop.dispose();
+        }
+      }
+
       program.enable(gl);
-      camera_scenegraph = sgraph.SceneXMLReader.importScenegraph(in, new VertexAttribProducer());
+      camera_scenegraph = sgraph.SceneXMLReader
+          .importScenegraph(camera_in, new VertexAttribProducer());
+      drone_scenegraph = sgraph.SceneXMLReader
+          .importScenegraph(drone_in, new VertexAttribProducer());
+
+      IScenegraph propeller = sgraph.SceneXMLReader
+          .importScenegraph(propeller_in, new VertexAttribProducer());
+      float adder = 14 / (float) Math.sqrt(2);
+
+      propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
+          new Vector3f(4 + adder, 7f, 3 + adder)));
+      propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
+          new Vector3f(-(4 + adder), 7f, 3 + adder)));
+      propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
+          new Vector3f(4 + adder, 7f, -(3 + adder))));
+      propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
+          new Vector3f(-(4 + adder), 7f, -(3 + adder))));
       sgraph.IScenegraphRenderer renderer = new sgraph.GL3ScenegraphRenderer();
       renderer.setContext(gla);
       Map<String, String> shaderVarsToVertexAttribs = new HashMap<>();
@@ -475,6 +518,10 @@ public class View {
       shaderVarsToVertexAttribs.put("vTexCoord", "texcoord");
       renderer.initShaderProgram(program, shaderVarsToVertexAttribs);
       camera_scenegraph.setRenderer(renderer);
+      drone_scenegraph.setRenderer(renderer);
+      for (IScenegraph prop : propellers) {
+        prop.setRenderer(renderer);
+      }
       program.disable(gl);
     }
 
@@ -519,6 +566,7 @@ public class View {
           break;
         case DIRECTION_DOWN:
           trackBall = new Matrix4f().identity().rotate(-phi, right.x, right.y, right.z).mul(trackBall);
+
           break;
         case DIRECTION_RIGHT:
           trackBall = new Matrix4f().identity().rotate(-phi, up.x, up.y, up.z).mul(trackBall);
@@ -542,15 +590,35 @@ public class View {
     /**
      * This method draw the camera in the world.
      *
-     * @param ModelView The passed in modelView of world.
+     * @param passedInModelView The passed in modelView of world.
      */
-    void draw(Stack<Matrix4f> ModelView) {
-      ModelView.push(new Matrix4f(ModelView.peek()));
-      ModelView.peek().
-          translate(position.x, position.y, position.z).
-          mul(trackBall);
-      camera_scenegraph.draw(ModelView);
-      ModelView.pop();
+    void draw(Stack<Matrix4f> passedInModelView) {
+      //System.out.println(time);
+
+      passedInModelView.push(new Matrix4f(passedInModelView.peek()));
+      passedInModelView.peek().
+          translate(position.x, position.y, position.z)
+          .mul(trackBall);
+      camera_scenegraph.draw(passedInModelView);
+      passedInModelView.pop();
+
+      drawDrone(passedInModelView);
+
+    }
+
+    void drawDrone(Stack<Matrix4f> passedInModelView) {
+      //System.out.println(time);
+      passedInModelView.push(new Matrix4f(passedInModelView.peek()));
+      passedInModelView.peek().
+          translate(position.x, position.y, position.z);
+      drone_scenegraph.draw(passedInModelView);
+
+      for (IScenegraph prop : propellers) {
+        prop.animate(time);
+        prop.draw(passedInModelView);
+      }
+
+      passedInModelView.pop();
     }
   }
 }

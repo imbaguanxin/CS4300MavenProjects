@@ -3,102 +3,109 @@
   <instance name="cone" path="models/cone.obj"/>
   <instance name="cylinder" path="models/cylinder.obj"/>
   <instance name="box" path="models/box.obj"/>
-  <group>
-    <group name="main body">
-      <transform>
-        <set>
-          <scale>5 3 12</scale>
-        </set>
-        <object instanceof="box">
-          <material>
-            <color>.5 .5 .5</color>
-          </material>
-        </object>
-      </transform>
+  <transform>
+    <set>
+      <translate>0 6.5 0</translate>
+    </set>
 
-      <transform>
-        <set>
-          <translate>4 0 0</translate>
-          <scale>3 2 8</scale>
-        </set>
-        <object instanceof="box">
-          <material>
-            <color>.2 .4 1</color>
-          </material>
-        </object>
-      </transform>
+    <group>
+      <group name="main body">
+        <transform>
+          <set>
+            <scale>5 3 12</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>.5 .5 .5</color>
+            </material>
+          </object>
+        </transform>
 
-      <transform>
-        <set>
-          <translate>-4 0 0</translate>
-          <scale>3 2 8</scale>
-        </set>
-        <object instanceof="box">
-          <material>
-            <color>.2 .4 1</color>
-          </material>
-        </object>
-      </transform>
+        <transform>
+          <set>
+            <translate>4 0 0</translate>
+            <scale>3 2 8</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>.2 .4 1</color>
+            </material>
+          </object>
+        </transform>
 
-      <transform>
-        <set>
-          <translate>0 1.5 0</translate>
-          <scale>2 4 2</scale>
-        </set>
-        <object instanceof="cylinder">
-          <material>
-            <color>.2 .4 1</color>
-          </material>
-        </object>
-      </transform>
+        <transform>
+          <set>
+            <translate>-4 0 0</translate>
+            <scale>3 2 8</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>.2 .4 1</color>
+            </material>
+          </object>
+        </transform>
 
-      <transform>
-        <set>
-          <translate>0 -6.5 0</translate>
-          <scale>.3 5 .3</scale>
-        </set>
-        <object instanceof="cylinder">
-          <material>
-            <color>.6 .8 1</color>
-          </material>
-        </object>
-      </transform>
+        <transform name="light holder">
+          <set>
+            <translate>0 1.5 0</translate>
+            <scale>2 4 2</scale>
+          </set>
+          <object instanceof="cylinder">
+            <material>
+              <color>.2 .4 1</color>
+            </material>
+          </object>
+        </transform>
+
+        <transform name="camera holder">
+          <set>
+            <translate>0 -4.5 0</translate>
+            <scale>.3 4 .3</scale>
+          </set>
+          <object instanceof="cylinder">
+            <material>
+              <color>.6 .8 1</color>
+            </material>
+          </object>
+        </transform>
+      </group>
+
+      <group name="propeller-holder">
+        <transform name="front-right">
+          <set>
+            <translate>4 0 -3</translate>
+            <rotate>-45 0 1 0</rotate>
+          </set>
+          <group name="1" from="scenegraphmodels/drone-part.xml"></group>
+        </transform>
+
+        <transform name="front-left">
+          <set>
+            <translate>-4 0 -3</translate>
+            <rotate>45 0 1 0</rotate>
+          </set>
+          <group name="2" from="scenegraphmodels/drone-part.xml"></group>
+        </transform>
+
+        <transform name="back-right">
+          <set>
+            <translate>4 0 3</translate>
+            <rotate>-135 0 1 0</rotate>
+          </set>
+          <group name="3" from="scenegraphmodels/drone-part.xml"></group>
+        </transform>
+
+        <transform name="back-left">
+          <set>
+            <translate>-4 0 3</translate>
+            <rotate>135 0 1 0</rotate>
+          </set>
+          <group name="4" from="scenegraphmodels/drone-part.xml"></group>
+        </transform>
+      </group>
+
+
     </group>
 
-    <group name="propeller-holder">
-      <transform name="front-right">
-        <set>
-          <translate>4 0 -3</translate>
-          <rotate>-45 0 1 0</rotate>
-        </set>
-        <group name="1" from="scenegraphmodels/drone-part.xml"></group>
-      </transform>
-
-      <transform name="front-left">
-        <set>
-          <translate>-4 0 -3</translate>
-          <rotate>45 0 1 0</rotate>
-        </set>
-        <group name="2" from="scenegraphmodels/drone-part.xml"></group>
-      </transform>
-
-      <transform name="back-right">
-        <set>
-          <translate>4 0 3</translate>
-          <rotate>-135 0 1 0</rotate>
-        </set>
-        <group name="3" from="scenegraphmodels/drone-part.xml"></group>
-      </transform>
-
-      <transform name="back-left">
-        <set>
-          <translate>-4 0 3</translate>
-          <rotate>135 0 1 0</rotate>
-        </set>
-        <group name="4" from="scenegraphmodels/drone-part.xml"></group>
-      </transform>
-    </group>
-
-
-  </group>
+  </transform>
 </scene>
