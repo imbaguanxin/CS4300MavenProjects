@@ -11,7 +11,7 @@ import util.PolygonMesh;
 public class RotateScenegraph<VertexType extends IVertexData> implements IScenegraph<VertexType> {
 
   private IScenegraph originalScenegraph;
-  private Vector3f axis, translate;
+  private Vector3f axis;
   private Matrix4f rotateMatrix, translateMatrix;
   private float angle;
 
@@ -20,7 +20,6 @@ public class RotateScenegraph<VertexType extends IVertexData> implements ISceneg
     this.axis = axis;
     this.rotateMatrix = new Matrix4f().identity();
     this.angle = (float) Math.toRadians(angularSpeed);
-    this.translate = new Vector3f(position);
     this.translateMatrix = new Matrix4f().identity().translate(position.x, position.y, position.z);
   }
 

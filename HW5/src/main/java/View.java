@@ -566,7 +566,6 @@ public class View {
           break;
         case DIRECTION_DOWN:
           trackBall = new Matrix4f().identity().rotate(-phi, right.x, right.y, right.z).mul(trackBall);
-
           break;
         case DIRECTION_RIGHT:
           trackBall = new Matrix4f().identity().rotate(-phi, up.x, up.y, up.z).mul(trackBall);
