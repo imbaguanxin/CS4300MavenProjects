@@ -1,6 +1,5 @@
 package sgraph;
 
-import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Stack;
 import org.joml.Matrix4f;
@@ -8,6 +7,11 @@ import org.joml.Vector3f;
 import util.IVertexData;
 import util.PolygonMesh;
 
+/**
+ * A specific implementation of this scene graph. This implementation is still independent of the
+ * rendering technology (i.e. OpenGL). This class now support animations by calling the method
+ * animate(float time).
+ */
 public class RotateScenegraph<VertexType extends IVertexData> implements IScenegraph<VertexType> {
 
   private IScenegraph originalScenegraph;
@@ -27,6 +31,13 @@ public class RotateScenegraph<VertexType extends IVertexData> implements ISceneg
     this(sg, axis, angularSpeed, new Vector3f(0, 0, 0));
   }
 
+  /**
+   * Sets the renderer, and then adds all the meshes to the renderer. This function must be called
+   * when the scene graph is complete, otherwise not all of its meshes will be known to the
+   * renderer
+   *
+   * @param renderer The {@link IScenegraphRenderer} object that will act as its renderer
+   */
   public void setRenderer(IScenegraphRenderer renderer) throws Exception {
     originalScenegraph.setRenderer(renderer);
   }

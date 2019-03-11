@@ -112,6 +112,9 @@ public class View {
     }
   }
 
+  /**
+   * Change the current mode to drone mode or vice versa.
+   */
   public void setDroneMode() {
     this.isDroneMode = !isDroneMode;
   }
@@ -386,6 +389,10 @@ public class View {
     }
   }
 
+  /**
+   * Increment the angle of view by a specific amount.
+   * @param diff the increment value, may be negative
+   */
   private void setAngleOfView(float diff) {
     if (angleOfView + diff <= MAX_ANGLE_OF_VIEW && angleOfView + diff >= MIN_ANGLE_OF_VIEW) {
       this.angleOfView = angleOfView + diff;
@@ -450,7 +457,9 @@ public class View {
     sgraph.IScenegraph<VertexAttrib> camera_scenegraph, drone_scenegraph;
     List<IScenegraph<VertexAttrib>> propellers;
 
-    // Building a camera, which need initialization.
+    /**
+     * Construct a Camera object. Initialize fields.
+     */
     Camera() {
       this.position = new Vector4f();
       this.trackBall = new Matrix4f().identity();
@@ -602,9 +611,12 @@ public class View {
       passedInModelView.pop();
 
       drawDrone(passedInModelView);
-
     }
 
+    /**
+     * Draw the drone specifically in the world.
+     * @param passedInModelView The passed in modelView of world.
+     */
     void drawDrone(Stack<Matrix4f> passedInModelView) {
       //System.out.println(time);
       passedInModelView.push(new Matrix4f(passedInModelView.peek()));
