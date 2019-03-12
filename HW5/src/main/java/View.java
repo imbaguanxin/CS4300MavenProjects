@@ -1,11 +1,19 @@
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.*;
 
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.imageio.ImageIO;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -48,6 +56,7 @@ public class View {
   private util.ShaderLocationsVault shaderLocations;
   private int projectionLocation;
   private sgraph.IScenegraph<VertexAttrib> scenegraph;
+  private AWTGLReadBufferUtil screenCaptureUtil;
 
 
   /**
@@ -67,6 +76,7 @@ public class View {
     timer = new Timer(true);
     cameraFlags = new boolean[10];
     moving_camera = new Camera();
+    screenCaptureUtil = null;
     // Timer here help to execute camera.
     // When it is in Ring mode, time runs and camera position is determined by time.
     // When a term in cameraFlag table is true, it execute the corresponding command.
@@ -183,6 +193,28 @@ public class View {
 
     //get input variables that need to be given to the shader program
     projectionLocation = shaderLocations.getLocation("projection");
+  }
+
+  /**
+   * This method captures the current frame buffer and writes it to a file of
+   * the given name
+   * @param filename the name of the file where the image should be saved
+   */
+  public void captureFrame(String filename,GLAutoDrawable gla) throws
+      FileNotFoundException, IOException {
+    if (screenCaptureUtil==null) {
+      screenCaptureUtil = new AWTGLReadBufferUtil(gla.getGLProfile(),false);
+    }
+
+    File f = new File(filename);
+    GL3 gl = gla.getGL().getGL3();
+
+    BufferedImage image = screenCaptureUtil.readPixelsToBufferedImage(gl,true);
+    OutputStream file = null;
+    file = new FileOutputStream(filename);
+
+    ImageIO.write(image,"png",file);
+
   }
 
   /**
@@ -391,6 +423,7 @@ public class View {
 
   /**
    * Increment the angle of view by a specific amount.
+   *
    * @param diff the increment value, may be negative
    */
   private void setAngleOfView(float diff) {
@@ -454,6 +487,7 @@ public class View {
     private Vector4f position;
     // trackBall records the camera's posture.
     private Matrix4f trackBall;
+    private float droneRotateAng;
     sgraph.IScenegraph<VertexAttrib> camera_scenegraph, drone_scenegraph;
     List<IScenegraph<VertexAttrib>> propellers;
 
@@ -463,6 +497,7 @@ public class View {
     Camera() {
       this.position = new Vector4f();
       this.trackBall = new Matrix4f().identity();
+      this.droneRotateAng = 0;
       propellers = new ArrayList<>();
     }
 
@@ -554,9 +589,10 @@ public class View {
      */
     void executeCamera(final int arg) throws IllegalArgumentException {
       float phi = (float) Math.PI / 120f;
-      Vector4f right = trackBall.transform(new Vector4f(1, 0, 0, 0));
       Vector4f up = trackBall.transform(new Vector4f(UP));
+      Vector4f right = trackBall.transform(new Vector4f(1, 0, 0, 0));
       Vector4f tempDir = trackBall.transform(new Vector4f(DIRECTION));
+      float dTheta = this.getDTheta(phi);
       switch (arg) {
         case POSITION_UP:
           position.add(trackBall.transform(new Vector4f(UP)));
@@ -571,16 +607,20 @@ public class View {
           position.sub(right);
           break;
         case DIRECTION_UP:
-          trackBall = new Matrix4f().identity().rotate(phi, right.x, right.y, right.z).mul(trackBall);
+          trackBall = new Matrix4f().identity().rotate(phi, right.x, right.y, right.z)
+              .mul(trackBall);
           break;
         case DIRECTION_DOWN:
-          trackBall = new Matrix4f().identity().rotate(-phi, right.x, right.y, right.z).mul(trackBall);
+          trackBall = new Matrix4f().identity().rotate(-phi, right.x, right.y, right.z)
+              .mul(trackBall);
           break;
         case DIRECTION_RIGHT:
           trackBall = new Matrix4f().identity().rotate(-phi, up.x, up.y, up.z).mul(trackBall);
+          droneRotateAng -= dTheta;
           break;
         case DIRECTION_LEFT:
           trackBall = new Matrix4f().identity().rotate(phi, up.x, up.y, up.z).mul(trackBall);
+          droneRotateAng += dTheta;
           break;
         case ROTATE_CLOCK_WISE:
           trackBall = new Matrix4f().identity().rotate(phi, tempDir.x, tempDir.y, tempDir.z)
@@ -595,14 +635,24 @@ public class View {
       }
     }
 
+
+    float getDTheta(float phi){
+      float dTheta;
+      Vector4f up = trackBall.transform(new Vector4f(UP));
+      Vector4f beforeDir = trackBall.transform(new Vector4f(DIRECTION));
+      Vector4f afterDir = new Matrix4f().identity().rotate(phi, up.x, up.y, up.z).mul(trackBall)
+          .transform(new Vector4f(DIRECTION));
+      Vector3f projBeforeDir = new Vector3f(beforeDir.x, 0, beforeDir.z).normalize();
+      Vector3f projAfterDir = new Vector3f(afterDir.x, 0, afterDir.z).normalize();
+      dTheta = (float) Math.abs(Math.acos(projBeforeDir.dot(projAfterDir)));
+      return dTheta;
+    }
     /**
      * This method draw the camera in the world.
      *
      * @param passedInModelView The passed in modelView of world.
      */
     void draw(Stack<Matrix4f> passedInModelView) {
-      //System.out.println(time);
-
       passedInModelView.push(new Matrix4f(passedInModelView.peek()));
       passedInModelView.peek().
           translate(position.x, position.y, position.z)
@@ -615,13 +665,14 @@ public class View {
 
     /**
      * Draw the drone specifically in the world.
+     *
      * @param passedInModelView The passed in modelView of world.
      */
     void drawDrone(Stack<Matrix4f> passedInModelView) {
-      //System.out.println(time);
       passedInModelView.push(new Matrix4f(passedInModelView.peek()));
-      passedInModelView.peek().
-          translate(position.x, position.y, position.z);
+      passedInModelView.peek()
+          .translate(position.x, position.y, position.z)
+          .rotate(droneRotateAng, 0, 1, 0);
       drone_scenegraph.draw(passedInModelView);
 
       for (IScenegraph prop : propellers) {

@@ -21,6 +21,7 @@ public class JOGLFrame extends JFrame {
 
   private View view;
   private GLCanvas canvas;
+  private int frameno;
 
   public JOGLFrame(String title, String configPath) {
     //routine JFrame setting stuff
@@ -71,6 +72,18 @@ public class JOGLFrame extends JFrame {
       public void display(
           GLAutoDrawable glAutoDrawable) { //called every time this window must be redrawn
         view.draw(canvas);
+        if (frameno < 1000) {
+          String filename = "output/image"
+              + String.format("%03d.png", frameno);
+          try {
+            view.captureFrame(filename, glAutoDrawable);
+          } catch (Exception e) {
+            JOptionPane.showMessageDialog(JOGLFrame.this, e.getMessage(), "Error while loading",
+                JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+          }
+          frameno++;
+        }
       }
 
       @Override

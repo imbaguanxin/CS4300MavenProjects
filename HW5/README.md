@@ -50,3 +50,7 @@ I personally recommend to design a new class that also follow the composite patt
          modelView.pop();
      }
      ```
+
+## Notes
+
+   When turing right and left, the drone is going to turn with the camera. When the camera is not in the horizontal plane, the turning angular speed of the drone may vary according to the posture of the camera. To be precise, the angular speed of drone is the angular speed of the camera's front direction's projection on to the horizontal plane. We do such calculate to ensure that the direction of the camera and the direction of the drone are on the same vertical plane. So visually, they point to the same direction.
