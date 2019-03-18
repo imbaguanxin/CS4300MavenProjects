@@ -1,0 +1,103 @@
+<scene>
+  <instance name="box" path="models/box"></instance>
+  <instance name="cylinder" path="models/cylinder"></instance>
+  <group>
+    <!--Enable the following part to display coordinates-->
+    <!--<group name="coordinate" from="scenegraphmodels/coordinate.xml"></group>-->
+    <transform name="wall1">
+      <set>
+        <translate>0 0 -50</translate>
+        <scale>10 10 3</scale>
+        <translate>0 5 0</translate>
+      </set>
+      <group name="1" from="scenegraphmodels/single-wall.xml">
+      </group>
+    </transform>
+    <transform name="wall2">
+      <set>
+        <translate>0 0 50</translate>
+        <scale>10 10 3</scale>
+        <translate>0 5 0</translate>
+      </set>
+      <group name="2" from="scenegraphmodels/single-wall.xml">
+      </group>
+    </transform>
+    <transform name="wall3">
+      <set>
+        <translate>-50 0 0</translate>
+        <rotate>90 0 1 0</rotate>
+        <scale>10 10 3</scale>
+        <translate>0 5 0</translate>
+      </set>
+      <group name="3" from="scenegraphmodels/single-wall.xml">
+      </group>
+    </transform>
+    <transform name="wall4">
+      <set>
+        <translate>50 0 0</translate>
+        <rotate>90 0 1 0</rotate>
+        <scale>10 10 3</scale>
+        <translate>0 5 0</translate>
+      </set>
+      <group name="4" from="scenegraphmodels/single-wall.xml">
+      </group>
+    </transform>
+    <transform name="pillar1">
+      <set>
+        <translate>50 0 50</translate>
+        <scale>10 105 10</scale>
+      </set>
+      <object instanceof="cylinder">
+        <material>
+          <color>.5 .5 .5</color>
+        </material>
+      </object>
+    </transform>
+    <transform name="pillar2">
+      <set>
+        <translate>-50 0 50</translate>
+        <scale>10 105 10</scale>
+      </set>
+      <object instanceof="cylinder">
+        <material>
+          <color>.5 .5 .5</color>
+        </material>
+      </object>
+    </transform>
+    <transform name="pillar3">
+      <set>
+        <translate>-50 0 -50</translate>
+        <scale>10 105 10</scale>
+      </set>
+      <object instanceof="cylinder">
+        <material>
+          <color>.5 .5 .5</color>
+        </material>
+      </object>
+    </transform>
+    <transform name="pillar4">
+      <set>
+        <translate>50 0 -50</translate>
+        <scale>10 105 10</scale>
+      </set>
+      <object instanceof="cylinder">
+        <material>
+          <color>.5 .5 .5</color>
+        </material>
+      </object>
+    </transform>
+
+    <transform name="roof">
+      <set>
+        <translate>0 100 0</translate>
+        <scale>108 5 108</scale>
+        <translate>0 .5 0</translate>
+      </set>
+      <object instanceof="box">
+        <material>
+          <color>.4 .2 .9</color>
+        </material>
+      </object>
+    </transform>
+  </group>
+</scene>

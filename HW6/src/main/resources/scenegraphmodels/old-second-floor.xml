@@ -1,0 +1,206 @@
+<scene>
+  <instance name="box" path="models/box.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+  <transform name="ceiling">
+    <set>
+      <translate>4 11 4</translate>
+    </set>
+    <group>
+      <transform>
+        <set>
+          <scale>51 1 24</scale>
+          <translate>.5 .5 .5</translate>
+        </set>
+        <object instanceof="box">
+          <material>
+            <color>.25 .25 .25</color>
+          </material>
+        </object>
+      </transform>
+      <transform>
+        <set>
+          <translate>51 0 12</translate>
+          <scale>12 1 12</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.25 .25 .25</color>
+          </material>
+        </object>
+      </transform>
+    </group>
+  </transform>
+  <transform name="walls">
+    <set>
+      <translate>0 1 0</translate>
+    </set>
+    <group>
+      <transform name="front">
+        <set>
+          <translate>7 0 25</translate>
+        </set>
+        <group>
+          <transform name="1" >
+            <set>
+              <translate>0 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-closed.xml"/>
+          </transform>
+          <transform name="2">
+            <set>
+              <translate>9 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-open.xml"/>
+          </transform>
+          <transform name="3">
+            <set>
+              <translate>18 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-closed.xml"/>
+          </transform>
+          <transform name="4">
+            <set>
+              <translate>27 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-closed.xml"/>
+          </transform>
+          <transform name="5">
+            <set>
+              <translate>36 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-open.xml"/>
+          </transform>
+        </group>
+      </transform>
+      <transform name="back">
+        <set>
+          <translate>7 0 7</translate>
+          <translate>45 0 0</translate>
+          <rotate>180 0 1 0</rotate>
+        </set>
+        <group>
+          <transform name="1" >
+            <set>
+              <translate>0 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-open.xml"/>
+          </transform>
+          <transform name="2">
+            <set>
+              <translate>9 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-open.xml"/>
+          </transform>
+          <transform name="3">
+            <set>
+              <translate>18 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-closed.xml"/>
+          </transform>
+          <transform name="4">
+            <set>
+              <translate>27 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-open.xml"/>
+          </transform>
+          <transform name="5">
+            <set>
+              <translate>36 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-closed.xml"/>
+          </transform>
+        </group>
+      </transform>
+      <transform name="left">
+        <set>
+          <translate>7 0 7</translate>
+          <rotate>-90 0 1 0</rotate>
+        </set>
+        <group>
+          <transform name="1" >
+            <set>
+              <translate>0 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-closed.xml"/>
+          </transform>
+          <transform name="2">
+            <set>
+              <translate>9 0 0</translate>
+            </set>
+            <group from="scenegraphmodels/old-wall-window-open.xml"/>
+          </transform>
+        </group>
+      </transform>
+      <transform name="right">
+        <set>
+          <translate>54 0 16</translate>
+        </set>
+        <group from="scenegraphmodels/old-round-wall-window-closed.xml"/>
+      </transform>
+    </group>
+  </transform>
+  <transform name="pillar">
+    <set>
+      <translate>0 1 0</translate>
+    </set>
+    <group>
+      <transform name="front-left">
+        <set>
+          <translate>5.5 0 26.5</translate>
+          <scale>1.5 10 1.5</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="front-right">
+        <set>
+          <translate>53.5 0 26.5</translate>
+          <scale>1.5 10 1.5</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="back-left">
+        <set>
+          <translate>5.5 0 5.5</translate>
+          <scale>1.5 10 1.5</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="back-right">
+        <set>
+          <translate>53.5 0 5.5</translate>
+          <scale>1.5 10 1.5</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+    </group>
+  </transform>
+  <transform name="floor">
+    <set>
+      <translate>4 0 4</translate>
+      <scale>51 .001 24</scale>
+      <translate>.5 .5 .5</translate>
+    </set>
+    <object instanceof="box">
+      <material>
+        <color>.25 .25 .25</color>
+      </material>
+    </object>
+  </transform>
+</scene>

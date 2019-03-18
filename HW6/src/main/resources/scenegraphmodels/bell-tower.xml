@@ -1,0 +1,90 @@
+<scene>
+  <instance name="box" path="models/box.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+  <instance name="neptune" path="models/neptune.obj"/>
+  <transform name="base">
+    <set>
+      <scale>8 26 8</scale>
+      <translate>0 .5 0</translate>
+    </set>
+    <object instanceof="box">
+      <material>
+        <color>.25 .25 .25</color>
+      </material>
+    </object>
+  </transform>
+  <transform name="pillar">
+    <set>
+      <translate>0 26 0</translate>
+    </set>
+    <group>
+      <transform name="1">
+        <set>
+          <translate>3 0 3</translate>
+          <scale>.5 10 .5</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="2">
+        <set>
+          <translate>-3 0 3</translate>
+          <scale>.5 10 .5</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="3">
+        <set>
+          <translate>-3 0 -3</translate>
+          <scale>.5 10 .5</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="4">
+        <set>
+          <translate>3 0 -3</translate>
+          <scale>.5 10 .5</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+    </group>
+  </transform>
+  <transform name="micky">
+    <set>
+      <translate>1 32 11</translate>
+      <scale>0.01 0.01 0.01</scale>
+    </set>
+    <object instanceof="neptune">
+      <material>
+        <color>.5 .5 .5</color>
+      </material>
+    </object>
+  </transform>
+  <transform name="spire">
+    <set>
+      <translate>0 36 0</translate>
+      <scale>5 20 5</scale>
+    </set>
+    <object instanceof="cone">
+      <material>
+        <color>0 .3 .5</color>
+      </material>
+    </object>
+  </transform>
+</scene>

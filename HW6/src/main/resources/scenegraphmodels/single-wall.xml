@@ -1,0 +1,68 @@
+<scene>
+  <instance name="box" path="models/box"></instance>
+  <group>
+    <!--Enable the following part to display coordinates-->
+    <!--<group name="coordinate" from="scenegraphmodels/coordinate.xml">-->
+    <!--</group>-->
+    <!--This is a wal of 10*10*3 where the window is 4*4*3 right in the middle.
+        The whole wall is placed at the center of the coordinate system.-->
+    <transform>
+      <set>
+        <translate>-5 -5 -1.5</translate>
+      </set>
+      <group name="wall">
+        <transform name="left">
+          <set>
+            <scale>3 10 3</scale>
+            <translate>.5 .5 .5</translate>
+            <scale>1 1 1</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>1 0 0</color>
+            </material>
+          </object>
+        </transform>
+        <transform name="top">
+          <set>
+            <translate>3 7 0</translate>
+            <scale>4 3 3</scale>
+            <translate>.5 .5 .5</translate>
+            <scale>1 1 1</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>1 0 0</color>
+            </material>
+          </object>
+        </transform>
+        <transform name="bottom">
+          <set>
+            <translate>3 0 0</translate>
+            <scale>4 3 3</scale>
+            <translate>.5 .5 .5</translate>
+            <scale>1 1 1</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>1 0 0</color>
+            </material>
+          </object>
+        </transform>
+        <transform name="right">
+          <set>
+            <translate>7 0 0</translate>
+            <scale>3 10 3</scale>
+            <translate>.5 .5 .5</translate>
+            <scale>1 1 1</scale>
+          </set>
+          <object instanceof="box">
+            <material>
+              <color>1 0 0</color>
+            </material>
+          </object>
+        </transform>
+      </group>
+    </transform>
+  </group>
+</scene>

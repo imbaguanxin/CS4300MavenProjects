@@ -1,0 +1,32 @@
+<scene>
+  <transform>
+    <set>
+      <translate>-29.5 0 0</translate>
+    </set>
+    <group>
+      <transform name="top-floor">
+        <set>
+          <translate>0 22 0</translate>
+        </set>
+        <group from="scenegraphmodels/old-top-floor.xml"/>
+      </transform>
+      <transform name="second-floor">
+        <set>
+          <translate>0 11 0</translate>
+        </set>
+        <group from="scenegraphmodels/old-second-floor.xml"/>
+      </transform>
+      <transform name="first-floor">
+        <set/>
+        <group from="scenegraphmodels/old-first-floor.xml"/>
+      </transform>
+      <transform>
+        <set>
+          <translate>10 34 16</translate>
+          <scale>.5 .5 .5</scale>
+        </set>
+        <group from="scenegraphmodels/bell-tower.xml"/>
+      </transform>
+    </group>
+  </transform>
+</scene>

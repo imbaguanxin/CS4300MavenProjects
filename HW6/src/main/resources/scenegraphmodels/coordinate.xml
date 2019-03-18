@@ -1,0 +1,35 @@
+<scene>
+  <instance name="cylinder" path="models/cylinder"></instance>
+  <transform name="x-axis">
+    <set>
+      <scale>100 .2 .2</scale>
+    </set>
+    <object instanceof="cylinder">
+      <material>
+        <color>.8 .8 .8</color>
+      </material>
+    </object>
+  </transform>
+  <transform name="y-axis">
+    <set>
+      <rotate>90 0 0 1</rotate>
+      <scale>100 .2 .2</scale>
+    </set>
+    <object instanceof="cylinder">
+      <material>
+        <color>.8 .8 .8</color>
+      </material>
+    </object>
+  </transform>
+  <transform name="z-axis">
+    <set>
+      <rotate>90 0 1 0</rotate>
+      <scale>100 .2 .2</scale>
+    </set>
+    <object instanceof="cylinder">
+      <material>
+        <color>.8 .8 .8</color>
+      </material>
+    </object>
+  </transform>
+</scene>
