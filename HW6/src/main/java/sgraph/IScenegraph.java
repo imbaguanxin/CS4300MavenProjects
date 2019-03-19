@@ -5,6 +5,7 @@ import util.IVertexData;
 
 import java.util.Map;
 import java.util.Stack;
+import util.Light;
 
 /**
  * This interface captures all the operations that a scene graph should offer. It is designed to be
@@ -45,6 +46,8 @@ public interface IScenegraph<VertexType extends IVertexData> {
    * this stack as it navigates its tree.
    */
   void draw(Stack<Matrix4f> modelView);
+
+  void draw(Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights);
 
   /**
    * Add a polygon mesh that will be used by one or more leaves in this scene graph

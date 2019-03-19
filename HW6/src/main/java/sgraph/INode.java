@@ -1,5 +1,7 @@
 package sgraph;
 
+import java.util.List;
+import java.util.Map;
 import org.joml.Matrix4f;
 import util.Light;
 
@@ -30,6 +32,9 @@ public interface INode {
    * @param modelView the stack of modelview matrices
    */
   void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView);
+
+  void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView,
+      Map<Light, Matrix4f> passedInlights);
 
   /**
    * Return a deep copy of the scene graph subtree rooted at this node

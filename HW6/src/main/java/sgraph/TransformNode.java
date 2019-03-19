@@ -1,7 +1,9 @@
 package sgraph;
 
+import java.util.Map;
 import org.joml.Matrix4f;
 import java.util.Stack;
+import util.Light;
 
 /**
  * This node represents a transformation in the scene graph. It has only one child. The
@@ -112,6 +114,20 @@ public class TransformNode extends AbstractNode {
       child.draw(context, modelView);
     }
     modelView.pop();
+  }
+
+  @Override
+  public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView,
+      Map<Light, Matrix4f> passedInlights) {
+    modelView.push(new Matrix4f(modelView.peek()));
+    modelView.peek().mul(animation_transform)
+        .mul(transform);
+    for (int i = 0; i < lights.size(); i++) {
+      passedInlights.put(lights.get(i), new Matrix4f(modelView.peek()));
+    }
+    if (child != null) {
+      child.draw(context, modelView, passedInlights);
+    }
   }
 
 

@@ -2,6 +2,7 @@ package sgraph;
 
 import org.joml.Matrix4f;
 import util.IVertexData;
+import util.Light;
 import util.PolygonMesh;
 
 import java.util.*;
@@ -87,6 +88,13 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
   public void draw(Stack<Matrix4f> modelView) {
     if ((root != null) && (renderer != null)) {
       renderer.draw(root, modelView);
+    }
+  }
+
+  @Override
+  public void draw(Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights) {
+    if ((root != null) && (renderer != null)) {
+      renderer.draw(root, modelView, passedInLights);
     }
   }
 

@@ -1,7 +1,9 @@
 package sgraph;
 
+import java.util.Map;
 import org.joml.Matrix4f;
 import java.util.Stack;
+import util.Light;
 
 /**
  * This node represents the leaf of a scene graph. It is the only type of node that has actual
@@ -76,6 +78,15 @@ public class LeafNode extends AbstractNode {
       throws IllegalArgumentException {
     if (objInstanceName.length() > 0) {
       context.drawMesh(objInstanceName, material, textureName, modelView.peek());
+    }
+  }
+
+  public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView, Map<Light,Matrix4f> passedInLights){
+    if (objInstanceName.length() > 0) {
+      context.drawMesh(objInstanceName, material, textureName, modelView.peek());
+    }
+    if(passedInLights.size() > 0){
+      context.drawLight(passedInLights);
     }
   }
 

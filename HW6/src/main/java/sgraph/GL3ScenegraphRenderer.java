@@ -4,7 +4,9 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import util.IVertexData;
+import util.Light;
 import util.TextureImage;
 
 import java.io.IOException;
@@ -133,6 +135,11 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
   }
 
   @Override
+  public void draw(INode root, Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights) {
+    root.draw(this, modelView, passedInLights);
+  }
+
+  @Override
   public void dispose() {
     for (util.ObjectInstance s : meshRenderers.values()) {
       s.cleanup(glContext);
@@ -173,6 +180,26 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
       gl.glUniformMatrix4fv(loc, 1, false, transformation.get(fb));
 
       meshRenderers.get(name).draw(glContext);
+    }
+  }
+
+  @Override
+  public void drawLight(Map<Light, Matrix4f> passedInLights) {
+    GL3 gl = glContext.getGL().getGL3();
+
+    FloatBuffer fb16 = Buffers.newDirectFloatBuffer(16);
+    FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
+    gl.glUniform1i(shaderLocations.getLocation("numLights"),
+        passedInLights.size());
+    for (Map.Entry<Light, Matrix4f> entry : passedInLights.entrySet()) {
+      Light light = entry.getKey();
+      Matrix4f lightTransForm = entry.getValue();
+      Vector4f pos = lightTransForm.transform(light.getPosition());
+      gl.glUniform4fv(new LightLocation().position, 1, pos.get(fb4));
+
+      gl.glUniform3fv(new LightLocation().ambient, 1, light.getAmbient().get(fb4));
+      gl.glUniform3fv(new LightLocation().diffuse, 1, light.getDiffuse().get(fb4));
+      gl.glUniform3fv(new LightLocation().specular, 1, light.getSpecular().get(fb4));
     }
   }
 

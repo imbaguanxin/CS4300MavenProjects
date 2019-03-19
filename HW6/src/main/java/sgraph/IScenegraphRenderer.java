@@ -5,6 +5,7 @@ import util.IVertexData;
 
 import java.util.Map;
 import java.util.Stack;
+import util.Light;
 
 /**
  * This interface provides a general interface for the scene graph to use. Each scene graph is
@@ -63,11 +64,15 @@ public interface IScenegraphRenderer {
    */
   void draw(INode root, Stack<Matrix4f> modelView);
 
+  void draw(INode root, Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights);
+
   /**
    * Draw a specific mesh. This is called from a leaf node of the associated scene graph
    */
   void drawMesh(String name, util.Material material, String textureName,
       final Matrix4f transformation);
+
+  void drawLight(Map<Light, Matrix4f> passedInLights);
 
   /**
    * Add a new texture with the given name and the path to the actual image file Implementation of

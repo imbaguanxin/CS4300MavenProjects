@@ -5,6 +5,7 @@ import java.util.Stack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import util.IVertexData;
+import util.Light;
 import util.PolygonMesh;
 
 /**
@@ -58,6 +59,14 @@ public class RotateScenegraph<VertexType extends IVertexData> implements ISceneg
     modelView.push(new Matrix4f(modelView.peek()));
     modelView.peek().mul(translateMatrix).mul(rotateMatrix);
     originalScenegraph.draw(modelView);
+    modelView.pop();
+  }
+
+  @Override
+  public void draw(Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights) {
+    modelView.push(new Matrix4f(modelView.peek()));
+    modelView.peek().mul(translateMatrix).mul(rotateMatrix);
+    originalScenegraph.draw(modelView, passedInLights);
     modelView.pop();
   }
 

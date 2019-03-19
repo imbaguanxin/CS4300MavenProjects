@@ -1,5 +1,7 @@
 package sgraph;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.joml.Matrix4f;
 import util.Light;
 
@@ -16,6 +18,8 @@ public abstract class AbstractNode implements INode {
    * The name given to this node
    */
   protected String name;
+
+  protected List<Light> lights;
   /**
    * The parent of this node. Each node except the root has a parent. The root's parent is null
    */
@@ -28,6 +32,7 @@ public abstract class AbstractNode implements INode {
   public AbstractNode(IScenegraph graph, String name) {
     this.parent = null;
     scenegraph = graph;
+    lights = new ArrayList<>();
     setName(name);
   }
 
@@ -137,7 +142,7 @@ public abstract class AbstractNode implements INode {
    * Adds a new light to this node.
    */
   public void addLight(Light l) {
-    throw new UnsupportedOperationException("Lights not supported yet!");
+    this.lights.add(l);
   }
 
 }

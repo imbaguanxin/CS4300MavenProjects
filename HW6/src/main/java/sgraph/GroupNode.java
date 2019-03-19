@@ -1,10 +1,14 @@
 package sgraph;
 
+import com.jogamp.opengl.math.Matrix4;
+import java.util.HashMap;
+import java.util.Map;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import util.Light;
 
 /**
  * This class represents a group node in the scenegraph. A group node is simply a logical grouping
@@ -72,6 +76,20 @@ public class GroupNode extends AbstractNode {
   public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView) {
     for (int i = 0; i < children.size(); i++) {
       children.get(i).draw(context, modelView);
+    }
+  }
+
+  public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView,
+      Map<Light, Matrix4f> passedInlights) {
+    for (int i = 0; i < children.size(); i++) {
+      if (i == 0) {
+        for (int j = 0; i < lights.size(); j++) {
+          passedInlights.put(lights.get(j), new Matrix4f(modelView.peek()));
+        }
+        children.get(i).draw(context, modelView, passedInlights);
+      } else {
+        children.get(i).draw(context, modelView, new HashMap<>());
+      }
     }
   }
 
