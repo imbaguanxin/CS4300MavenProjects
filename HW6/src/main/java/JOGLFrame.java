@@ -72,7 +72,11 @@ public class JOGLFrame extends JFrame {
       public void display(
           GLAutoDrawable glAutoDrawable) { //called every time this window must be redrawn
         view.draw(canvas);
-        if (frameno < 1000) {
+        //capturePhoto(1000, glAutoDrawable);
+      }
+
+      void capturePhoto(int maxNum, GLAutoDrawable glAutoDrawable) {
+        if (frameno < maxNum) {
           String filename = "output/image"
               + String.format("%03d.png", frameno);
           try {
