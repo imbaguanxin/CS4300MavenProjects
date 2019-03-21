@@ -195,11 +195,17 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
       Light light = entry.getKey();
       Matrix4f lightTransForm = entry.getValue();
       Vector4f pos = lightTransForm.transform(light.getPosition());
-      gl.glUniform4fv(new LightLocation().position, 1, pos.get(fb4));
+      LightLocation lightLoc = new LightLocation();
+      String lightName = light.toString();
+      lightLoc.ambient = shaderLocations.getLocation(lightName + ".ambient");
+      lightLoc.diffuse = shaderLocations.getLocation(lightName + ".diffuse");
+      lightLoc.specular = shaderLocations.getLocation(lightName + ".specular");
+      lightLoc.position = shaderLocations.getLocation(lightName + ".position");
 
-      gl.glUniform3fv(new LightLocation().ambient, 1, light.getAmbient().get(fb4));
-      gl.glUniform3fv(new LightLocation().diffuse, 1, light.getDiffuse().get(fb4));
-      gl.glUniform3fv(new LightLocation().specular, 1, light.getSpecular().get(fb4));
+      gl.glUniform4fv(lightLoc.position, 1, pos.get(fb4));
+      gl.glUniform3fv(lightLoc.ambient, 1, light.getAmbient().get(fb4));
+      gl.glUniform3fv(lightLoc.diffuse, 1, light.getDiffuse().get(fb4));
+      gl.glUniform3fv(lightLoc.specular, 1, light.getSpecular().get(fb4));
     }
   }
 
