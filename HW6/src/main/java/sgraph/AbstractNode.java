@@ -142,7 +142,7 @@ public abstract class AbstractNode implements INode {
    * Adds a new light to this node.
    */
   public void addLight(Light l) {
-    this.lights.add(l);
+    System.out.println("light added");this.lights.add(l);
   }
 
 }

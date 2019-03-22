@@ -5,19 +5,29 @@
 	<instance name="cone" path="models/cone.obj" />
 	
 	<group>
-	<transform>
-		<set>
-		<translate> 0 -25 0 </translate>
-		<scale> 50 50 50 </scale>
-		</set>
-		<group>
-			<object instanceof="cone">
-				<material>
-				<color> 1 1 0 </color>
-				</material>
-			</object>			
-		</group>
-	</transform>
+		<light>
+			<ambient>1 0 0</ambient>
+			<diffuse>0 1 0</diffuse>
+			<specular>0 0 1</specular>
+			<spotangle>360</spotangle>
+			<spotdirection>0 0 1</spotdirection>
+			<position>0 0 -10</position>
+		</light>
+		<transform>
+			<set>
+				<scale>50 50 50</scale>
+			</set>
+			<group>
+				<object instanceof="cone">
+					<material>
+						<ambient>.5 0 0</ambient>
+						<diffuse>0 1 0</diffuse>
+						<specular>0 0 1</specular>
+						<shininess>100</shininess>
+					</material>
+				</object>
+			</group>
+		</transform>
 <!--
 	<transform>
 		<set>

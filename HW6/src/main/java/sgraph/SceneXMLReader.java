@@ -60,6 +60,7 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
   private util.Material material;
   private Map<String, INode> subgraph;
   private Light light;
+  private boolean lightFlag;
 
   public IScenegraph<K> getScenegraph() {
     return scenegraph;
@@ -79,6 +80,7 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
     transform = new Matrix4f();
     material = new util.Material();
     light = null;
+    lightFlag = false;
   }
 
   public void endDocument() throws SAXException {
@@ -208,6 +210,8 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
       break;
       case "light":
         light = new Light();
+        lightFlag = true;
+        stackNodes.peek().addLight(light);
         break;
     }
     data = "";
@@ -259,15 +263,27 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
         break;
       case "ambient":
         sc = new Scanner(data);
-        material.setAmbient(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        if (lightFlag) {
+          light.setAmbient(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        } else {
+          material.setAmbient(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        }
         break;
       case "diffuse":
         sc = new Scanner(data);
-        material.setDiffuse(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        if (lightFlag) {
+          light.setDiffuse(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        } else {
+          material.setDiffuse(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        }
         break;
       case "specular":
         sc = new Scanner(data);
-        material.setSpecular(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        if (lightFlag) {
+          light.setSpecular(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        } else {
+          material.setSpecular(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        }
         break;
       case "emissive":
         sc = new Scanner(data);
@@ -292,6 +308,21 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
       case "refractive":
         sc = new Scanner(data);
         material.setRefractiveIndex(sc.nextFloat());
+        break;
+      case "light":
+        lightFlag = false;
+        break;
+      case "spotdirection":
+        sc = new Scanner(data);
+        light.setSpotDirection(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        break;
+      case "spotangle":
+        sc = new Scanner(data);
+        light.setSpotAngle(sc.nextFloat());
+        break;
+      case "position":
+        sc = new Scanner(data);
+        light.setPosition(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
         break;
     }
     data = "";

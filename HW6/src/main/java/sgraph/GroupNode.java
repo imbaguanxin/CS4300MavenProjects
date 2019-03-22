@@ -83,7 +83,7 @@ public class GroupNode extends AbstractNode {
       Map<Light, Matrix4f> passedInlights) {
     for (int i = 0; i < children.size(); i++) {
       if (i == 0) {
-        for (int j = 0; i < lights.size(); j++) {
+        for (int j = 0; j < lights.size(); j++) {
           passedInlights.put(lights.get(j), new Matrix4f(modelView.peek()));
         }
         children.get(i).draw(context, modelView, passedInlights);

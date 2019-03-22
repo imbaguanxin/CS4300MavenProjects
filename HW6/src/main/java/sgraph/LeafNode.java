@@ -82,10 +82,11 @@ public class LeafNode extends AbstractNode {
   }
 
   public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView, Map<Light,Matrix4f> passedInLights){
+    System.out.println("draw with light");
     if (objInstanceName.length() > 0) {
       context.drawMesh(objInstanceName, material, textureName, modelView.peek());
     }
-    if(passedInLights.size() > 0){
+    if(passedInLights.size() >= 0){
       context.drawLight(passedInLights);
     }
   }

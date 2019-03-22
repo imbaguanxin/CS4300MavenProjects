@@ -4,7 +4,6 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
 import util.IVertexData;
 import util.Light;
 import util.TextureImage;
@@ -42,6 +41,7 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
    * A table of renderers for individual meshes
    */
   protected Map<String, util.ObjectInstance> meshRenderers;
+
 
   /**
    * A variable tracking whether shader locations have been set. This must be done before drawing!
@@ -136,7 +136,7 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
 
   @Override
   public void draw(INode root, Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights) {
-    root.draw(this, modelView, passedInLights);
+    System.out.println("Not supported! use LightScenegraphRenderer");
   }
 
   @Override
@@ -185,32 +185,7 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
 
   @Override
   public void drawLight(Map<Light, Matrix4f> passedInLights) {
-    GL3 gl = glContext.getGL().getGL3();
-
-    FloatBuffer fb16 = Buffers.newDirectFloatBuffer(16);
-    FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
-    gl.glUniform1i(shaderLocations.getLocation("numLights"),
-        passedInLights.size());
-    for (Map.Entry<Light, Matrix4f> entry : passedInLights.entrySet()) {
-      Light light = entry.getKey();
-      Matrix4f lightTransForm = entry.getValue();
-      Vector4f pos = lightTransForm.transform(light.getPosition());
-      LightLocation lightLoc = new LightLocation();
-      String lightName = light.toString();
-      lightLoc.position = shaderLocations.getLocation(lightName + ".position");
-      lightLoc.ambient = shaderLocations.getLocation(lightName + ".ambient");
-      lightLoc.diffuse = shaderLocations.getLocation(lightName + ".diffuse");
-      lightLoc.specular = shaderLocations.getLocation(lightName + ".specular");
-      lightLoc.direction = shaderLocations.getLocation(lightName + ".direction");
-      lightLoc.cutOff = shaderLocations.getLocation(lightName + ".cutOff");
-
-      gl.glUniform4fv(lightLoc.position, 1, pos.get(fb4));
-      gl.glUniform3fv(lightLoc.ambient, 1, light.getAmbient().get(fb4));
-      gl.glUniform3fv(lightLoc.diffuse, 1, light.getDiffuse().get(fb4));
-      gl.glUniform3fv(lightLoc.specular, 1, light.getSpecular().get(fb4));
-      gl.glUniform4fv(lightLoc.direction, 1, light.getSpotDirection().get(fb4));
-      gl.glUniform1fv(lightLoc.cutOff, 1, FloatBuffer.wrap(new float[]{light.getSpotCutoff()}));
-    }
+    System.out.println("Not supported! use LightScenegraphRenderer");
   }
 
 
