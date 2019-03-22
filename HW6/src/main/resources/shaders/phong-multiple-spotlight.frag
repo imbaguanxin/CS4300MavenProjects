@@ -85,6 +85,6 @@ void main()
             fColor = fColor + vec4(ambient, 1.0);
         }
     }
-    fColor = fColor * texture(image, fTexCoord.st);
+//    fColor = fColor * texture(image, fTexCoord.st);
     //fColor = vec4(fTexCoord.s,fTexCoord.t,0,1);
 }

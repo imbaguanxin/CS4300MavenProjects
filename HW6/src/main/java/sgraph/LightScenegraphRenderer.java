@@ -52,9 +52,9 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
       gl.glUniform3fv(lightLoc.specular, 1, light.getSpecular().get(fb4));
       gl.glUniform4fv(lightLoc.direction, 1, light.getSpotDirection().get(fb4));
       gl.glUniform1f(lightLoc.cutOff, light.getSpotCutoff());
+      System.out.println(light.getSpotCutoff());
     }
-    gl.glUniform1i(shaderLocations.getLocation("numLights"),
-        lightNum + 1);
+    gl.glUniform1i(shaderLocations.getLocation("numLights"),1);
   }
 
   @Override
@@ -107,6 +107,7 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
         throw new IllegalArgumentException("No shader variable for \" normalmatrix \"");
       }
       Matrix4f normalmatrix = new Matrix4f(transformation);
+      normalmatrix = normalmatrix.invert().transpose();
       gl.glUniformMatrix4fv(shaderLocations.getLocation("normalmatrix"), 1,
           false, normalmatrix.get(fb16));
 

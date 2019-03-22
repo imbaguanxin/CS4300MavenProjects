@@ -318,7 +318,7 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
         break;
       case "spotangle":
         sc = new Scanner(data);
-        light.setSpotAngle(sc.nextFloat());
+        light.setSpotAngle((float) Math.cos(Math.toRadians(sc.nextFloat())));
         break;
       case "position":
         sc = new Scanner(data);

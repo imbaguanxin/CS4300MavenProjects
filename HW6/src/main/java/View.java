@@ -163,7 +163,7 @@ public class View {
     scenegraph = sgraph.SceneXMLReader.importScenegraph(in
         , new VertexAttribProducer());
 
-    sgraph.IScenegraphRenderer renderer = new sgraph.GL3ScenegraphRenderer();
+    sgraph.IScenegraphRenderer renderer = new sgraph.LightScenegraphRenderer();
     renderer.setContext(gla);
     Map<String, String> shaderVarsToVertexAttribs = new HashMap<>();
     shaderVarsToVertexAttribs.put("vPosition", "position");
@@ -186,7 +186,7 @@ public class View {
     //compile and make our shader program. Look at the ShaderProgram class for details on how this is done
     program = new util.ShaderProgram();
 
-    program.createProgram(gl, "shaders/default.vert", "shaders/default"
+    program.createProgram(gl, "shaders/phong-multiple.vert", "shaders/phong-multiple-spotlight"
         + ".frag");
 
     shaderLocations = program.getAllShaderVariables(gl);
@@ -242,12 +242,12 @@ public class View {
     gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (isDroneMode) {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
-      scenegraph.draw(modelViewDrone);
-      moving_camera.drawDrone(modelViewDrone);
+      scenegraph.draw(modelViewDrone, new HashMap<>());
+//      moving_camera.drawDrone(modelViewDrone);
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
-      scenegraph.draw(modelViewWorld);
-      moving_camera.draw(modelViewWorld);
+      scenegraph.draw(modelViewWorld, new HashMap<>());
+//      moving_camera.draw(modelViewWorld);
     }
     gl.glScissor(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
         WINDOW_HEIGHT / 3);
@@ -257,12 +257,12 @@ public class View {
         WINDOW_HEIGHT / 3);
     if (isDroneMode) {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
-      scenegraph.draw(modelViewWorld);
-      moving_camera.draw(modelViewWorld);
+      scenegraph.draw(modelViewWorld, new HashMap<>());
+//      moving_camera.draw(modelViewWorld);
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
-      scenegraph.draw(modelViewDrone);
-      moving_camera.drawDrone(modelViewDrone);
+      scenegraph.draw(modelViewDrone, new HashMap<>());
+//      moving_camera.drawDrone(modelViewDrone);
     }
     gl.glDisable(gl.GL_SCISSOR_TEST);
 
