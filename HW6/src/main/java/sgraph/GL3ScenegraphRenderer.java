@@ -52,6 +52,7 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
     meshRenderers = new HashMap<String, util.ObjectInstance>();
     shaderLocations = new util.ShaderLocationsVault();
     shaderLocationsSet = false;
+    textures = new HashMap<>();
   }
 
   /**

@@ -66,6 +66,10 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       this.renderer.addMesh(meshName, meshes.get(meshName));
     }
 
+    for (String textureName : textures.keySet()){
+      this.renderer.addTexture(textureName, textures.get(textureName));
+    }
+
   }
 
 

@@ -6,7 +6,9 @@
     </set>
     <object instanceof="cylinder">
       <material>
-        <color>.8 .8 .8</color>
+        <ambient>.5 .5 .5</ambient>
+        <diffuse>.5 .5 .5</diffuse>
+        <specular>.5 .5 .5</specular>
       </material>
     </object>
   </transform>
@@ -17,7 +19,9 @@
     </set>
     <object instanceof="cylinder">
       <material>
-        <color>.8 .8 .8</color>
+        <ambient>.5 .5 .5</ambient>
+        <diffuse>.5 .5 .5</diffuse>
+        <specular>.5 .5 .5</specular>
       </material>
     </object>
   </transform>
@@ -28,7 +32,9 @@
     </set>
     <object instanceof="cylinder">
       <material>
-        <color>.8 .8 .8</color>
+        <ambient>.5 .5 .5</ambient>
+        <diffuse>.5 .5 .5</diffuse>
+        <specular>.5 .5 .5</specular>
       </material>
     </object>
   </transform>

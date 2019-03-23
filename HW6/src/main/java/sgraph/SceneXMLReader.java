@@ -167,11 +167,14 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
       case "object": {
         String name = "";
         String objectname = "";
+        String textureName = "";
         for (int i = 0; i < attributes.getLength(); i++) {
           if (attributes.getQName(i).equals("name")) {
             name = attributes.getValue(i);
           } else if (attributes.getQName(i).equals("instanceof")) {
             objectname = attributes.getValue(i);
+          } else if (attributes.getQName(i).equals("texture")) {
+            textureName = attributes.getValue(i);
           }
         }
         if (objectname.length() > 0) {
@@ -183,7 +186,11 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
           }
           stackNodes.push(node);
           subgraph.put(stackNodes.peek().getName(), stackNodes.peek());
+          if (textureName.length() > 0) {
+            node.setTextureName(textureName);
+          }
         }
+
       }
       break;
       case "instance": {
@@ -208,6 +215,23 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
 
       }
       break;
+      case "image":
+        System.out.println("start image");
+        String name = "";
+        String path = "";
+        for (int i = 0; i < attributes.getLength(); i++) {
+          if (attributes.getQName(i).equals("name")) {
+            name = attributes.getValue(i);
+
+          } else if (attributes.getQName(i).equals("path")) {
+            path = attributes.getValue(i);
+
+          }
+        }
+        if ((name.length() > 0) && (path.length() > 0)) {
+          scenegraph.addTexture(name, path);
+        }
+        break;
       case "light":
         light = new Light();
         lightFlag = true;

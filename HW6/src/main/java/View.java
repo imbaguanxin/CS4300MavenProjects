@@ -196,24 +196,24 @@ public class View {
   }
 
   /**
-   * This method captures the current frame buffer and writes it to a file of
-   * the given name
+   * This method captures the current frame buffer and writes it to a file of the given name
+   *
    * @param filename the name of the file where the image should be saved
    */
-  public void captureFrame(String filename,GLAutoDrawable gla) throws
+  public void captureFrame(String filename, GLAutoDrawable gla) throws
       FileNotFoundException, IOException {
-    if (screenCaptureUtil==null) {
-      screenCaptureUtil = new AWTGLReadBufferUtil(gla.getGLProfile(),false);
+    if (screenCaptureUtil == null) {
+      screenCaptureUtil = new AWTGLReadBufferUtil(gla.getGLProfile(), false);
     }
 
     File f = new File(filename);
     GL3 gl = gla.getGL().getGL3();
 
-    BufferedImage image = screenCaptureUtil.readPixelsToBufferedImage(gl,true);
+    BufferedImage image = screenCaptureUtil.readPixelsToBufferedImage(gl, true);
     OutputStream file = null;
     file = new FileOutputStream(filename);
 
-    ImageIO.write(image,"png",file);
+    ImageIO.write(image, "png", file);
 
   }
 
@@ -239,32 +239,36 @@ public class View {
     FloatBuffer fb = Buffers.newDirectFloatBuffer(16);
     gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
 
-    gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    if (isDroneMode) {
-      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
-      scenegraph.draw(modelViewDrone, new HashMap<>());
-//      moving_camera.drawDrone(modelViewDrone);
-    } else {
-      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
-      scenegraph.draw(modelViewWorld, new HashMap<>());
-//      moving_camera.draw(modelViewWorld);
-    }
-    gl.glScissor(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
-        WINDOW_HEIGHT / 3);
-    gl.glEnable(gl.GL_SCISSOR_TEST);
-    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
-    gl.glViewport(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
-        WINDOW_HEIGHT / 3);
-    if (isDroneMode) {
-      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
-      scenegraph.draw(modelViewWorld, new HashMap<>());
-//      moving_camera.draw(modelViewWorld);
-    } else {
-      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
-      scenegraph.draw(modelViewDrone, new HashMap<>());
-//      moving_camera.drawDrone(modelViewDrone);
-    }
-    gl.glDisable(gl.GL_SCISSOR_TEST);
+//    gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+//    if (isDroneMode) {
+//      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
+//      scenegraph.draw(modelViewDrone, new HashMap<>());
+////      moving_camera.drawDrone(modelViewDrone);
+//    } else {
+//      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
+//      scenegraph.draw(modelViewWorld, new HashMap<>());
+////      moving_camera.draw(modelViewWorld);
+//    }
+//    gl.glScissor(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
+//        WINDOW_HEIGHT / 3);
+//    gl.glEnable(gl.GL_SCISSOR_TEST);
+//    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
+//    gl.glViewport(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
+//        WINDOW_HEIGHT / 3);
+//    if (isDroneMode) {
+//      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
+//      scenegraph.draw(modelViewWorld, new HashMap<>());
+////      moving_camera.draw(modelViewWorld);
+//    } else {
+//      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
+//      scenegraph.draw(modelViewDrone, new HashMap<>());
+////      moving_camera.drawDrone(modelViewDrone);
+//    }
+//    gl.glDisable(gl.GL_SCISSOR_TEST);
+
+
+
+    scenegraph.draw(modelViewWorld, new HashMap<>());
 
     /*
      *OpenGL batch-processes all its OpenGL commands.
@@ -304,7 +308,7 @@ public class View {
     modelViewWorld.peek().lookAt(
         new Vector3f(cameraPosition),
         new Vector3f(centerPosition),
-        new Vector3f(0, 1, 0))
+        new Vector3f(0, 1, 0))//.rotate((float)Math.toRadians(1)*time, 1,0,0);
         .mul(trackballTransform);
   }
 
@@ -636,7 +640,7 @@ public class View {
     }
 
 
-    float getDTheta(float phi){
+    float getDTheta(float phi) {
       float dTheta;
       Vector4f up = trackBall.transform(new Vector4f(UP));
       Vector4f beforeDir = trackBall.transform(new Vector4f(DIRECTION));
@@ -647,6 +651,7 @@ public class View {
       dTheta = (float) Math.abs(Math.acos(projBeforeDir.dot(projAfterDir)));
       return dTheta;
     }
+
     /**
      * This method draw the camera in the world.
      *
