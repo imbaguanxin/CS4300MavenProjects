@@ -15,23 +15,54 @@
       <spotdirection>0 0 -1</spotdirection>
       <position>0 0 50</position>
     </light>
+
     <transform>
       <set>
+        <translate>15 0 0</translate>
         <scale>30 30 30</scale>
       </set>
-      <group>
-        <object instanceof="box" texture="cb">
-          <material>
-            <ambient>.3 .3 .3</ambient>
-            <diffuse>.7 .7 .7</diffuse>
-            <specular>.7 .7 .7</specular>
-            <shininess>100</shininess>
-          </material>
-        </object>
-        <!--<group name="C" from="scenegraphmodels/coordinate.xml">-->
-        <!--</group>-->
-      </group>
+      <object instanceof="box" texture="earth">
+        <material>
+          <ambient>.3 .3 .3</ambient>
+          <diffuse>.7 .7 .7</diffuse>
+          <specular>.7 .7 .7</specular>
+          <shininess>100</shininess>
+        </material>
+      </object>
     </transform>
+
+    <transform>
+      <set>
+        <translate>-15 0 0</translate>
+        <scale>30 30 30</scale>
+      </set>
+      <object instanceof="box" texture="cb">
+        <material>
+          <ambient>.3 .3 .3</ambient>
+          <diffuse>.7 .7 .7</diffuse>
+          <specular>.7 .7 .7</specular>
+          <shininess>100</shininess>
+        </material>
+      </object>
+    </transform>
+
+    <!--<transform>-->
+    <!--<set>-->
+    <!--<translate>-15 0 0</translate>-->
+    <!--<scale>30 30 30</scale>-->
+    <!--</set>-->
+    <!--<group>-->
+    <!--<object instanceof="box" texture="earth">-->
+    <!--<material>-->
+    <!--<ambient>.3 .3 .3</ambient>-->
+    <!--<diffuse>.7 .7 .7</diffuse>-->
+    <!--<specular>.7 .7 .7</specular>-->
+    <!--<shininess>100</shininess>-->
+    <!--</material>-->
+    <!--</object>-->
+    <!--</group>-->
+    <!--</transform>-->
+
     <!--
       <transform>
         <set>

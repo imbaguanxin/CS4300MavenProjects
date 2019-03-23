@@ -82,10 +82,10 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 //        System.out.println(textures.get(textureName));
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glActiveTexture(GL.GL_TEXTURE1);
-        //gl.glUniform1i(shaderLocations.getLocation("texture"), 0);
+        gl.glUniform1i(shaderLocations.getLocation("texture"), 1);
         gl.glActiveTexture(GL.GL_TEXTURE0);
-        gl.glActiveTexture(GL.GL_TEXTURE2);
-        //gl.glUniform1i(shaderLocations.getLocation("texture"), 0);
+        //gl.glActiveTexture(GL.GL_TEXTURE2);
+        gl.glUniform1i(shaderLocations.getLocation("texture"), 0);
         Texture texture = textures.get(textureName).getTexture();
 //        System.out.println("texture: " + texture.toString());
 

@@ -81,14 +81,19 @@ public class GroupNode extends AbstractNode {
 
   public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView,
       Map<Light, Matrix4f> passedInlights) {
+    Stack<Matrix4f> mv;
     for (int i = 0; i < children.size(); i++) {
       if (i == 0) {
         for (int j = 0; j < lights.size(); j++) {
           passedInlights.put(lights.get(j), new Matrix4f(modelView.peek()));
         }
-        children.get(i).draw(context, modelView, passedInlights);
+        mv = new Stack<>();
+        mv.push(new Matrix4f(modelView.peek()));
+        children.get(i).draw(context, mv, passedInlights);
       } else {
-        children.get(i).draw(context, modelView, new HashMap<>());
+        mv = new Stack<>();
+        mv.push(new Matrix4f(modelView.peek()));
+        children.get(i).draw(context, mv, new HashMap<>());
       }
     }
   }
