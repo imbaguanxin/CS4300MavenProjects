@@ -25,8 +25,10 @@ import java.util.Map;
 import java.util.Stack;
 import org.joml.Vector4f;
 import sgraph.IScenegraph;
+import sgraph.LightLocation;
 import sgraph.RotateScenegraph;
 import sgraph.Scenegraph;
+import util.Light;
 
 /**
  * Created by ashesh on 9/18/2015.
@@ -266,9 +268,34 @@ public class View {
 //    }
 //    gl.glDisable(gl.GL_SCISSOR_TEST);
 
-
-
+    Map<Light, Matrix4f> passedInLight = new HashMap<>();
+    Light l = new Light();
+    FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
+    l.setAmbient(0.8f, 0.8f, 0.8f);
+    l.setDiffuse(0.5f, 0.5f, 0.5f);
+    l.setSpecular(0.5f, 0.5f, 0.5f);
+    l.setPosition(00, 00, 50);
+    l.setSpotAngle((float) Math.cos(Math.toRadians(2)));
+    l.setSpotDirection(0, 0, -1);
+    passedInLight.put(l, new Matrix4f(modelViewWorld.peek()));
     scenegraph.draw(modelViewWorld, new HashMap<>());
+    LightLocation lightLoc = new LightLocation();
+    String lightName = "light[" + 1 + "]";
+    lightLoc.setPosition(shaderLocations.getLocation(lightName + ".position"));
+    lightLoc.setAmbient(shaderLocations.getLocation(lightName + ".ambient"));
+    lightLoc.setDiffuse(shaderLocations.getLocation(lightName + ".diffuse"));
+    lightLoc.setSpecular(shaderLocations.getLocation(lightName + ".specular"));
+    lightLoc.setDirection(shaderLocations.getLocation(lightName + ".direction"));
+    lightLoc.setCutOff(shaderLocations.getLocation(lightName + ".cutOff"));
+    Vector4f lightPosition = modelViewWorld.peek().transform(new Vector4f(l.getPosition()));
+    Vector4f lightDirection = modelViewWorld.peek().transform(new Vector4f(l.getSpotDirection()));
+    System.out.println(modelViewWorld.peek());
+    gl.glUniform4fv(lightLoc.getPosition(), 1, lightPosition.get(fb4));
+    gl.glUniform3fv(lightLoc.getAmbient(), 1, l.getAmbient().get(fb4));
+    gl.glUniform3fv(lightLoc.getDiffuse(), 1, l.getDiffuse().get(fb4));
+    gl.glUniform3fv(lightLoc.getSpecular(), 1, l.getSpecular().get(fb4));
+    gl.glUniform4fv(lightLoc.getDirection(), 1, lightDirection.get(fb4));
+    gl.glUniform1f(lightLoc.getCutOff(), l.getSpotCutoff());
 
     /*
      *OpenGL batch-processes all its OpenGL commands.

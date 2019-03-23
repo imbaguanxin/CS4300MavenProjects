@@ -216,7 +216,7 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
       }
       break;
       case "image":
-        System.out.println("start image");
+        //System.out.println("start image");
         String name = "";
         String path = "";
         for (int i = 0; i < attributes.getLength(); i++) {

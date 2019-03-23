@@ -47,6 +47,8 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 //      System.out.println("Direction:" + lightDirection);
       LightLocation lightLoc = new LightLocation();
       String lightName = "light[" + lightNum + "]";
+      System.out.println("lightNum: " + lightNum);
+      System.out.println(lightTransForm);
       lightNum++;
       lightLoc.position = shaderLocations.getLocation(lightName + ".position");
       lightLoc.ambient = shaderLocations.getLocation(lightName + ".ambient");
@@ -64,6 +66,7 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
       //System.out.println(light.getSpotCutoff());
     }
     gl.glUniform1i(shaderLocations.getLocation("numLights"), 1);
+    lightNum = 0;
   }
 
   @Override
@@ -75,19 +78,23 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
       FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
 
       if (textures != null && textures.containsKey(textureName)) {
+//        System.out.println(textureName);
+//        System.out.println(textures.get(textureName));
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glActiveTexture(GL.GL_TEXTURE1);
-        gl.glUniform1i(shaderLocations.getLocation("texture"), 1);
+        //gl.glUniform1i(shaderLocations.getLocation("texture"), 0);
+        gl.glActiveTexture(GL.GL_TEXTURE0);
+        gl.glActiveTexture(GL.GL_TEXTURE2);
+        //gl.glUniform1i(shaderLocations.getLocation("texture"), 0);
         Texture texture = textures.get(textureName).getTexture();
-        System.out.println("texture: " + texture.toString());
+//        System.out.println("texture: " + texture.toString());
 
         texture.setTexParameteri(gl, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
         texture.setTexParameteri(gl, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
         texture.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
         texture.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-        System.out.println(gl.glGetError());
-        System.out.println("after setTexparameteri");
-
+//        System.out.println(gl.glGetError());
+//        System.out.println("after setTexparameteri");
 
         Matrix4f textureTrans = new Matrix4f();
         if (texture.getMustFlipVertically())
@@ -152,5 +159,10 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 
       meshRenderers.get(name).draw(glContext);
     }
+  }
+
+  @Override
+  public void setLightNum(int num) {
+    this.lightNum = num;
   }
 }

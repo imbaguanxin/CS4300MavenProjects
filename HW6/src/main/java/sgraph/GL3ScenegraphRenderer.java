@@ -147,6 +147,11 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
     }
   }
 
+  @Override
+  public void setLightNum(int num) {
+    System.out.println("Not supported! use LightScenegraphRenderer");
+  }
+
   /**
    * Draws a specific mesh. If the mesh has been added to this renderer, it delegates to its
    * correspond mesh renderer This function first passes the material to the shader. Currently it

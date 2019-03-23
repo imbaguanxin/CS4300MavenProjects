@@ -81,4 +81,6 @@ public interface IScenegraphRenderer {
   void addTexture(String name, String path);
 
   void dispose();
+
+  void setLightNum(int num);
 }

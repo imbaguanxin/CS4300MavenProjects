@@ -99,7 +99,9 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
   public void draw(Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights) {
     if ((root != null) && (renderer != null)) {
       renderer.draw(root, modelView, passedInLights);
+      renderer.setLightNum(0);
     }
+
   }
 
 
@@ -142,6 +144,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
   @Override
   public void addTexture(String name, String path) {
     textures.put(name, path);
+    System.out.println(textures);
   }
 
 

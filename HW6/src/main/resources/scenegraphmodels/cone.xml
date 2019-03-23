@@ -5,7 +5,7 @@
   <instance name="cone" path="models/cone.obj"/>
 
   <image name="earth" path="textures/earthmap.png"/>
-
+  <image name="cb" path="textures/checkerboard.png"/>
   <group>
     <light>
       <ambient>.5 .5 .5</ambient>
@@ -20,11 +20,11 @@
         <scale>30 30 30</scale>
       </set>
       <group>
-        <object instanceof="sphere" texture="earth">
+        <object instanceof="box" texture="cb">
           <material>
-            <ambient>.5 .5 .5</ambient>
-            <diffuse>.2 .2 .2</diffuse>
-            <specular>.5 .5 .5</specular>
+            <ambient>.3 .3 .3</ambient>
+            <diffuse>.7 .7 .7</diffuse>
+            <specular>.7 .7 .7</specular>
             <shininess>100</shininess>
           </material>
         </object>
