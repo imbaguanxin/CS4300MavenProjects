@@ -5,7 +5,9 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.texture.Texture;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -14,42 +16,32 @@ import util.TextureImage;
 
 public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 
-  protected int lightNum;
-
   public LightScenegraphRenderer() {
     super();
-    lightNum = 0;
   }
 
   @Override
-  public void draw(INode root, Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights) {
-    root.draw(this, modelView, passedInLights);
+  public void draw(INode root, Stack<Matrix4f> modelView) {
+    Stack<Matrix4f> mvCopy = new Stack<>();
+    for (Matrix4f mv : modelView) {
+      mvCopy.push(new Matrix4f(mv));
+    }
+    Map<Light, Matrix4f> lights = root.getLights(this, mvCopy);
+    this.lightOn(lights);
+    root.draw(this, modelView);
   }
 
-  @Override
-  public void drawLight(Map<Light, Matrix4f> passedInLights) {
-    //System.out.println("draw light");
+  private void lightOn(Map<Light, Matrix4f> lights) {
     GL3 gl = glContext.getGL().getGL3();
-    System.out.println(passedInLights.toString());
-    FloatBuffer fb16 = Buffers.newDirectFloatBuffer(16);
     FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
-
-    for (Map.Entry<Light, Matrix4f> entry : passedInLights.entrySet()) {
-//      System.out.println("draw single light");
+    int numLight = 0;
+    LightLocation lightLoc = new LightLocation();
+    for (Entry<Light, Matrix4f> entry : lights.entrySet()) {
       Light light = entry.getKey();
       Matrix4f lightTransForm = entry.getValue();
-//      System.out.println("position:" + light.getPosition());
-//      System.out.println("Direction:" + light.getSpotDirection());
-//      System.out.println(lightTransForm);
       Vector4f lightPosition = lightTransForm.transform(new Vector4f(light.getPosition()));
       Vector4f lightDirection = lightTransForm.transform(new Vector4f(light.getSpotDirection()));
-//      System.out.println("position:" + lightPosition);
-//      System.out.println("Direction:" + lightDirection);
-      LightLocation lightLoc = new LightLocation();
-      String lightName = "light[" + lightNum + "]";
-      System.out.println("lightNum: " + lightNum);
-      System.out.println(lightTransForm);
-      lightNum++;
+      String lightName = "light[" + numLight + "]";
       lightLoc.position = shaderLocations.getLocation(lightName + ".position");
       lightLoc.ambient = shaderLocations.getLocation(lightName + ".ambient");
       lightLoc.diffuse = shaderLocations.getLocation(lightName + ".diffuse");
@@ -63,10 +55,9 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
       gl.glUniform3fv(lightLoc.specular, 1, light.getSpecular().get(fb4));
       gl.glUniform4fv(lightLoc.direction, 1, lightDirection.get(fb4));
       gl.glUniform1f(lightLoc.cutOff, light.getSpotCutoff());
-      //System.out.println(light.getSpotCutoff());
+      numLight++;
     }
-    gl.glUniform1i(shaderLocations.getLocation("numLights"), 1);
-    lightNum = 0;
+    gl.glUniform1i(shaderLocations.getLocation("numLights"), numLight);
   }
 
   @Override
@@ -78,36 +69,25 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
       FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
 
       if (textures != null && textures.containsKey(textureName)) {
-//        System.out.println(textureName);
-//        System.out.println(textures.get(textureName));
-        gl.glEnable(GL.GL_TEXTURE_2D);
-        gl.glActiveTexture(GL.GL_TEXTURE1);
-        gl.glUniform1i(shaderLocations.getLocation("texture"), 1);
-        gl.glActiveTexture(GL.GL_TEXTURE0);
-        //gl.glActiveTexture(GL.GL_TEXTURE2);
-        gl.glUniform1i(shaderLocations.getLocation("texture"), 0);
+        gl.glEnable(gl.GL_TEXTURE_2D);
+        gl.glActiveTexture(gl.GL_TEXTURE0);
+        gl.glUniform1i(shaderLocations.getLocation("image"), 0);
+
         Texture texture = textures.get(textureName).getTexture();
-//        System.out.println("texture: " + texture.toString());
 
         texture.setTexParameteri(gl, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
         texture.setTexParameteri(gl, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
         texture.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
         texture.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
-//        System.out.println(gl.glGetError());
-//        System.out.println("after setTexparameteri");
 
+        texture.setMustFlipVertically(true);
         Matrix4f textureTrans = new Matrix4f();
-        if (texture.getMustFlipVertically())
-        //for
-        // flipping the
-        // image vertically
-        {
+        if (texture.getMustFlipVertically()) { //for flipping the image vertically
           textureTrans = new Matrix4f().translate(0, 1, 0).scale(1, -1, 1);
-        } else {
-          textureTrans = new Matrix4f();
         }
         gl.glUniformMatrix4fv(shaderLocations.getLocation("texturematrix"), 1, false,
             textureTrans.get(fb16));
+        gl.glDisable(gl.GL_TEXTURE_2D);
         texture.bind(gl);
       }
 
@@ -159,10 +139,5 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 
       meshRenderers.get(name).draw(glContext);
     }
-  }
-
-  @Override
-  public void setLightNum(int num) {
-    this.lightNum = num;
   }
 }

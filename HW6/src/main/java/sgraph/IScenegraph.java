@@ -47,8 +47,6 @@ public interface IScenegraph<VertexType extends IVertexData> {
    */
   void draw(Stack<Matrix4f> modelView);
 
-  void draw(Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights);
-
   /**
    * Add a polygon mesh that will be used by one or more leaves in this scene graph
    *

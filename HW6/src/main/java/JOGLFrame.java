@@ -235,7 +235,8 @@ public class JOGLFrame extends JFrame {
      * @throws Exception when the scene graph path is not valid
      */
     void applyConfig(View view, GLAutoDrawable glAutoDrawable) throws Exception {
-      InputStream in = getClass().getClassLoader().getResourceAsStream("scenegraphmodels/cone.xml");
+      InputStream in = getClass().getClassLoader().getResourceAsStream("scenegraphmodels/humanoid-lights-textures.xml");
+//      InputStream in = getClass().getClassLoader().getResourceAsStream("scenegraphmodels/cone.xml");
       System.out.println(objectPath);
       view.initScenegraph(glAutoDrawable, in);
       float[] moving_camera = new float[3];

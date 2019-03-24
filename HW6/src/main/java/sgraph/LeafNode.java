@@ -1,5 +1,6 @@
 package sgraph;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
 import java.util.Stack;
@@ -81,14 +82,13 @@ public class LeafNode extends AbstractNode {
     }
   }
 
-  public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView, Map<Light,Matrix4f> passedInLights){
-    System.out.println("draw with light");
-    if (objInstanceName.length() > 0) {
-      context.drawMesh(objInstanceName, material, textureName, modelView.peek());
+  @Override
+  public Map<Light, Matrix4f> getLights(IScenegraphRenderer context, Stack<Matrix4f> modelView) {
+    Map<Light, Matrix4f> result = new HashMap<>();
+    for (Light light : this.lights) {
+      result.put(light, new Matrix4f(modelView.peek()));
     }
-    if(passedInLights.size() >= 0){
-      context.drawLight(passedInLights);
-    }
+    return result;
   }
 
 

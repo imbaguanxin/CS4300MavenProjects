@@ -1,5 +1,6 @@
 package sgraph;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
 import java.util.Stack;
@@ -116,20 +117,6 @@ public class TransformNode extends AbstractNode {
     modelView.pop();
   }
 
-  @Override
-  public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView,
-      Map<Light, Matrix4f> passedInlights) {
-    modelView.push(new Matrix4f(modelView.peek()));
-    modelView.peek().mul(animation_transform)
-        .mul(transform);
-    for (int i = 0; i < lights.size(); i++) {
-      passedInlights.put(lights.get(i), new Matrix4f(modelView.peek()));
-    }
-    if (child != null) {
-      child.draw(context, modelView, passedInlights);
-    }
-  }
-
 
   /**
    * Sets the animation transform of this node
@@ -173,5 +160,18 @@ public class TransformNode extends AbstractNode {
     if (child != null) {
       child.setScenegraph(graph);
     }
+  }
+
+  @Override
+  public Map<Light, Matrix4f> getLights(IScenegraphRenderer context, Stack<Matrix4f> modelView) {
+    Map<Light, Matrix4f> result = new HashMap<>();
+    Matrix4f transformation = new Matrix4f(modelView.peek()).mul(this.animation_transform)
+        .mul(this.transform);
+    modelView.push(transformation);
+    for (Light light : this.lights) {
+      result.put(light, new Matrix4f(modelView.peek()));
+    }
+    result.putAll(this.child.getLights(context, modelView));
+    return result;
   }
 }

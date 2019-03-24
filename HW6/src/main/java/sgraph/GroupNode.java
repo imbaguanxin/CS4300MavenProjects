@@ -1,6 +1,5 @@
 package sgraph;
 
-import com.jogamp.opengl.math.Matrix4;
 import java.util.HashMap;
 import java.util.Map;
 import org.joml.Matrix4f;
@@ -79,23 +78,16 @@ public class GroupNode extends AbstractNode {
     }
   }
 
-  public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView,
-      Map<Light, Matrix4f> passedInlights) {
-    Stack<Matrix4f> mv;
-    for (int i = 0; i < children.size(); i++) {
-      if (i == 0) {
-        for (int j = 0; j < lights.size(); j++) {
-          passedInlights.put(lights.get(j), new Matrix4f(modelView.peek()));
-        }
-        mv = new Stack<>();
-        mv.push(new Matrix4f(modelView.peek()));
-        children.get(i).draw(context, mv, passedInlights);
-      } else {
-        mv = new Stack<>();
-        mv.push(new Matrix4f(modelView.peek()));
-        children.get(i).draw(context, mv, new HashMap<>());
-      }
+  @Override
+  public Map<Light, Matrix4f> getLights(IScenegraphRenderer context, Stack<Matrix4f> modelView) {
+    Map<Light, Matrix4f> result = new HashMap<>();
+    for (Light light : this.lights) {
+      result.put(light, new Matrix4f(modelView.peek()));
     }
+    for (INode child : children) {
+      result.putAll(child.getLights(context, modelView));
+    }
+    return result;
   }
 
   /**

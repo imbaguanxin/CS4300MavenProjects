@@ -5,7 +5,6 @@ import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import org.joml.Matrix4f;
 import util.IVertexData;
-import util.Light;
 import util.TextureImage;
 
 import java.io.IOException;
@@ -136,20 +135,10 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
   }
 
   @Override
-  public void draw(INode root, Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights) {
-    System.out.println("Not supported! use LightScenegraphRenderer");
-  }
-
-  @Override
   public void dispose() {
     for (util.ObjectInstance s : meshRenderers.values()) {
       s.cleanup(glContext);
     }
-  }
-
-  @Override
-  public void setLightNum(int num) {
-    System.out.println("Not supported! use LightScenegraphRenderer");
   }
 
   /**
@@ -188,12 +177,6 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
       meshRenderers.get(name).draw(glContext);
     }
   }
-
-  @Override
-  public void drawLight(Map<Light, Matrix4f> passedInLights) {
-    System.out.println("Not supported! use LightScenegraphRenderer");
-  }
-
 
   /**
    * Queries the shader program for all variables and locations, and adds them to itself

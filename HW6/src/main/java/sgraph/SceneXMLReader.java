@@ -188,6 +188,8 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
           subgraph.put(stackNodes.peek().getName(), stackNodes.peek());
           if (textureName.length() > 0) {
             node.setTextureName(textureName);
+          } else {
+            node.setTextureName("white");
           }
         }
 

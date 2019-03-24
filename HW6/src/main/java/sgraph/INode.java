@@ -33,8 +33,7 @@ public interface INode {
    */
   void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView);
 
-  void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView,
-      Map<Light, Matrix4f> passedInlights);
+  Map<Light, Matrix4f> getLights(IScenegraphRenderer context, Stack<Matrix4f> modelView);
 
   /**
    * Return a deep copy of the scene graph subtree rooted at this node

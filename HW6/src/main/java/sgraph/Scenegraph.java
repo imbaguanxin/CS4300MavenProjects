@@ -44,6 +44,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     meshes = new HashMap<String, util.PolygonMesh<VertexType>>();
     nodes = new HashMap<String, INode>();
     textures = new HashMap<String, String>();
+    this.addTexture("white", "textures/white.png");
   }
 
   public void dispose() {
@@ -95,15 +96,6 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
   }
 
-  @Override
-  public void draw(Stack<Matrix4f> modelView, Map<Light, Matrix4f> passedInLights) {
-    if ((root != null) && (renderer != null)) {
-      renderer.draw(root, modelView, passedInLights);
-      renderer.setLightNum(0);
-    }
-
-  }
-
 
   @Override
   public void addPolygonMesh(String name, util.PolygonMesh<VertexType> mesh) {
@@ -144,7 +136,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
   @Override
   public void addTexture(String name, String path) {
     textures.put(name, path);
-    System.out.println(textures);
+//    System.out.println(textures);
   }
 
 
