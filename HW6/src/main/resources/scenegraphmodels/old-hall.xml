@@ -3,6 +3,7 @@
   <image name="tile" path="textures/tile.jpg"/>
   <transform>
     <set>
+      <scale>10 10 10</scale>
       <translate>-29.5 0 0</translate>
     </set>
     <group>
