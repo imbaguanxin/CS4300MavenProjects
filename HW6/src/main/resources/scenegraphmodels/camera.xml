@@ -5,6 +5,14 @@
   <instance name="box" path="models/box.obj"/>
 
   <group>
+    <light>
+      <ambient>.5 .5 .5</ambient>
+      <diffuse>.8 .8 .8</diffuse>
+      <specular>.5 .5 .5</specular>
+      <spotangle>15</spotangle>
+      <spotdirection>0 0 -1</spotdirection>
+      <position>0 0 0</position>
+    </light>
     <transform name="ball">
       <set>
         <scale>2 2 2</scale>

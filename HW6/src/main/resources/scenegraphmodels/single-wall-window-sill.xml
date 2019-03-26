@@ -1,5 +1,7 @@
 <scene>
   <instance name="box" path="models/box"></instance>
+  <image name="bricks" path="textures/bricks.jpg"/>
+
   <group>
     <!--Enable the following part to display coordinates-->
     <!--<group name="coordinate" from="scenegraphmodels/coordinate.xml"></group>-->
@@ -10,7 +12,9 @@
       </set>
       <object instanceof="box">
         <material>
-          <color>0 1 0</color>
+          <ambient>0 .5 0</ambient>
+          <diffuse>0 .8 .8</diffuse>
+          <specular>0 .5 0</specular>
         </material>
       </object>
     </transform>
@@ -19,9 +23,9 @@
         <translate>0 -1.75 0</translate>
         <scale>4 .5 4</scale>
       </set>
-      <object instanceof="box">
+      <object instanceof="box" texture="bricks">
         <material>
-          <color>.4 .8 1</color>
+          <color>1 1 1</color>
         </material>
       </object>
     </transform>
@@ -30,9 +34,9 @@
         <translate>0 1.75 0</translate>
         <scale>4 .5 4</scale>
       </set>
-      <object instanceof="box">
+      <object instanceof="box" texture="bricks">
         <material>
-          <color>.4 .8 1</color>
+          <color>1 1 1</color>
         </material>
       </object>
     </transform>
@@ -42,9 +46,9 @@
         <rotate>90 0 0 1</rotate>
         <scale>4 .5 4</scale>
       </set>
-      <object instanceof="box">
+      <object instanceof="box" texture="bricks">
         <material>
-          <color>.4 .8 1</color>
+          <color>1 1 1</color>
         </material>
       </object>
     </transform>
@@ -54,9 +58,9 @@
         <rotate>90 0 0 1</rotate>
         <scale>4 .5 4</scale>
       </set>
-      <object instanceof="box">
+      <object instanceof="box" texture="bricks">
         <material>
-          <color>.4 .8 1</color>
+          <color>1 1 1</color>
         </material>
       </object>
     </transform>
@@ -66,9 +70,9 @@
         <scale>4 .5 2</scale>
         <translate>.5 .5 .5</translate>
       </set>
-      <object instanceof="box">
+      <object instanceof="box" texture="bricks">
         <material>
-          <color>0 0 1</color>
+          <color>1 1 1</color>
         </material>
       </object>
     </transform>

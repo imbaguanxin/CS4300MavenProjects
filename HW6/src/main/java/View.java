@@ -259,15 +259,16 @@ public class View {
 
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       renderer.drawSceneLight(new Matrix4f(modelViewDrone.peek()), dayLight);
+      scenegraph.lightOn(modelViewDrone);
+      moving_camera.draw(modelViewDrone);
       scenegraph.draw(modelViewDrone);
-      moving_camera.drawDrone(modelViewDrone);
 
 
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
       renderer.drawSceneLight(new Matrix4f(modelViewWorld.peek()), dayLight);
-      scenegraph.draw(modelViewWorld);
       moving_camera.draw(modelViewWorld);
+      scenegraph.draw(modelViewWorld);
     }
     renderer.zeroNumLight();
     gl.glScissor(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
@@ -279,13 +280,15 @@ public class View {
     if (isDroneMode) {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
       renderer.drawSceneLight(new Matrix4f(modelViewWorld.peek()), dayLight);
-      scenegraph.draw(modelViewWorld);
       moving_camera.draw(modelViewWorld);
+      scenegraph.draw(modelViewWorld);
+
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       renderer.drawSceneLight(new Matrix4f(modelViewDrone.peek()), dayLight);
+      moving_camera.draw(modelViewDrone);
       scenegraph.draw(modelViewDrone);
-      moving_camera.drawDrone(modelViewDrone);
+
 
     }
     renderer.zeroNumLight();
@@ -601,9 +604,10 @@ public class View {
      */
     Matrix4f getLookat() {
       Vector4f up = trackBall.transform(new Vector4f(UP));
-      Vector4f center = new Vector4f(DIRECTION).mul(trackBall).add(position);
+      Vector4f center = trackBall.transform(new Vector4f(DIRECTION)).mul(10).add(position);
+      Vector4f realPosition = trackBall.transform(new Vector4f(DIRECTION)).mul(5).add(position);
       return new Matrix4f().identity().lookAt(
-          new Vector3f(position.x, position.y, position.z),
+          new Vector3f(realPosition.x, realPosition.y, realPosition.z),
           new Vector3f(center.x, center.y, center.z),
           new Vector3f(up.x, up.y, up.z));
     }
@@ -674,6 +678,7 @@ public class View {
       return dTheta;
     }
 
+
     /**
      * This method draw the camera in the world.
      *
@@ -684,7 +689,11 @@ public class View {
       passedInModelView.peek().
           translate(position.x, position.y, position.z)
           .mul(trackBall);
+      Stack<Matrix4f> copy = new Stack<>();
+      copy.push(new Matrix4f(passedInModelView.peek()));
+      camera_scenegraph.lightOn(copy);
       camera_scenegraph.draw(passedInModelView);
+
       passedInModelView.pop();
 
       drawDrone(passedInModelView);
