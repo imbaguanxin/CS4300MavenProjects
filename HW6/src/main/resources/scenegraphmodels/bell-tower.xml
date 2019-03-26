@@ -81,7 +81,7 @@
       <translate>0 36 0</translate>
       <scale>5 20 5</scale>
     </set>
-    <object instanceof="cone">
+    <object instanceof="cone" texture="tile">
       <material>
         <color>0 .3 .5</color>
       </material>

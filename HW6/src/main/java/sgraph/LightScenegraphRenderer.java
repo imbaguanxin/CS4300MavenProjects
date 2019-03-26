@@ -49,7 +49,6 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
   }
 
   private void lightOn(Map<Light, Matrix4f> lights) {
-    System.out.println("Drawing " + lights.size() + " lights.");
     GL3 gl = glContext.getGL().getGL3();
     FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
     LightLocation lightLoc = new LightLocation();

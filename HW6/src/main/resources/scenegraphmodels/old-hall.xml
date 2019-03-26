@@ -1,4 +1,6 @@
 <scene>
+  <image name="bricks" path="textures/bricks.jpg"/>
+  <image name="tile" path="textures/tile.jpg"/>
   <transform>
     <set>
       <translate>-29.5 0 0</translate>
