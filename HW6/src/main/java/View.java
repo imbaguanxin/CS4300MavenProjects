@@ -84,12 +84,10 @@ public class View {
     screenCaptureUtil = null;
     dayLight = new ArrayList<>();
     Light sunLight = new Light();
-    sunLight.setAmbient(.8f, .8f, .8f);
+    sunLight.setAmbient(.8f, .8f, 0.8f);
     sunLight.setDiffuse(sunLight.getAmbient());
     sunLight.setSpecular(sunLight.getAmbient());
-    sunLight.setSpotAngle(-2);
-    sunLight.setPosition(0, 50, 0);
-    sunLight.setSpotDirection(0, -1, 0);
+    sunLight.setDirection(-1, 0, -1);
     dayLight.add(sunLight);
     // Timer here help to execute camera.
     // When it is in Ring mode, time runs and camera position is determined by time.
@@ -693,9 +691,7 @@ public class View {
       copy.push(new Matrix4f(passedInModelView.peek()));
       camera_scenegraph.lightOn(copy);
       camera_scenegraph.draw(passedInModelView);
-
       passedInModelView.pop();
-
       drawDrone(passedInModelView);
     }
 
