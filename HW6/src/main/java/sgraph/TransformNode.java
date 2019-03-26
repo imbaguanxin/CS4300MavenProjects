@@ -163,7 +163,7 @@ public class TransformNode extends AbstractNode {
   }
 
   @Override
-  public Map<Light, Matrix4f> getLights(IScenegraphRenderer context, Stack<Matrix4f> modelView) {
+  public Map<Light, Matrix4f> getLights(Stack<Matrix4f> modelView) {
     Map<Light, Matrix4f> result = new HashMap<>();
     Matrix4f transformation = new Matrix4f(modelView.peek()).mul(this.animation_transform)
         .mul(this.transform);
@@ -171,7 +171,7 @@ public class TransformNode extends AbstractNode {
     for (Light light : this.lights) {
       result.put(light, new Matrix4f(modelView.peek()));
     }
-    result.putAll(this.child.getLights(context, modelView));
+    result.putAll(this.child.getLights(modelView));
     return result;
   }
 }

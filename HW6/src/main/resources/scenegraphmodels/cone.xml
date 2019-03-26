@@ -6,6 +6,9 @@
 
   <image name="earth" path="textures/earthmap.png"/>
   <image name="cb" path="textures/checkerboard.png"/>
+  <image name="amit" path="textures/AmitShesh.jpg"/>
+  <image name="metal" path="textures/brushedMetal.jpg"/>
+
   <group>
     <light>
       <ambient>.5 .5 .5</ambient>
@@ -21,7 +24,7 @@
         <translate>15 0 0</translate>
         <scale>30 30 30</scale>
       </set>
-      <object instanceof="box" texture="earth">
+      <object instanceof="box" texture="amit">
         <material>
           <ambient>.3 .3 .3</ambient>
           <diffuse>.7 .7 .7</diffuse>
@@ -36,7 +39,7 @@
         <translate>-15 0 0</translate>
         <scale>30 30 30</scale>
       </set>
-      <object instanceof="box" texture="cb">
+      <object instanceof="box" texture="metal">
         <material>
           <ambient>.3 .3 .3</ambient>
           <diffuse>.7 .7 .7</diffuse>

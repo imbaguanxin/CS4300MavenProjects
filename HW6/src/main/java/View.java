@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Stack;
 import org.joml.Vector4f;
 import sgraph.IScenegraph;
+import sgraph.IScenegraphRenderer;
 import sgraph.LightLocation;
 import sgraph.RotateScenegraph;
 import sgraph.Scenegraph;
@@ -59,6 +60,8 @@ public class View {
   private int projectionLocation;
   private sgraph.IScenegraph<VertexAttrib> scenegraph;
   private AWTGLReadBufferUtil screenCaptureUtil;
+  private List<Light> dayLight;
+  private IScenegraphRenderer renderer;
 
 
   /**
@@ -79,6 +82,15 @@ public class View {
     cameraFlags = new boolean[10];
     moving_camera = new Camera();
     screenCaptureUtil = null;
+    dayLight = new ArrayList<>();
+    Light sunLight = new Light();
+    sunLight.setAmbient(.8f, .8f, .8f);
+    sunLight.setDiffuse(sunLight.getAmbient());
+    sunLight.setSpecular(sunLight.getAmbient());
+    sunLight.setSpotAngle(-2);
+    sunLight.setPosition(0, 50, 0);
+    sunLight.setSpotDirection(0, -1, 0);
+    dayLight.add(sunLight);
     // Timer here help to execute camera.
     // When it is in Ring mode, time runs and camera position is determined by time.
     // When a term in cameraFlag table is true, it execute the corresponding command.
@@ -165,7 +177,7 @@ public class View {
     scenegraph = sgraph.SceneXMLReader.importScenegraph(in
         , new VertexAttribProducer());
 
-    sgraph.IScenegraphRenderer renderer = new sgraph.LightScenegraphRenderer();
+    this.renderer = new sgraph.LightScenegraphRenderer();
     renderer.setContext(gla);
     Map<String, String> shaderVarsToVertexAttribs = new HashMap<>();
     shaderVarsToVertexAttribs.put("vPosition", "position");
@@ -241,33 +253,43 @@ public class View {
     FloatBuffer fb = Buffers.newDirectFloatBuffer(16);
     gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
 
-    scenegraph.draw(modelViewWorld);
-//    gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-//    if (isDroneMode) {
-//      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
-//      scenegraph.draw(modelViewDrone, new HashMap<>());
-////      moving_camera.drawDrone(modelViewDrone);
-//    } else {
-//      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
-//      scenegraph.draw(modelViewWorld, new HashMap<>());
-////      moving_camera.draw(modelViewWorld);
-//    }
-//    gl.glScissor(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
-//        WINDOW_HEIGHT / 3);
-//    gl.glEnable(gl.GL_SCISSOR_TEST);
-//    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
-//    gl.glViewport(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
-//        WINDOW_HEIGHT / 3);
-//    if (isDroneMode) {
-//      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
-//      scenegraph.draw(modelViewWorld, new HashMap<>());
-////      moving_camera.draw(modelViewWorld);
-//    } else {
-//      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
-//      scenegraph.draw(modelViewDrone, new HashMap<>());
-////      moving_camera.drawDrone(modelViewDrone);
-//    }
-//    gl.glDisable(gl.GL_SCISSOR_TEST);
+    //scenegraph.draw(modelViewWorld);
+    gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    if (isDroneMode) {
+
+      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
+      renderer.drawSceneLight(new Matrix4f(modelViewDrone.peek()), dayLight);
+      scenegraph.draw(modelViewDrone);
+      moving_camera.drawDrone(modelViewDrone);
+
+
+    } else {
+      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
+      renderer.drawSceneLight(new Matrix4f(modelViewWorld.peek()), dayLight);
+      scenegraph.draw(modelViewWorld);
+      moving_camera.draw(modelViewWorld);
+    }
+    renderer.zeroNumLight();
+    gl.glScissor(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
+        WINDOW_HEIGHT / 3);
+    gl.glEnable(gl.GL_SCISSOR_TEST);
+    gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
+    gl.glViewport(WINDOW_WIDTH / 3 * 2, WINDOW_HEIGHT / 3 * 2, WINDOW_WIDTH / 3,
+        WINDOW_HEIGHT / 3);
+    if (isDroneMode) {
+      gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
+      renderer.drawSceneLight(new Matrix4f(modelViewWorld.peek()), dayLight);
+      scenegraph.draw(modelViewWorld);
+      moving_camera.draw(modelViewWorld);
+    } else {
+      gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
+      renderer.drawSceneLight(new Matrix4f(modelViewDrone.peek()), dayLight);
+      scenegraph.draw(modelViewDrone);
+      moving_camera.drawDrone(modelViewDrone);
+
+    }
+    renderer.zeroNumLight();
+    gl.glDisable(gl.GL_SCISSOR_TEST);
 
     /*
      *OpenGL batch-processes all its OpenGL commands.
@@ -279,6 +301,7 @@ public class View {
      *If you would like OpenGL to start drawing and wait until it is done, call glFinish() instead.
      */
     gl.glFlush();
+
     program.disable(gl);
   }
 
@@ -557,13 +580,13 @@ public class View {
           new Vector3f(4 + adder, 7f, -(3 + adder))));
       propellers.add(new RotateScenegraph<>(propeller, new Vector3f(0, 1, 0), 10f,
           new Vector3f(-(4 + adder), 7f, -(3 + adder))));
-      sgraph.IScenegraphRenderer renderer = new sgraph.GL3ScenegraphRenderer();
-      renderer.setContext(gla);
-      Map<String, String> shaderVarsToVertexAttribs = new HashMap<>();
-      shaderVarsToVertexAttribs.put("vPosition", "position");
-      shaderVarsToVertexAttribs.put("vNormal", "normal");
-      shaderVarsToVertexAttribs.put("vTexCoord", "texcoord");
-      renderer.initShaderProgram(program, shaderVarsToVertexAttribs);
+//      sgraph.IScenegraphRenderer renderer = new sgraph.LightScenegraphRenderer();
+//      renderer.setContext(gla);
+//      Map<String, String> shaderVarsToVertexAttribs = new HashMap<>();
+//      shaderVarsToVertexAttribs.put("vPosition", "position");
+//      shaderVarsToVertexAttribs.put("vNormal", "normal");
+//      shaderVarsToVertexAttribs.put("vTexCoord", "texcoord");
+//      renderer.initShaderProgram(program, shaderVarsToVertexAttribs);
       camera_scenegraph.setRenderer(renderer);
       drone_scenegraph.setRenderer(renderer);
       for (IScenegraph prop : propellers) {
@@ -683,7 +706,6 @@ public class View {
         prop.animate(time);
         prop.draw(passedInModelView);
       }
-
       passedInModelView.pop();
     }
   }

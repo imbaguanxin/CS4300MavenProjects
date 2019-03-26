@@ -83,13 +83,11 @@ public class LeafNode extends AbstractNode {
   }
 
   @Override
-  public Map<Light, Matrix4f> getLights(IScenegraphRenderer context, Stack<Matrix4f> modelView) {
+  public Map<Light, Matrix4f> getLights(Stack<Matrix4f> modelView) {
     Map<Light, Matrix4f> result = new HashMap<>();
     for (Light light : this.lights) {
       result.put(light, new Matrix4f(modelView.peek()));
     }
     return result;
   }
-
-
 }

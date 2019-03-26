@@ -1,5 +1,6 @@
 package sgraph;
 
+import java.util.List;
 import org.joml.Matrix4f;
 import util.IVertexData;
 
@@ -64,6 +65,8 @@ public interface IScenegraphRenderer {
    */
   void draw(INode root, Stack<Matrix4f> modelView);
 
+  void drawSceneLight(Matrix4f mv, List<Light> extraLights);
+
   /**
    * Draw a specific mesh. This is called from a leaf node of the associated scene graph
    */
@@ -77,4 +80,6 @@ public interface IScenegraphRenderer {
   void addTexture(String name, String path);
 
   void dispose();
+
+  void zeroNumLight();
 }

@@ -236,6 +236,7 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
         break;
       case "light":
         light = new Light();
+        light.setSpotAngle(-2);
         lightFlag = true;
         stackNodes.peek().addLight(light);
         break;
@@ -282,10 +283,10 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
         break;
       case "color":
         sc = new Scanner(data);
-        material.setAmbient(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        material.setAmbient(sc.nextFloat() * .4f, sc.nextFloat() * .4f, sc.nextFloat() * .4f);
         material.setDiffuse(material.getAmbient());
         material.setSpecular(material.getAmbient());
-        material.setShininess(1.0f);
+        material.setShininess(10f);
         break;
       case "ambient":
         sc = new Scanner(data);
@@ -337,6 +338,10 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
         break;
       case "light":
         lightFlag = false;
+        if(light.getSpotDirection().length() == 0){
+          light.setSpotAngle(-2);
+          System.out.println("Spot Direction is not valid! Assume it as global light!");
+        }
         break;
       case "spotdirection":
         sc = new Scanner(data);

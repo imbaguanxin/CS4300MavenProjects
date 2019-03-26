@@ -5,6 +5,7 @@ import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import org.joml.Matrix4f;
 import util.IVertexData;
+import util.Light;
 import util.TextureImage;
 
 import java.io.IOException;
@@ -135,10 +136,20 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
   }
 
   @Override
+  public void drawSceneLight(Matrix4f mv, List<Light> lights) {
+    System.out.println("Not supported!");
+  }
+
+  @Override
   public void dispose() {
     for (util.ObjectInstance s : meshRenderers.values()) {
       s.cleanup(glContext);
     }
+  }
+
+  @Override
+  public void zeroNumLight() {
+    System.out.println("Not supported!");
   }
 
   /**

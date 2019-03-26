@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.texture.Texture;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -16,8 +17,11 @@ import util.TextureImage;
 
 public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 
+  private int numLight;
+
   public LightScenegraphRenderer() {
     super();
+    numLight = 0;
   }
 
   @Override
@@ -26,15 +30,23 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
     for (Matrix4f mv : modelView) {
       mvCopy.push(new Matrix4f(mv));
     }
-    Map<Light, Matrix4f> lights = root.getLights(this, mvCopy);
+    Map<Light, Matrix4f> lights = root.getLights(mvCopy);
     this.lightOn(lights);
     root.draw(this, modelView);
+  }
+
+  @Override
+  public void drawSceneLight(Matrix4f mv, List<Light> lights) {
+    Map<Light, Matrix4f> lightMap = new HashMap<>();
+    for (Light light : lights) {
+      lightMap.put(light, new Matrix4f(mv));
+    }
+    this.lightOn(lightMap);
   }
 
   private void lightOn(Map<Light, Matrix4f> lights) {
     GL3 gl = glContext.getGL().getGL3();
     FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
-    int numLight = 0;
     LightLocation lightLoc = new LightLocation();
     for (Entry<Light, Matrix4f> entry : lights.entrySet()) {
       Light light = entry.getKey();
@@ -139,5 +151,10 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 
       meshRenderers.get(name).draw(glContext);
     }
+  }
+
+  @Override
+  public void zeroNumLight() {
+    this.numLight = 0;
   }
 }
