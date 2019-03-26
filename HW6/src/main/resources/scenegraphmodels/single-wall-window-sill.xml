@@ -1,6 +1,8 @@
 <scene>
   <instance name="box" path="models/box"></instance>
   <image name="bricks" path="textures/bricks.jpg"/>
+  <image name="metal" path="textures/brushedMetal.jpg"/>
+  <image name="bgl" path="textures/glass.jpg"/>
 
   <group>
     <!--Enable the following part to display coordinates-->
@@ -10,11 +12,11 @@
       <set>
         <scale>3 3 1.5</scale>
       </set>
-      <object instanceof="box">
+      <object instanceof="box" texture="bgl">
         <material>
-          <ambient>0 .5 0</ambient>
-          <diffuse>0 .8 .8</diffuse>
-          <specular>0 .5 0</specular>
+          <ambient>.3 0 0</ambient>
+          <diffuse>0 0 .2</diffuse>
+          <specular>.2 .2 .2</specular>
         </material>
       </object>
     </transform>

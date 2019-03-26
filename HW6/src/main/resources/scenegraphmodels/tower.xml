@@ -3,7 +3,23 @@
   <instance name="box" path="models/box"></instance>
   <instance name="cylinder" path="models/cylinder"></instance>
   <instance name="cone" path="models/cone"></instance>
+
+  <image name="bricks" path="textures/bricks.jpg"/>
+  <image name="metal" path="textures/brushedMetal.jpg"/>
+  <image name="bgl" path="textures/glass.jpg"/>
+  <image name="cb" path="textures/checkerboard.png"/>
+  <image name="earth" path="textures/earthmap.jpg"/>
+  <image name="moon" path="textures/moonmap.jpg"/>
+
   <group name="bridge tower">
+    <light>
+      <ambient>.5 0 0</ambient>
+      <diffuse>.5 0 0 </diffuse>
+      <specular>.5 0 0</specular>
+      <position>0 250 -300</position>
+      <spotangle>10</spotangle>
+      <spotdirection>0 0 1</spotdirection>
+    </light>
     <!--Enable the following part to display coordinates-->
     <!--<transform name="coor">-->
     <!--<set>-->

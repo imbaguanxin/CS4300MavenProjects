@@ -1,6 +1,11 @@
 <scene>
   <instance name="box" path="models/box"></instance>
   <instance name="cylinder" path="models/cylinder"></instance>
+
+  <image name="bricks" path="textures/bricks.jpg"/>
+  <image name="metal" path="textures/brushedMetal.jpg"/>
+  <image name="bgl" path="textures/glass.jpg"/>
+
   <group>
     <!--Enable the following part to display coordinates-->
     <!--<group name="coordinate" from="scenegraphmodels/coordinate.xml"></group>-->
@@ -47,7 +52,7 @@
         <translate>50 0 50</translate>
         <scale>10 105 10</scale>
       </set>
-      <object instanceof="cylinder">
+      <object instanceof="cylinder" texture="cb">
         <material>
           <color>.5 .5 .5</color>
         </material>
@@ -58,7 +63,7 @@
         <translate>-50 0 50</translate>
         <scale>10 105 10</scale>
       </set>
-      <object instanceof="cylinder">
+      <object instanceof="cylinder" texture="cb">
         <material>
           <color>.5 .5 .5</color>
         </material>
@@ -69,7 +74,7 @@
         <translate>-50 0 -50</translate>
         <scale>10 105 10</scale>
       </set>
-      <object instanceof="cylinder">
+      <object instanceof="cylinder" texture="cb">
         <material>
           <color>.5 .5 .5</color>
         </material>
@@ -80,7 +85,7 @@
         <translate>50 0 -50</translate>
         <scale>10 105 10</scale>
       </set>
-      <object instanceof="cylinder">
+      <object instanceof="cylinder" texture="cb">
         <material>
           <color>.5 .5 .5</color>
         </material>

@@ -3,16 +3,27 @@
   <instance name="box" path="models/box"></instance>
   <instance name="cylinder" path="models/cylinder"></instance>
   <instance name="cone" path="models/cone"></instance>
+
+  <image name="bricks" path="textures/bricks.jpg"/>
+  <image name="metal" path="textures/brushedMetal.jpg"/>
+  <image name="bgl" path="textures/glass.jpg"/>
+  <image name="cb" path="textures/checkerboard.png"/>
+  <image name="moon" path="textures/moonmap.jpg"/>
+
+
   <!--Enable the following part to display coordinates-->
   <!--<group name="coordinate" from="scenegraphmodels/coordinate.xml"></group>-->
   <transform>
     <set>
       <scale>35 35 35</scale>
       <translate>0 1 0</translate>
+      <rotate>180 0 0 -1</rotate>
     </set>
-    <object instanceof = "sphere">
+    <object instanceof = "sphere" texture="moon">
       <material>
-        <color>.5 .5 .5</color>
+        <ambient>.3 0 0 </ambient>
+        <diffuse>.5 .1 .1</diffuse>
+        <specular>.5 .1 .1</specular>
       </material>
     </object>
   </transform>
