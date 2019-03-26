@@ -265,6 +265,7 @@ public class View {
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
       renderer.drawSceneLight(new Matrix4f(modelViewWorld.peek()), dayLight);
+      scenegraph.lightOn(modelViewDrone);
       moving_camera.draw(modelViewWorld);
       scenegraph.draw(modelViewWorld);
     }
@@ -278,12 +279,14 @@ public class View {
     if (isDroneMode) {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
       renderer.drawSceneLight(new Matrix4f(modelViewWorld.peek()), dayLight);
+      scenegraph.lightOn(modelViewDrone);
       moving_camera.draw(modelViewWorld);
       scenegraph.draw(modelViewWorld);
 
     } else {
       gl.glUniformMatrix4fv(projectionLocation, 1, false, cameraProjection.get(fb));
       renderer.drawSceneLight(new Matrix4f(modelViewDrone.peek()), dayLight);
+      scenegraph.lightOn(modelViewDrone);
       moving_camera.draw(modelViewDrone);
       scenegraph.draw(modelViewDrone);
 
