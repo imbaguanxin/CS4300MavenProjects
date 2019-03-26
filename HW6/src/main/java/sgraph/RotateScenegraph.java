@@ -62,6 +62,11 @@ public class RotateScenegraph<VertexType extends IVertexData> implements ISceneg
     modelView.pop();
   }
 
+  @Override
+  public void lightOn(Stack<Matrix4f> modelView) {
+    originalScenegraph.lightOn(modelView);
+  }
+
   /**
    * Add a polygon mesh that will be used by one or more leaves in this scene graph
    *
