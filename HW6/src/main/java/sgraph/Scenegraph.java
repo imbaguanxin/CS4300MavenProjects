@@ -96,6 +96,13 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
   }
 
+  @Override
+  public void lightOn(Stack<Matrix4f> modelView) {
+    if (renderer != null) {
+      renderer.lightOn(root, modelView);
+    }
+  }
+
 
   @Override
   public void addPolygonMesh(String name, util.PolygonMesh<VertexType> mesh) {

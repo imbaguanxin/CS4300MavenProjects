@@ -65,6 +65,8 @@ public interface IScenegraphRenderer {
    */
   void draw(INode root, Stack<Matrix4f> modelView);
 
+  void lightOn(INode root, Stack<Matrix4f> modelView);
+
   void drawSceneLight(Matrix4f mv, List<Light> extraLights);
 
   /**

@@ -26,13 +26,17 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 
   @Override
   public void draw(INode root, Stack<Matrix4f> modelView) {
+    root.draw(this, modelView);
+  }
+
+  @Override
+  public void lightOn(INode root, Stack<Matrix4f> modelView) {
     Stack<Matrix4f> mvCopy = new Stack<>();
     for (Matrix4f mv : modelView) {
       mvCopy.push(new Matrix4f(mv));
     }
     Map<Light, Matrix4f> lights = root.getLights(mvCopy);
     this.lightOn(lights);
-    root.draw(this, modelView);
   }
 
   @Override
@@ -45,6 +49,7 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
   }
 
   private void lightOn(Map<Light, Matrix4f> lights) {
+    System.out.println("Drawing " + lights.size() + " lights.");
     GL3 gl = glContext.getGL().getGL3();
     FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
     LightLocation lightLoc = new LightLocation();

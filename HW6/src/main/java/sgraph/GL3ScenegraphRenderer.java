@@ -136,6 +136,11 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
   }
 
   @Override
+  public void lightOn(INode root, Stack<Matrix4f> modelView) {
+    throw new UnsupportedOperationException("Not supported, use LightScenegraphRenderer");
+  }
+
+  @Override
   public void drawSceneLight(Matrix4f mv, List<Light> lights) {
     System.out.println("Not supported!");
   }
