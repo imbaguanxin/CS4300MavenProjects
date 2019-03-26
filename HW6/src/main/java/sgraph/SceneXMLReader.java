@@ -338,7 +338,7 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
         break;
       case "light":
         lightFlag = false;
-        if(light.getSpotDirection().length() == 0){
+        if (light.getSpotDirection().length() == 0) {
           light.setSpotAngle(-2);
           System.out.println("Spot Direction is not valid! Assume it as global light!");
         }
@@ -354,6 +354,10 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
       case "position":
         sc = new Scanner(data);
         light.setPosition(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
+        break;
+      case "direction":
+        sc = new Scanner(data);
+        light.setDirection(sc.nextFloat(), sc.nextFloat(), sc.nextFloat());
         break;
     }
     data = "";
