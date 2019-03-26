@@ -36,7 +36,7 @@ out vec4 fColor;
 
 void main()
 {
-    vec3 lightVec, viewVec, reflectVec;
+    vec3 lightVec, viewVec, reflectVec, normalLightDirect;
     vec3 normalView;
     vec3 ambient, diffuse, specular;
     float nDotL, rDotV, dDotMinusL, cosTheta;
@@ -46,10 +46,14 @@ void main()
     for (int i=0;i<numLights;i++)
     {
         // lightVec is to change
-        if (light[i].position.w!=0)
-        lightVec = normalize(light[i].position.xyz - fPosition.xyz);
-        else
-        lightVec = normalize(-light[i].position.xyz);
+        if (light[i].position.w!=0) {
+            lightVec = normalize(light[i].position.xyz - fPosition.xyz);
+            normalLightDirect = normalize(light[i].direction.xyz);
+        } else {
+            lightVec = normalize(-light[i].position.xyz);
+            normalLightDirect = normalize(light[i].position.xyz);
+        }
+
 
         vec3 tNormal = fNormal;
         normalView = normalize(tNormal.xyz);
@@ -70,7 +74,6 @@ void main()
         else
         specular = vec3(0, 0, 0);
 
-        vec3 normalLightDirect = normalize(light[i].direction.xyz);
         dDotMinusL = dot(-normalLightDirect, lightVec);
         //        int lighted = 0;
         //        if (dDotMinusL > cosTheta) {
