@@ -80,4 +80,12 @@ move-center [x] [y] [z]
 
   1. tile.jpg, 3D texture library,  http://www.3dczk.com/map1/wa/2016/0620/3491.html
 
-  2. AmitShesh.jgp, Northeastern University. https://www.khoury.northeastern.edu/people/amit-shesh/
+  2. AmitShesh.jpg, Northeastern University, https://www.khoury.northeastern.edu/people/amit-shesh/
+
+  3. bricks.jpg, Pinterest, https://www.pinterest.com/pin/431078995573218874/
+
+  4. glass.jpg, Storyblocks, https://br.storyblocks.com/stock-image/broken-glass-texture-close-up-isolated-on-white-ru12asn4qjk80pkrx
+
+  5. moonmap.jpg, cgtrader, https://www.cgtrader.com/3d-models/space/planet/92k-moon-displacement-map
+
+  6. brushedMetal.jpg, textures4photoshop, http://www.textures4photoshop.com/tex/metal/brushed-stainless-steel-metal-texture-free.aspx
