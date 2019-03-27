@@ -20,6 +20,12 @@
       <spotangle>10</spotangle>
       <spotdirection>0 0 1</spotdirection>
     </light>
+    <light>
+      <ambient>.8 .8 .8</ambient>
+      <diffuse>.5 .5 .5 </diffuse>
+      <specular>.5 .5 .5</specular>
+      <direction>-1 -1 0</direction>
+    </light>
     <!--Enable the following part to display coordinates-->
     <!--<transform name="coor">-->
     <!--<set>-->
