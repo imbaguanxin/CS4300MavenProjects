@@ -28,7 +28,7 @@ move-center [x] [y] [z]
 
 ## Camera Operations
 
-  There are two different mode to observe in this virtual world. You can switch between the two using `Space` key on your keyboard.
+  There are two different mode to observe in this virtual world. One takes the whole window and another one takes a small corner of the window. You can switch between the two using `Space` key on your keyboard.
 
   1. Global View
 
@@ -37,3 +37,44 @@ move-center [x] [y] [z]
   2. Drone View
 
   In the drone view, you can view this virtual world through a camera mounted on an unmanned drone flying around. Press `up`, `down`, `left`, `right` to move the drone. Press `w`, `a`, `s`, `d` to turn the direction of the camera. You can also use `f`, `c` to make the camera to slope to the left or right. Press `+`, `-` to zoom in or out, but notice there is a limitation on zooming too far or too near.
+
+  Example:
+
+  First, we start the program using the config file `old_hall_drone.config`:
+  ![image0](img0.png)
+
+  Pressing `Space` key on your key board will switch the camera to the global view.
+  ![image1](img1.png)
+
+  In global view, we are able the drag on the screen to change how the world is looked.
+  ![image2](img2.png)
+
+  Drag back to the original space, drone camera has more functionality.
+  ![image3](img3.png)
+
+  Press the `s` key to turn camera to look down without moving the drone.
+  ![image4](img4.png)
+
+  Press the `left` key to move the drone to the left with the camera facing the same direction.
+  ![image5](img5.png)
+
+  Press the `right` key to move the drone to the right with the camera facing the same direction.
+  ![image6](img6.png)
+
+  Press the `a` key to turn the camera to look left without moving the drone.
+  ![image7](img7.png)
+
+  Press the `+` key to zoom in the lens.
+  ![image8](img8.png)
+
+  Press the `-` key to zoom out the lens.
+  ![image9](img9.png)
+
+  Press the `down` key to move the drone downwards with the camera facing the same direction.
+  ![image10](img10.png)
+
+  Press the `f` key to flip the camera to the left without moving the drone.
+  ![image11](img12.png)
+
+  Press the `c` key to flip the camera back to the right.
+  ![image12](img10.png)
