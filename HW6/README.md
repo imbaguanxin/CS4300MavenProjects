@@ -76,6 +76,14 @@ move-center [x] [y] [z]
 
     When drawing an object, a material and a texture name will be passed with the object name to the renderer. Renderer will then send all information in material down to the shader and bind the matching texture to texture id 0 after setting needed parameters so that the shader will be using the bound texture image.
 
+## New Scene
+
+  1. tower.xml
+ 
+    Beside a spot light that is tied to the camera. There are two extra lights in the scenegraph. The first one is a spot light at the back of the building. It is a reddish light focus on the second floor. The Other one is a white parallel light shinning towards (-1,-1,0) which simulates the sun.
+  
+    There are some textures tied to the scenegraph as well. The pillar of the first floor has a texture of a checkerboard. Glasses are broken. The big ball at the top of the building has a texture of moon surface. Also, all the walls share a texture of metal.
+  
 ## Citation
 
   1. tile.jpg, 3D texture library,  http://www.3dczk.com/map1/wa/2016/0620/3491.html
