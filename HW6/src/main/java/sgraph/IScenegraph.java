@@ -47,6 +47,9 @@ public interface IScenegraph<VertexType extends IVertexData> {
    */
   void draw(Stack<Matrix4f> modelView);
 
+  /**
+   * Enable all the lights. Should be called before draw.
+   */
   void lightOn(Stack<Matrix4f> modelView);
 
   /**

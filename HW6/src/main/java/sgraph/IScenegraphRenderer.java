@@ -65,8 +65,18 @@ public interface IScenegraphRenderer {
    */
   void draw(INode root, Stack<Matrix4f> modelView);
 
+  /**
+   * This is a method should be called before draw to enable the light in the scenegraph
+   * @param root The passed in root directs the renderer to find all lights
+   * @param modelView Similar to draw, this is a stack of modelView.
+   */
   void lightOn(INode root, Stack<Matrix4f> modelView);
 
+  /**
+   * Draw extra passed in lights not from xml. This was originally used to debug.
+   * @param mv The world to view modelView.
+   * @param extraLights The passed in extra lights from View.
+   */
   void drawSceneLight(Matrix4f mv, List<Light> extraLights);
 
   /**
@@ -83,5 +93,9 @@ public interface IScenegraphRenderer {
 
   void dispose();
 
+  /**
+   * This is a method called after draw. After finished drawing several scenegraph, we have to set
+   * the number of light to be zero.
+   */
   void zeroNumLight();
 }

@@ -78,6 +78,11 @@ public class GroupNode extends AbstractNode {
     }
   }
 
+  /**
+   * Collect light in this node as well as in its child nodes if there is any.
+   *
+   * @return All the lights in this node and its child nodes.
+   */
   @Override
   public Map<Light, Matrix4f> getLights(Stack<Matrix4f> modelView) {
     Map<Light, Matrix4f> result = new HashMap<>();

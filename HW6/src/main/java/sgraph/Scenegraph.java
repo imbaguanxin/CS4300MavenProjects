@@ -96,6 +96,9 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
   }
 
+  /**
+   * Enable all the lights. Should be called before draw.
+   */
   @Override
   public void lightOn(Stack<Matrix4f> modelView) {
     if (renderer != null) {

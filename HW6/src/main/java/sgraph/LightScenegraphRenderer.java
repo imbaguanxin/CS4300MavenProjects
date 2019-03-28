@@ -24,11 +24,21 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
     numLight = 0;
   }
 
+  /**
+   * Draw the scene graph rooted at supplied node using the supplied modelview stack. This is
+   * usually called by the scene graph
+   */
   @Override
   public void draw(INode root, Stack<Matrix4f> modelView) {
     root.draw(this, modelView);
   }
 
+
+  /**
+   * This is a method should be called before draw to enable the light in the scenegraph
+   * @param root The passed in root directs the renderer to find all lights
+   * @param modelView Similar to draw, this is a stack of modelView.
+   */
   @Override
   public void lightOn(INode root, Stack<Matrix4f> modelView) {
     Stack<Matrix4f> mvCopy = new Stack<>();
@@ -39,6 +49,12 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
     this.lightOn(lights);
   }
 
+
+  /**
+   * Draw extra passed in lights not from xml. This was originally used to debug.
+   * @param mv The world to view modelView.
+   * @param lights The passed in extra lights from View.
+   */
   @Override
   public void drawSceneLight(Matrix4f mv, List<Light> lights) {
     Map<Light, Matrix4f> lightMap = new HashMap<>();
@@ -48,6 +64,11 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
     this.lightOn(lightMap);
   }
 
+  /**
+   * This is the actual method that renders all the lights.
+   *
+   * @param lights All the lights needed to be drew
+   */
   private void lightOn(Map<Light, Matrix4f> lights) {
     GL3 gl = glContext.getGL().getGL3();
     FloatBuffer fb4 = Buffers.newDirectFloatBuffer(4);
@@ -76,6 +97,9 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
     gl.glUniform1i(shaderLocations.getLocation("numLights"), numLight);
   }
 
+  /**
+   * This is a overrided version of mesh drawer. Passed in all material information to shader
+   */
   @Override
   public void drawMesh(String name, util.Material material, String textureName,
       final Matrix4f transformation) {

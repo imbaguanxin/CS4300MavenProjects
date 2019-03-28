@@ -33,6 +33,11 @@ public interface INode {
    */
   void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView);
 
+  /**
+   * Collect light in this node as well as in its child nodes if there is any.
+   *
+   * @return All the lights in this node and its child nodes.
+   */
   Map<Light, Matrix4f> getLights(Stack<Matrix4f> modelView);
 
   /**
