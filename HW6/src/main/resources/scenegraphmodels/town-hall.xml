@@ -1,0 +1,71 @@
+<scene>
+  <image name="bricks" path="textures/bricks.jpg"/>
+  <image name="metal" path="textures/brushedMetal.jpg"/>
+  <image name="bgl" path="textures/glass.jpg"/>
+  <image name="cb" path="textures/checkerboard.png"/>
+  <image name="earth" path="textures/earthmap.jpg"/>
+  <image name="moon" path="textures/moonmap.jpg"/>
+  <image name="tile" path="textures/tile.jpg"/>
+
+  <transform name="hall">
+    <set>
+      <translate>0 0 0</translate>
+    </set>
+    <group>
+      <transform>
+        <set>
+          <scale>10 10 10</scale>
+          <translate>-29.5 0 0</translate>
+        </set>
+        <group>
+          <light>
+            <ambient>1 1 1</ambient>
+            <diffuse>1 1 1</diffuse>
+            <specular>1 1 1</specular>
+            <position>0 50 30</position>
+            <spotdirection>1 -1 -1</spotdirection>
+            <spotangle>20</spotangle>
+          </light>
+          <transform>
+            <set>
+              <translate>0 22 0</translate>
+            </set>
+            <group>
+              <light>
+                <ambient>1 1 1</ambient>
+                <diffuse>1 1 1</diffuse>
+                <specular>1 1 1</specular>
+                <position>53 40 11</position>
+                <spotdirection>0 -1 0</spotdirection>
+                <spotangle>15</spotangle>
+              </light>
+            </group>
+          </transform>
+        </group>
+      </transform>
+      <group from="scenegraphmodels/old-hall.xml"/>
+    </group>
+  </transform>
+  <transform name="tower">
+    <set>
+      <translate>200 0 -150</translate>
+    </set>
+    <group>
+      <light>
+        <ambient>.5 0 0</ambient>
+        <diffuse>.5 0 0 </diffuse>
+        <specular>.5 0 0</specular>
+        <position>0 250 -300</position>
+        <spotangle>10</spotangle>
+        <spotdirection>0 0 1</spotdirection>
+      </light>
+      <light>
+        <ambient>.8 .8 .8</ambient>
+        <diffuse>.5 .5 .5 </diffuse>
+        <specular>.5 .5 .5</specular>
+        <direction>-1 -1 0</direction>
+      </light>
+      <group from="scenegraphmodels/tower.xml"/>
+    </group>
+  </transform>
+</scene>
