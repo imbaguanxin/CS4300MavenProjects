@@ -11,7 +11,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -23,7 +23,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -35,7 +35,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -47,7 +47,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -59,7 +59,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -71,7 +71,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -83,7 +83,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -95,7 +95,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -107,7 +107,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -127,7 +127,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -139,7 +139,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -151,7 +151,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -163,7 +163,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -175,7 +175,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -187,7 +187,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -199,7 +199,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -211,7 +211,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -223,7 +223,7 @@
         </set>
         <object instanceof="box" texture="bricks">
           <material>
-            <color>1 1 1</color>
+            <color>.6 .6 .6</color>
           </material>
         </object>
       </transform>
@@ -235,7 +235,7 @@
       <scale>3 .5 3</scale>
       <translate>.5 .5 .5</translate>
     </set>
-    <object instanceof="box" texture="bricks">
+    <object instanceof="box">
       <material>
         <color>.5 .5 .5</color>
       </material>

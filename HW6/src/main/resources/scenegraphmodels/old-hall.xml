@@ -19,7 +19,17 @@
         <set>
           <translate>0 22 0</translate>
         </set>
-        <group from="scenegraphmodels/old-top-floor.xml"/>
+        <group>
+          <light>
+            <ambient>1 1 1</ambient>
+            <diffuse>1 1 1</diffuse>
+            <specular>1 1 1</specular>
+            <position>53 40 11</position>
+            <spotdirection>0 -1 0</spotdirection>
+            <spotangle>15</spotangle>
+          </light>
+          <group from="scenegraphmodels/old-top-floor.xml"/>
+        </group>
       </transform>
       <transform name="second-floor">
         <set>
