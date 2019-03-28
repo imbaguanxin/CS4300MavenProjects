@@ -24,6 +24,7 @@ in vec4 fPosition;
 in vec4 fTexCoord;
 
 const int MAXLIGHTS = 10;
+const float BRIGHTNESS = 0.4;
 
 uniform MaterialProperties material;
 uniform LightProperties light[MAXLIGHTS];
@@ -53,8 +54,7 @@ void main()
             lightVec = normalize(-light[i].position.xyz);
             normalLightDirect = normalize(light[i].position.xyz);
         }
-
-
+        
         vec3 tNormal = fNormal;
         normalView = normalize(tNormal.xyz);
         nDotL = dot(normalView, lightVec);
@@ -75,17 +75,12 @@ void main()
         specular = vec3(0, 0, 0);
 
         dDotMinusL = dot(-normalLightDirect, lightVec);
-        //        int lighted = 0;
-        //        if (dDotMinusL > cosTheta) {
-        //            lighted = 1;
-        //        }
-        //        fColor = fColor + lighted * vec4(ambient+diffuse+specular,1.0);
 
         if (dDotMinusL > light[i].cutOff) {
             fColor = fColor + vec4(ambient+diffuse+specular, 1.0);
         }
         else {
-            fColor = fColor + vec4(ambient, 1.0);
+            fColor = fColor + BRIGHTNESS * vec4(material.ambient, 1.0);
         }
     }
     fColor = fColor * texture(image, fTexCoord.st);
