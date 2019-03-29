@@ -53,7 +53,7 @@
     <group>
       <light>
         <ambient>.5 0 0</ambient>
-        <diffuse>.5 0 0 </diffuse>
+        <diffuse>.5 0 0</diffuse>
         <specular>.5 0 0</specular>
         <position>0 250 -300</position>
         <spotangle>10</spotangle>
@@ -61,7 +61,7 @@
       </light>
       <light>
         <ambient>.8 .8 .8</ambient>
-        <diffuse>.5 .5 .5 </diffuse>
+        <diffuse>.5 .5 .5</diffuse>
         <specular>.5 .5 .5</specular>
         <direction>-1 -1 0</direction>
       </light>

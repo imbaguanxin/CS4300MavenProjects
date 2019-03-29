@@ -71,6 +71,8 @@ move-center [x] [y] [z]
   Since camera and the drone is not in the same scene graph as other object in the scene. For drawing the flying drone correctly, lights on the drone must be switched on before any mesh in the scene is drawn. This might be a major draw-back of our code.
 
   Light in this model can shine through everything. There is no shades in the scene, unfortunately.
+  
+  When a point on a object is not shined by any light, this point will have a global ambient color, which is a constant times `material.ambient`, so that all points on object will at least be visible, not totally black.
 
   2. Texture
 

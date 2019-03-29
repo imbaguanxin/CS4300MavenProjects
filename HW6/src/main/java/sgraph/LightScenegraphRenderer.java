@@ -36,6 +36,7 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 
   /**
    * This is a method should be called before draw to enable the light in the scenegraph
+   *
    * @param root The passed in root directs the renderer to find all lights
    * @param modelView Similar to draw, this is a stack of modelView.
    */
@@ -52,6 +53,7 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 
   /**
    * Draw extra passed in lights not from xml. This was originally used to debug.
+   *
    * @param mv The world to view modelView.
    * @param lights The passed in extra lights from View.
    */
