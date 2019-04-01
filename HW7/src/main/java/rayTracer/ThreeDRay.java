@@ -8,6 +8,11 @@ public class ThreeDRay {
   private Vector4f startingPoint;
   private Vector4f direction;
 
+  public ThreeDRay() {
+    startingPoint = null;
+    direction = null;
+  }
+
   public ThreeDRay(float sx, float sy, float sz, float vx, float vy, float vz) {
     this.startingPoint = new Vector4f(sx, sy, sz, 1);
     this.direction = new Vector4f(vx, vy, vz, 0);

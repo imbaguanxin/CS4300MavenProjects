@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import org.joml.Vector4f;
+import rayTracer.ThreeDRay;
 import sgraph.IScenegraph;
 import sgraph.IScenegraphRenderer;
 import sgraph.LightLocation;
@@ -39,6 +41,8 @@ import util.Light;
  */
 public class View {
 
+  private final float ANGLE_OF_VIEW = 120f;
+
   private int WINDOW_WIDTH, WINDOW_HEIGHT;
   private Stack<Matrix4f> modelViewWorld;
   private Matrix4f projection, trackballTransform;
@@ -52,7 +56,6 @@ public class View {
   private sgraph.IScenegraph<VertexAttrib> scenegraph;
   private AWTGLReadBufferUtil screenCaptureUtil;
   private IScenegraphRenderer renderer;
-
 
   /**
    * Construct a View object. Set up current position and rotation.
@@ -171,6 +174,23 @@ public class View {
 
   }
 
+  public void rayTrace(int w, int h, Stack<Matrix4f> modelView) {
+    float distance =
+        (float) Math.max(w, h) / 2 / (float) Math.tan(Math.toRadians(ANGLE_OF_VIEW / 2));
+    rayTracer.ThreeDRay rayArray[][] = new ThreeDRay[h][w];
+    for (int i = 0; i < h; i++) {
+      for (int j = 0; j < w; j++) {
+        float x = -w / 2f + j;
+        float y = h / 2f - i;
+        float z = -distance;
+        rayArray[i][j] = new ThreeDRay(0, 0, 0, x, y, z);
+        //System.out.println(x + " " + y + " " + z);
+      }
+    }
+
+
+  }
+
   /**
    * This method will draw images on the canvas space according to the current state.
    *
@@ -194,7 +214,8 @@ public class View {
     gl.glUniformMatrix4fv(projectionLocation, 1, false, projection.get(fb));
     gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     scenegraph.draw(modelViewWorld);
-    gl.glDisable(gl.GL_SCISSOR_TEST);
+
+
 
     /*
      *OpenGL batch-processes all its OpenGL commands.
@@ -213,7 +234,7 @@ public class View {
   /**
    * This is a helper to build two modelView, one for Drone, one for world
    */
-  private void modelViewBuildHelper() {
+  private Stack<Matrix4f> modelViewBuildHelper() {
     while (!modelViewWorld.empty()) {
       modelViewWorld.pop();
     }
@@ -223,7 +244,14 @@ public class View {
         new Vector3f(centerPosition),
         new Vector3f(0, 1, 0))//.rotate((float)Math.toRadians(1)*time, 1,0,0);
         .mul(trackballTransform);
+
+    Stack<Matrix4f> mvCopy = new Stack<>();
+    for (Matrix4f mv : modelViewWorld) {
+      mvCopy.push(new Matrix4f(mv));
+    }
+    return mvCopy;
   }
+
 
   /**
    * Called when the mouse is pressed. Record the position where the mouse is pressed.
@@ -277,7 +305,10 @@ public class View {
   void keyAction(KeyEvent e, boolean pressed) {
     switch (e.getKeyCode()) {
       // Other keys should not detected as not available
-      case KeyEvent.VK_SPACE | KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:
+      case KeyEvent.VK_SPACE:
+        rayTrace(WINDOW_WIDTH, WINDOW_HEIGHT, modelViewBuildHelper());
+        break;
+      case KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:
         break;
       default:
         System.out.println("KeyEvent KeyCode: " + e.getKeyCode());
@@ -298,7 +329,7 @@ public class View {
     WINDOW_HEIGHT = height;
     aspect = (float) width / height;
     projection = new Matrix4f()
-        .perspective((float) Math.toRadians(120.0f), aspect, 0.1f, 10000.0f);
+        .perspective((float) Math.toRadians(ANGLE_OF_VIEW), aspect, 0.1f, 10000.0f);
     // proj = new Matrix4f().ortho(-400,400,-400,400,0.1f,10000.0f);
 
   }
