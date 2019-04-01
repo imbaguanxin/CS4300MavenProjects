@@ -54,7 +54,7 @@ public class LeafNode extends AbstractNode {
   @Override
   public List<HitRecord> rayCast(Stack<Matrix4f> modelView, ThreeDRay ray,
       IScenegraphRenderer renderer) {
-    return renderer.checkHit(objInstanceName, modelView, ray);
+    return renderer.checkHit(objInstanceName, ray, modelView.peek());
   }
 
   /*

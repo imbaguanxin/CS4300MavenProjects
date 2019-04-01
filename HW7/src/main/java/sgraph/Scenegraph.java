@@ -1,6 +1,8 @@
 package sgraph;
 
+import java.awt.image.BufferedImage;
 import org.joml.Matrix4f;
+import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
 import util.IVertexData;
 import util.Light;
@@ -58,7 +60,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     // generate rays
     float distance =
         ((float) Math.max(w, h) / 2) / (float) Math.tan(Math.toRadians(angleOfView / 2));
-    rayTracer.ThreeDRay rayArray[][] = new ThreeDRay[h][w];
+    rayTracer.ThreeDRay[][] rayArray = new ThreeDRay[h][w];
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {
         float x = -w / 2f + j;
@@ -69,6 +71,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       }
     }
 
+    BufferedImage imageBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     // go through the scenegraph
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {
@@ -76,11 +79,26 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         for (Matrix4f mv : modelView) {
           mvCopy.push(new Matrix4f(mv));
         }
-        this.root.rayCast(modelView, rayArray[i][j], this.renderer);
+        List<HitRecord> hitRecords = this.root.rayCast(mvCopy, rayArray[i][j], this.renderer);
+        int rgb = 0x000000;
+        if (hitRecords.size() > 0) {
+          float t = Float.MAX_VALUE;
+          for (HitRecord record : hitRecords) {
+            if (record.getT() < t) {
+              rgb = shade(record);
+              t = record.getT();
+            }
+          }
+        }
+        imageBuffer.setRGB(j, i, rgb);
       }
     }
 
 
+  }
+
+  private int shade(HitRecord hitRecord) {
+    return 0x0;g
   }
 
   /**
@@ -104,7 +122,6 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
 
   }
-
 
   /**
    * Set the root of the scenegraph, and then pass a reference to this scene graph object to all its
@@ -143,12 +160,10 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
   }
 
-
   @Override
   public void addPolygonMesh(String name, util.PolygonMesh<VertexType> mesh) {
     meshes.put(name, mesh);
   }
-
 
   @Override
   public void animate(float time) {
@@ -159,7 +174,6 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
   public void addNode(String name, INode node) {
     nodes.put(name, node);
   }
-
 
   @Override
   public INode getRoot() {

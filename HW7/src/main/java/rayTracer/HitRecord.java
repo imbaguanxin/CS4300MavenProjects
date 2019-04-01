@@ -13,7 +13,7 @@ public class HitRecord {
   private Vector3f normal;
   private Material material;
   private Texture texture;
-  Vector2d textureCoordinate;
+  private Vector2d textureCoordinate;
 
   public HitRecord() {
     intersectionInView = null;
