@@ -1,9 +1,7 @@
 package sgraph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import rayTracer.HitRecord;

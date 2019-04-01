@@ -5,7 +5,6 @@ import util.IVertexData;
 
 import java.util.Map;
 import java.util.Stack;
-import util.Light;
 
 /**
  * This interface captures all the operations that a scene graph should offer. It is designed to be

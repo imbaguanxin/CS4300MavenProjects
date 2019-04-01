@@ -7,7 +7,6 @@ import org.joml.Matrix4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
 import util.IVertexData;
-import util.Light;
 import util.TextureImage;
 
 import java.io.IOException;

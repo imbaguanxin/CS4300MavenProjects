@@ -1,13 +1,8 @@
 package sgraph;
 
-import com.jogamp.graph.geom.Vertex;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
-
 import org.joml.Matrix4f;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import util.IVertexData;

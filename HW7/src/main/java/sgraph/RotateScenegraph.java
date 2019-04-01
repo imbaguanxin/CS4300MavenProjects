@@ -5,7 +5,6 @@ import java.util.Stack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import util.IVertexData;
-import util.Light;
 import util.PolygonMesh;
 
 /**

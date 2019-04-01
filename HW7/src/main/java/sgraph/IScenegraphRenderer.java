@@ -8,7 +8,6 @@ import util.IVertexData;
 
 import java.util.Map;
 import java.util.Stack;
-import util.Light;
 
 /**
  * This interface provides a general interface for the scene graph to use. Each scene graph is

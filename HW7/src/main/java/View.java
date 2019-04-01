@@ -9,11 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -24,14 +19,7 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import org.joml.Vector4f;
-import rayTracer.ThreeDRay;
-import sgraph.IScenegraph;
 import sgraph.IScenegraphRenderer;
-import sgraph.LightLocation;
-import sgraph.RotateScenegraph;
-import sgraph.Scenegraph;
-import util.Light;
 
 /**
  * Created by ashesh on 9/18/2015.

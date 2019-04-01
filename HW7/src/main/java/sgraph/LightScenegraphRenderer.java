@@ -5,15 +5,12 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.util.texture.Texture;
 import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import util.Light;
-import util.TextureImage;
 
 public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
 

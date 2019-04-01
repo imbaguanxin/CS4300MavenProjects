@@ -5,7 +5,6 @@ import org.joml.Matrix4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
 import util.IVertexData;
-import util.Light;
 import util.PolygonMesh;
 
 import java.util.*;
@@ -44,9 +43,9 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
   public Scenegraph() {
     root = null;
-    meshes = new HashMap<String, util.PolygonMesh<VertexType>>();
-    nodes = new HashMap<String, INode>();
-    textures = new HashMap<String, String>();
+    meshes = new HashMap<>();
+    nodes = new HashMap<>();
+    textures = new HashMap<>();
     this.addTexture("white", "textures/white.png");
   }
 
@@ -98,7 +97,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
   }
 
   private int shade(HitRecord hitRecord) {
-    return 0x0;g
+    return 0x0;
   }
 
   /**
