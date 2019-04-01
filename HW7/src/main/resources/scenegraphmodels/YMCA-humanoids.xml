@@ -1,0 +1,32 @@
+<scene>
+    <group>
+        <transform>
+            <set>
+                <translate>-75 0 0</translate>
+            </set>
+            <group name="Y" from="scenegraphmodels/humanoid-Y.xml">
+            </group>
+        </transform>
+        <transform>
+            <set>
+                <translate>-25 0 0</translate>
+            </set>
+            <group name="M" from="scenegraphmodels/humanoid-M.xml">
+            </group>
+        </transform>
+		<transform>
+            <set>
+                <translate>25 0 0</translate>
+            </set>
+            <group name="C" from="scenegraphmodels/humanoid-C.xml">
+            </group>
+        </transform>
+		<transform>
+            <set>
+                <translate>75 0 0</translate>
+            </set>
+            <group name="A" from="scenegraphmodels/humanoid-A.xml">
+            </group>
+        </transform>
+    </group>
+</scene>

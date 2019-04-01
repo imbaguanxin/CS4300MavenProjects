@@ -1,0 +1,198 @@
+<scene>
+  <instance name="box" path="models/box.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <transform name="attic-wall">
+    <set>
+      <translate>0 0 11</translate>
+    </set>
+    <group>
+      <transform name="1">
+        <set>
+          <translate>0 0 0</translate>
+          <scale>2 1 22</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="2">
+        <set>
+          <translate>0 1 0</translate>
+          <scale>2 1 20</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="3">
+        <set>
+          <translate>0 2 0</translate>
+          <scale>2 1 18</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="4">
+        <set>
+          <translate>0 3 0</translate>
+          <scale>2 1 16</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="5">
+        <set>
+          <translate>0 4 0</translate>
+          <scale>2 1 14</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="6">
+        <set>
+          <translate>0 5 0</translate>
+          <scale>2 1 12</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="7">
+        <set>
+          <translate>0 6 0</translate>
+          <scale>2 1 10</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="8">
+        <set>
+          <translate>0 7 0</translate>
+          <scale>2 1 8</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="9">
+        <set>
+          <translate>0 8 0</translate>
+          <scale>2 1 6</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="10">
+        <set>
+          <translate>0 9 0</translate>
+          <scale>2 1 4</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="11">
+        <set>
+          <translate>0 10 0</translate>
+          <scale>2 1 2</scale>
+          <translate>.5 .5 0</translate>
+        </set>
+        <object instanceof="box" texture="bricks">
+          <material>
+            <color>.6 .6 .6</color>
+          </material>
+        </object>
+      </transform>
+    </group>
+  </transform>
+  <transform name="eaves">
+    <set/>
+    <group>
+      <transform name="front">
+        <set>
+          <translate>-2 -.5 22.5</translate>
+          <rotate>-135 1 0 0</rotate>
+          <scale>53 .7071 16.2635</scale>
+          <translate>.5 -.5 .5</translate>
+        </set>
+        <object instanceof="box" texture="tile">
+          <material>
+            <color>0 .3 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="back">
+        <set>
+          <translate>-2 -.5 -.5</translate>
+          <rotate>-45 1 0 0</rotate>
+          <scale>53 .7071 16.2635</scale>
+          <translate>.5 .5 .5</translate>
+        </set>
+        <object instanceof="box" texture="tile">
+          <material>
+            <color>0 .3 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="ridge">
+        <set>
+          <translate>-2 11 11</translate>
+          <rotate>-90 0 0 1</rotate>
+          <scale>1 53 1</scale>
+        </set>
+        <object instanceof="cylinder">
+          <material>
+            <color>.5 .5 .5</color>
+          </material>
+        </object>
+      </transform>
+      <transform name="round-side">
+        <set>
+          <translate>51 0 11</translate>
+          <scale>12 12 12</scale>
+        </set>
+        <object instanceof="cone" texture="tile">
+          <material>
+            <color>0 .3 .5</color>
+          </material>
+        </object>
+      </transform>
+    </group>
+  </transform>
+</scene>

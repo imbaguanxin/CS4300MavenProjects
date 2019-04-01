@@ -1,0 +1,38 @@
+<scene>
+  <instance name="sphere" path="models/sphere"></instance>
+  <instance name="box" path="models/box"></instance>
+  <instance name="cylinder" path="models/cylinder"></instance>
+  <instance name="cone" path="models/cone"></instance>
+  <group>
+    <!--Enable the following part to display coordinates-->
+    <!--<group name="coordinate" from="scenegraphmodels/coordinate.xml"></group>-->
+    <transform>
+      <set>
+        <scale>.015 .1 .015</scale>
+      </set>
+      <group name="pillar" from="scenegraphmodels/third-floor.xml"></group>
+    </transform>
+    <transform>
+      <set>
+        <translate>0 10.5 0</translate>
+        <scale>1.2 .5 1.2</scale>
+      </set>
+      <object instanceof="cylinder">
+        <material>
+          <color>.8 .8 .8</color>
+        </material>
+      </object>
+    </transform>
+    <transform>
+      <set>
+        <translate>0 11 0</translate>
+        <scale>1.2 7 1.2</scale>
+      </set>
+      <object instanceof="cone">
+        <material>
+          <color>.5 .5 .5</color>
+        </material>
+      </object>
+    </transform>
+  </group>
+</scene>
