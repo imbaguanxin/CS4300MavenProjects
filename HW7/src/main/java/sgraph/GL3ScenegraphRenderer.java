@@ -4,6 +4,8 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import org.joml.Matrix4f;
+import rayTracer.HitRecord;
+import rayTracer.ThreeDRay;
 import util.IVertexData;
 import util.Light;
 import util.TextureImage;
@@ -145,6 +147,12 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
     for (util.ObjectInstance s : meshRenderers.values()) {
       s.cleanup(glContext);
     }
+  }
+
+  @Override
+  public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView) {
+    System.out.println("Not supported, use RayTraceRenderer");
+    return null;
   }
 
   /**

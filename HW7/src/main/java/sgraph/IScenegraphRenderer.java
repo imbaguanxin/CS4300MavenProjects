@@ -2,6 +2,8 @@ package sgraph;
 
 import java.util.List;
 import org.joml.Matrix4f;
+import rayTracer.HitRecord;
+import rayTracer.ThreeDRay;
 import util.IVertexData;
 
 import java.util.Map;
@@ -86,4 +88,6 @@ public interface IScenegraphRenderer {
   void addTexture(String name, String path);
 
   void dispose();
+
+  List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView);
 }
