@@ -136,4 +136,12 @@ public class RotateScenegraph<VertexType extends IVertexData> implements ISceneg
   public void dispose() {
     originalScenegraph.dispose();
   }
+
+  @Override
+  public void rayTrace(int w, int h, Stack<Matrix4f> modelView, float angleOfView) {
+    modelView.push(new Matrix4f(modelView.peek()));
+    modelView.peek().mul(translateMatrix).mul(rotateMatrix);
+    originalScenegraph.rayTrace(w, h, modelView, angleOfView);
+    modelView.pop();
+  }
 }

@@ -1,6 +1,7 @@
 package sgraph;
 
 import org.joml.Matrix4f;
+import rayTracer.ThreeDRay;
 import util.IVertexData;
 import util.Light;
 import util.PolygonMesh;
@@ -49,6 +50,37 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
   public void dispose() {
     renderer.dispose();
+  }
+
+  @Override
+  public void rayTrace(int w, int h, Stack<Matrix4f> modelView, float angleOfView) {
+
+    // generate rays
+    float distance =
+        ((float) Math.max(w, h) / 2) / (float) Math.tan(Math.toRadians(angleOfView / 2));
+    rayTracer.ThreeDRay rayArray[][] = new ThreeDRay[h][w];
+    for (int i = 0; i < h; i++) {
+      for (int j = 0; j < w; j++) {
+        float x = -w / 2f + j;
+        float y = h / 2f - i;
+        float z = -distance;
+        rayArray[i][j] = new ThreeDRay(0, 0, 0, x, y, z);
+        //System.out.println(x + " " + y + " " + z);
+      }
+    }
+
+    // go through the scenegraph
+    for (int i = 0; i < h; i++) {
+      for (int j = 0; j < w; j++) {
+        Stack<Matrix4f> mvCopy = new Stack<>();
+        for (Matrix4f mv : modelView) {
+          mvCopy.push(new Matrix4f(mv));
+        }
+        this.root.rayCast(modelView, rayArray[i][j], this.renderer);
+      }
+    }
+
+
   }
 
   /**

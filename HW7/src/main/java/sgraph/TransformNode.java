@@ -1,9 +1,12 @@
 package sgraph;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.joml.Matrix4f;
 import java.util.Stack;
+import rayTracer.HitRecord;
+import rayTracer.ThreeDRay;
 import util.Light;
 
 /**
@@ -125,6 +128,13 @@ public class TransformNode extends AbstractNode {
    */
   public void setAnimationTransform(Matrix4f mat) {
     animation_transform = new Matrix4f(mat);
+  }
+
+  @Override
+  public List<HitRecord> rayCast(Stack<Matrix4f> modelView, ThreeDRay ray,
+      IScenegraphRenderer renderer) {
+    modelView.push(new Matrix4f(this.transform));
+    return this.child.rayCast(modelView, ray, renderer);
   }
 
   /**

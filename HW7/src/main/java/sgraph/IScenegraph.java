@@ -105,4 +105,6 @@ public interface IScenegraph<VertexType extends IVertexData> {
   void addTexture(String name, String path);
 
   void dispose();
+
+  void rayTrace(int w, int h, Stack<Matrix4f> modelView, float angleOfView);
 }

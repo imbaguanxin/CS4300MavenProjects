@@ -7,6 +7,8 @@ import org.joml.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import rayTracer.HitRecord;
+import rayTracer.ThreeDRay;
 import util.Light;
 
 /**
@@ -130,6 +132,18 @@ public class GroupNode extends AbstractNode {
   public void addChild(INode child) throws IllegalArgumentException {
     children.add(child);
     child.setParent(this);
+  }
+
+  @Override
+  public List<HitRecord> rayCast(Stack<Matrix4f> modelView, ThreeDRay ray,
+      IScenegraphRenderer renderer) {
+    List<HitRecord> result = new ArrayList<>();
+    for (INode child : children) {
+      Stack<Matrix4f> mvCopy = new Stack<>();
+      mvCopy.push(new Matrix4f(modelView.peek()));
+      result.addAll(child.rayCast(mvCopy, ray, renderer));
+    }
+    return result;
   }
 
   /**

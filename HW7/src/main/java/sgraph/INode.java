@@ -3,6 +3,8 @@ package sgraph;
 import java.util.List;
 import java.util.Map;
 import org.joml.Matrix4f;
+import rayTracer.HitRecord;
+import rayTracer.ThreeDRay;
 import util.Light;
 
 import java.util.Stack;
@@ -134,5 +136,7 @@ public interface INode {
    * Adds a new light to this node.
    */
   void addLight(Light l);
+
+  List<HitRecord> rayCast(Stack<Matrix4f> modelView, ThreeDRay ray, IScenegraphRenderer renderer);
 }
 

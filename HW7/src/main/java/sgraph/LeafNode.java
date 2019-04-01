@@ -1,9 +1,12 @@
 package sgraph;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.joml.Matrix4f;
 import java.util.Stack;
+import rayTracer.HitRecord;
+import rayTracer.ThreeDRay;
 import util.Light;
 
 /**
@@ -46,6 +49,12 @@ public class LeafNode extends AbstractNode {
   @Override
   public void setTextureName(String name) {
     textureName = name;
+  }
+
+  @Override
+  public List<HitRecord> rayCast(Stack<Matrix4f> modelView, ThreeDRay ray,
+      IScenegraphRenderer renderer) {
+    return renderer.checkHit(objInstanceName, modelView, ray);
   }
 
   /*

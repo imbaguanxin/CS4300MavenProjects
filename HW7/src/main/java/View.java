@@ -174,23 +174,6 @@ public class View {
 
   }
 
-  public void rayTrace(int w, int h, Stack<Matrix4f> modelView) {
-    float distance =
-        (float) Math.max(w, h) / 2 / (float) Math.tan(Math.toRadians(ANGLE_OF_VIEW / 2));
-    rayTracer.ThreeDRay rayArray[][] = new ThreeDRay[h][w];
-    for (int i = 0; i < h; i++) {
-      for (int j = 0; j < w; j++) {
-        float x = -w / 2f + j;
-        float y = h / 2f - i;
-        float z = -distance;
-        rayArray[i][j] = new ThreeDRay(0, 0, 0, x, y, z);
-        //System.out.println(x + " " + y + " " + z);
-      }
-    }
-
-
-  }
-
   /**
    * This method will draw images on the canvas space according to the current state.
    *
@@ -306,7 +289,7 @@ public class View {
     switch (e.getKeyCode()) {
       // Other keys should not detected as not available
       case KeyEvent.VK_SPACE:
-        rayTrace(WINDOW_WIDTH, WINDOW_HEIGHT, modelViewBuildHelper());
+        scenegraph.rayTrace(WINDOW_WIDTH, WINDOW_HEIGHT, modelViewBuildHelper(), ANGLE_OF_VIEW);
         break;
       case KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:
         break;
