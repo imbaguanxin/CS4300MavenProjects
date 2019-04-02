@@ -1,10 +1,10 @@
 package rayTracer;
 
-import com.jogamp.opengl.util.texture.Texture;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import util.Material;
+import util.TextureImage;
 
 public class HitRecord implements Comparable<HitRecord> {
 
@@ -12,14 +12,14 @@ public class HitRecord implements Comparable<HitRecord> {
   private Vector4f intersectionInView;
   private Vector4f normal;
   private Material material;
-  private Texture texture;
+  private TextureImage textureImage;
   private Vector2d textureCoordinate;
 
   public HitRecord() {
     intersectionInView = null;
     normal = null;
     material = null;
-    texture = null;
+    textureImage = null;
     t = -1;
     textureCoordinate = null;
   }
@@ -68,12 +68,12 @@ public class HitRecord implements Comparable<HitRecord> {
     this.material = material;
   }
 
-  public Texture getTexture() {
-    return texture;
+  public TextureImage getTexture() {
+    return textureImage;
   }
 
-  public void setTexture(Texture texture) {
-    this.texture = texture;
+  public void setTextureImage(TextureImage textureImage) {
+    this.textureImage = textureImage;
   }
 
   public Vector2d getTextureCoordinate() {
