@@ -112,8 +112,7 @@ public class TransformNode extends AbstractNode {
   @Override
   public void draw(IScenegraphRenderer context, Stack<Matrix4f> modelView) {
     modelView.push(new Matrix4f(modelView.peek()));
-    modelView.peek().mul(animation_transform)
-        .mul(transform);
+    modelView.peek().mul(animation_transform).mul(transform);
     if (child != null) {
       child.draw(context, modelView);
     }
@@ -133,7 +132,8 @@ public class TransformNode extends AbstractNode {
   @Override
   public List<HitRecord> rayCast(Stack<Matrix4f> modelView, ThreeDRay ray,
       IScenegraphRenderer renderer) {
-    modelView.push(new Matrix4f(this.transform));
+    modelView.push(new Matrix4f(modelView.peek()));
+    modelView.peek().mul(animation_transform).mul(transform);
     return this.child.rayCast(modelView, ray, renderer);
   }
 
