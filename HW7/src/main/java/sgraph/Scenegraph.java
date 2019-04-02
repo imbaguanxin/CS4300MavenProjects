@@ -2,12 +2,17 @@ package sgraph;
 
 import java.awt.image.BufferedImage;
 import org.joml.Matrix4f;
+import org.joml.Vector2d;
+import org.joml.Vector4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
 import util.IVertexData;
+import util.Light;
+import util.Material;
 import util.PolygonMesh;
 
 import java.util.*;
+import util.TextureImage;
 
 /**
  * A specific implementation of this scene graph. This implementation is still independent of the
@@ -74,19 +79,27 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     // go through the scenegraph
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {
-        Stack<Matrix4f> mvCopy = new Stack<>();
+        Stack<Matrix4f> mvCopy1 = new Stack<>();
+        Stack<Matrix4f> mvCopy2 = new Stack<>();
         for (Matrix4f mv : modelView) {
-          mvCopy.push(new Matrix4f(mv));
+          mvCopy1.push(new Matrix4f(mv));
+          mvCopy2.push(new Matrix4f(mv));
         }
-        List<HitRecord> hitRecords = this.root.rayCast(mvCopy, rayArray[i][j], this.renderer);
+        List<HitRecord> hitRecords = this.root.rayCast(mvCopy1, rayArray[i][j], this.renderer);
+        Map<Light, Matrix4f> lights = this.root.getLights(mvCopy2);
         int rgb = 0x000000;
         if (hitRecords.size() > 0) {
           float t = Float.MAX_VALUE;
+          HitRecord closestHit = null;
           for (HitRecord record : hitRecords) {
-            if (record.getT() < t) {
-              rgb = shade(record);
-              t = record.getT();
+            float newT = record.getT();
+            if (newT >= 0 && newT < t) {
+              closestHit = record;
+              t = newT;
             }
+          }
+          if (closestHit != null) {
+            rgb = shade(closestHit, lights);
           }
         }
         imageBuffer.setRGB(j, i, rgb);
@@ -96,8 +109,36 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
   }
 
-  private int shade(HitRecord hitRecord) {
-    return 0x0;
+  private int shade(HitRecord hitRecord, Map<Light, Matrix4f> lights) {
+    float r, g, b;
+    Material material = hitRecord.getMaterial();
+    TextureImage textureImage = hitRecord.getTexture();
+    Vector2d texCoord = hitRecord.getTextureCoordinate();
+    Vector4f materialAmbient = material.getAmbient();
+    Vector4f materialDiffuse = material.getDiffuse();
+    Vector4f materialSpecular = material.getSpecular();
+    Vector4f texRGB = textureImage.getColor((float) texCoord.x, (float) texCoord.y);
+
+    float ambientR = materialAmbient.x;
+    float ambientG = materialAmbient.y;
+    float ambientB = materialAmbient.z;
+    float diffuseR = materialDiffuse.x;
+    float diffuseG = materialDiffuse.y;
+    float diffuseB = materialDiffuse.z;
+    float specularR = materialSpecular.x;
+    float specularG = materialSpecular.y;
+    float specularB = materialSpecular.z;
+
+    double a = Math.atan2(0, 0);
+
+    r = ((ambientR + diffuseR + specularR) / 3) * 255;
+    g = ((ambientG + diffuseG + specularG) / 3) * 255;
+    b = ((ambientB + diffuseB + specularB) / 3) * 255;
+
+    r *= texRGB.x;
+    g *= texRGB.y;
+    b *= texRGB.z;
+    return (((Math.round(r) << 2) + Math.round(g)) << 2) + Math.round(b);
   }
 
   /**

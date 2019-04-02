@@ -26,7 +26,6 @@ public class TextureImage {
 
   public TextureImage(String filepath, String imageFormat, String name) throws IOException {
     // read the image
-    // System.out.println("file name: " + name + " file path: " + filepath);
     InputStream in = getClass().getClassLoader().getResourceAsStream(filepath);
     try {
       texture = TextureIO.newTexture(in, true, imageFormat);
