@@ -8,6 +8,7 @@ import util.IVertexData;
 
 import java.util.Map;
 import java.util.Stack;
+import util.Material;
 
 /**
  * This interface provides a general interface for the scene graph to use. Each scene graph is
@@ -88,5 +89,5 @@ public interface IScenegraphRenderer {
 
   void dispose();
 
-  List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView);
+  List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView, Material mat);
 }

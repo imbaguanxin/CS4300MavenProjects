@@ -6,6 +6,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
+import util.Material;
 import util.ObjectInstance;
 
 public class RayTraceRenderer extends LightScenegraphRenderer {
@@ -15,29 +16,42 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
   }
 
   @Override
-  public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView) {
+  public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView,
+      Material mat) {
     List<HitRecord> result = new ArrayList<>();
     switch (objectName) {
       case "sphere":
         result.addAll(
-            checkHitSphere(ray.getStartingPoint(), ray.getDirection(), new Matrix4f(modelView)));
+            checkHitSphere(
+                ray.getStartingPoint(),
+                ray.getDirection(),
+                new Matrix4f(modelView),
+                mat));
         break;
       case "box":
         result.addAll(
-            checkHitBox(ray.getStartingPoint(), ray.getDirection(), new Matrix4f(modelView)));
+            checkHitBox(
+                ray.getStartingPoint(),
+                ray.getDirection(),
+                new Matrix4f(modelView),
+                mat));
         break;
       default:
         System.out.println("Not supported shape: " + objectName);
     }
-
     return result;
   }
 
-  private List<HitRecord> checkHitBox(Vector4f start, Vector4f vector, Matrix4f modelView) {
+  private List<HitRecord> checkHitBox(Vector4f start, Vector4f vector, Matrix4f modelView,
+      Material mat) {
+
     List<HitRecord> result = new ArrayList<>();
-    Matrix4f invertedMV = modelView.invert();
-    Vector4f s = invertedMV.transform(start);
-    Vector4f v = invertedMV.transform(vector);
+    Matrix4f invertedMV = new Matrix4f();
+    modelView.invert(invertedMV);
+    Vector4f s = new Vector4f();
+    Vector4f v = new Vector4f();
+    invertedMV.transform(start, s);
+    invertedMV.transform(vector, v);
 
     float txMin = Math.min((-0.5f - s.x) / v.x, (0.5f - s.x) / v.x);
     float txMax = Math.max((-0.5f - s.x) / v.x, (0.5f - s.x) / v.x);
@@ -52,6 +66,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       // hit point goes in the polygon
       HitRecord hIn = new HitRecord();
       hIn.setT(tMin);
+      hIn.setMaterial(mat);
 
       // hit point goes out the polygon
       //HitRecord hOut = new HitRecord();
@@ -63,14 +78,18 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     return result;
   }
 
-  private List<HitRecord> checkHitSphere(Vector4f start, Vector4f vector, Matrix4f modelView) {
+  private List<HitRecord> checkHitSphere(Vector4f start, Vector4f vector, Matrix4f modelView,
+      Material mat) {
     List<HitRecord> result = new ArrayList<>();
-    Matrix4f invertedMV = modelView.invert();
-    Vector4f s = invertedMV.transform(start);
-    Vector4f v = invertedMV.transform(vector);
+    Matrix4f invertedMV = new Matrix4f();
+    modelView.invert(invertedMV);
+    Vector4f s = new Vector4f();
+    Vector4f v = new Vector4f();
+    invertedMV.transform(start, s);
+    invertedMV.transform(vector, v);
 
-    float a = (float) (Math.pow(v.x, 2) + Math.pow(v.y, 2) + Math.pow(v.z, 2));
-    float b = 2f * ((s.x * v.x) + s.y * v.y + s.z * v.z);
+    float a = v.x * v.x + v.y * v.y + v.z * v.z;
+    float b = 2f * (s.x * v.x + s.y * v.y + s.z * v.z);
     float c = s.x * s.x + s.y * s.y + s.z * s.z - 1;
 
     float delta = b * b - 4 * a * c;
@@ -82,9 +101,12 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       HitRecord hIn = new HitRecord();
       hIn.setT(t);
       // compute normal vector in view coordinate
-      Vector4f normal = new Vector4f(s.add(v.mul(t)).mul(-1));
+      Vector4f intersection = s.add(v.mul(t));
+      Vector4f normal = new Vector4f(intersection).mul(-1);
       normal = modelView.transform(normal);
       hIn.setNormal(normal.x, normal.y, normal.z);
+      hIn.setMaterial(mat);
+      hIn.setIntersection(intersection);
       // hit point 2
       //HitRecord hOut = new HitRecord();
       //hOut.setT(t2);
