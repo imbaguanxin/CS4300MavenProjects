@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
@@ -90,7 +91,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         // gather lights from nodes. the according matrix4f is light to view
         Map<Light, Matrix4f> lights = this.root.getLights(mvCopy2);
 
-        Color rgb;
+        Color rgb = null;
         if (hitRecords.size() > 0) {
           rgb = new Color(1.0f, 1.0f, 1.0f);
 //          float t = Float.MAX_VALUE;
@@ -105,8 +106,9 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 //          if (closestHit != null) {
 //            rgb = shade(closestHit, lights);
 //          }
-        } else {
-          rgb = new Color(0f, 0f, 0f);
+        }
+        if (rgb == null) {
+          rgb = new Color(0, 0,0);
         }
         imageBuffer.setRGB(j, i, rgb.getRGB());
       }
@@ -124,35 +126,97 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
   }
 
   private int shade(HitRecord hitRecord, Map<Light, Matrix4f> lights) {
-    float r, g, b;
     Material material = hitRecord.getMaterial();
     TextureImage textureImage = hitRecord.getTexture();
+    Vector4f position = hitRecord.getIntersection();
+    Vector4f normal = hitRecord.getNormal();
     Vector2d texCoord = hitRecord.getTextureCoordinate();
-    Vector4f materialAmbient = material.getAmbient();
-    Vector4f materialDiffuse = material.getDiffuse();
-    Vector4f materialSpecular = material.getSpecular();
+    Vector3f materialAmbient = new Vector3f(
+        material.getAmbient().x,
+        material.getAmbient().y,
+        material.getAmbient().z);
+    Vector3f materialDiffuse = new Vector3f(
+        material.getDiffuse().x,
+        material.getDiffuse().y,
+        material.getDiffuse().z);
+    Vector3f materialSpecular = new Vector3f(
+        material.getSpecular().x,
+        material.getSpecular().y,
+        material.getSpecular().z);
+    float materialShininess = material.getShininess();
     Vector4f texRGB = textureImage.getColor((float) texCoord.x, (float) texCoord.y);
 
-    float ambientR = materialAmbient.x;
-    float ambientG = materialAmbient.y;
-    float ambientB = materialAmbient.z;
-    float diffuseR = materialDiffuse.x;
-    float diffuseG = materialDiffuse.y;
-    float diffuseB = materialDiffuse.z;
-    float specularR = materialSpecular.x;
-    float specularG = materialSpecular.y;
-    float specularB = materialSpecular.z;
+    Vector3f lightVec, viewVec, reflectVec, normalLightDirect;
+    Vector3f normalView;
+    Vector3f ambient, diffuse, specular;
+    float nDotL, rDotV, dDotMinusL;
+    Vector4f color = new Vector4f(0, 0, 0, 1);
 
-    double a = Math.atan2(0, 0);
+    for (Light light : lights.keySet()) {
+      Vector4f lightPosition = lights.get(light).transform(new Vector4f(light.getPosition()));
+      Vector4f lightDirection = lights.get(light).transform(new Vector4f(light.getSpotDirection()));
 
-    r = ((ambientR + diffuseR + specularR) / 3) * 255;
-    g = ((ambientG + diffuseG + specularG) / 3) * 255;
-    b = ((ambientB + diffuseB + specularB) / 3) * 255;
+      if (light.getPosition().w != 0) {
+        lightVec = new Vector3f(
+            lightPosition.x - position.x,
+            lightPosition.y - position.y,
+            lightPosition.z - position.z)
+            .normalize();
+        normalLightDirect = new Vector3f(
+            lightDirection.x,
+            lightDirection.y,
+            lightDirection.z)
+            .normalize();
+      } else {
+        lightVec = new Vector3f(
+            -lightPosition.x,
+            -lightPosition.y,
+            -lightPosition.z)
+            .normalize();
+        normalLightDirect = new Vector3f(
+            lightPosition.x,
+            lightPosition.y,
+            lightPosition.z)
+            .normalize();
+      }
 
-    r *= texRGB.x;
-    g *= texRGB.y;
-    b *= texRGB.z;
-    return (((Math.round(r) << 2) + Math.round(g)) << 2) + Math.round(b);
+      Vector3f tNormal = new Vector3f(normal.x, normal.y, normal.z);
+      normalView = new Vector3f(tNormal).normalize();
+      nDotL = normalView.dot(lightVec);
+
+      viewVec = new Vector3f(-position.x, -position.y, -position.z);
+      viewVec = viewVec.normalize();
+
+      reflectVec = new Vector3f(-lightVec.x, -lightVec.y, -lightVec.z).reflect(normalView);
+      reflectVec = reflectVec.normalize();
+
+      rDotV = Math.max(reflectVec.dot(viewVec), 0);
+
+      ambient = materialAmbient.mul(light.getAmbient());
+      diffuse = materialDiffuse.mul(light.getDiffuse()).mul(Math.max(nDotL, 0));
+      if (nDotL > 0) {
+        specular = materialSpecular.mul(light.getSpecular()).mul((float) Math.pow(rDotV, materialShininess));
+      } else {
+        specular = new Vector3f(0, 0, 0);
+      }
+
+      dDotMinusL = new Vector3f(
+          -normalLightDirect.x,
+          -normalLightDirect.y,
+          -normalLightDirect.z)
+          .dot(lightVec);
+
+      if (dDotMinusL > light.getSpotCutoff()) {
+        Vector3f colorTemp = new Vector3f(ambient).add(diffuse).add(specular);
+        color = color.add(new Vector4f(colorTemp.x, colorTemp.y, colorTemp.z, 1));
+      } else {
+        color = color.add(new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1).mul(0.4f));
+      }
+    }
+
+    color = color.mul(texRGB);
+    Color fColor = new Color(color.x, color.y, color.z);
+    return fColor.getRGB();
   }
 
   /**
