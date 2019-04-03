@@ -4,41 +4,50 @@
   <instance name="cylinder" path="models/cylinder.obj"/>
   <instance name="box" path="models/box.obj"/>
 
+  <image name="earth" path="textures/earthmap.png"/>
+  <image name="cb" path="textures/checkerboard.png"/>
+
   <transform>
     <set>
-     <rotate>45 0 1 0</rotate>
+      <!--<rotate>45 0 1 0</rotate>-->
     </set>
     <group>
       <light>
         <ambient>.5 .5 .5</ambient>
         <diffuse>.3 .3 .3</diffuse>
         <specular>.5 .5 .5</specular>
-        <direction>0 -1 0</direction>
+        <direction>0 0 -1</direction>
       </light>
       <transform>
         <set>
-          <translate>-20 0 0</translate>
+          <translate>10 0 0</translate>
           <scale>10 10 10</scale>
         </set>
-        <object instanceof="box">
+        <object instanceof="box" texture="cb">
           <material>
             <ambient>.8 .8 .8</ambient>
-            <diffuse>.3 .3 .3</diffuse>
-            <specular>.5 .5 .5</specular>
+            <diffuse>.4 .4 .4</diffuse>
+            <specular>.4 .4 .4</specular>
+            <!--<ambient>.8 .4 .2</ambient>-->
+            <!--<diffuse>.3 .15 .075</diffuse>-->
+            <!--<specular>.6 .3 .15</specular>-->
             <shininess>100</shininess>
           </material>
         </object>
       </transform>
       <transform>
         <set>
-          <translate>20 0 0</translate>
+          <translate>-10 0 0</translate>
           <scale>10 10 10</scale>
         </set>
-        <object instanceof="sphere">
+        <object instanceof="sphere" texture="earth">
           <material>
             <ambient>.8 .8 .8</ambient>
-            <diffuse>.3 .3 .3</diffuse>
-            <specular>.5 .5 .5</specular>
+            <diffuse>.4 .4 .4</diffuse>
+            <specular>.4 .4 .4</specular>
+            <!--<ambient>.2 .4 .8</ambient>-->
+            <!--<diffuse>.075 .15 .3</diffuse>-->
+            <!--<specular>.15 .3 .6</specular>-->
             <shininess>100</shininess>
           </material>
         </object>

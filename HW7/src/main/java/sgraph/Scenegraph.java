@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import rayTracer.HitRecord;
@@ -93,22 +94,14 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
         Color rgb = null;
         if (hitRecords.size() > 0) {
-          rgb = new Color(1.0f, 1.0f, 1.0f);
-//          float t = Float.MAX_VALUE;
-//          HitRecord closestHit = null;
-//          for (HitRecord record : hitRecords) {
-//            float newT = record.getT();
-//            if (newT >= 0 && newT < t) {
-//              closestHit = record;
-//              t = newT;
-//            }
-//          }
-//          if (closestHit != null) {
-//            rgb = shade(closestHit, lights);
-//          }
+          HitRecord closestHit = Collections.min(hitRecords);
+          if (closestHit != null) {
+            rgb = shade(closestHit, lights);
+            //rgb = new Color(1f,1f,1f);
+          }
         }
         if (rgb == null) {
-          rgb = new Color(0, 0,0);
+          rgb = new Color(0, 0, 0);
         }
         imageBuffer.setRGB(j, i, rgb.getRGB());
       }
@@ -124,12 +117,12 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
   }
 
-  private int shade(HitRecord hitRecord, Map<Light, Matrix4f> lights) {
+  private Color shade(HitRecord hitRecord, Map<Light, Matrix4f> lights) {
     Material material = hitRecord.getMaterial();
     TextureImage textureImage = hitRecord.getTexture();
     Vector4f position = hitRecord.getIntersection();
     Vector4f normal = hitRecord.getNormal();
-    Vector2d texCoord = hitRecord.getTextureCoordinate();
+    Vector2f texCoord = hitRecord.getTextureCoordinate();
     Vector3f materialAmbient = new Vector3f(
         material.getAmbient().x,
         material.getAmbient().y,
@@ -194,7 +187,8 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       ambient = materialAmbient.mul(light.getAmbient());
       diffuse = materialDiffuse.mul(light.getDiffuse()).mul(Math.max(nDotL, 0));
       if (nDotL > 0) {
-        specular = materialSpecular.mul(light.getSpecular()).mul((float) Math.pow(rDotV, materialShininess));
+        specular = materialSpecular.mul(light.getSpecular())
+            .mul((float) Math.pow(rDotV, materialShininess));
       } else {
         specular = new Vector3f(0, 0, 0);
       }
@@ -209,13 +203,14 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         Vector3f colorTemp = new Vector3f(ambient).add(diffuse).add(specular);
         color = color.add(new Vector4f(colorTemp.x, colorTemp.y, colorTemp.z, 1));
       } else {
-        color = color.add(new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1).mul(0.4f));
+        color = color.add(
+            new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1).mul(0.4f));
       }
     }
 
     color = color.mul(texRGB);
     Color fColor = new Color(color.x, color.y, color.z);
-    return fColor.getRGB();
+    return fColor;
   }
 
   /**

@@ -8,6 +8,7 @@ import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
 import util.Material;
 import util.ObjectInstance;
+import util.TextureImage;
 
 public class RayTraceRenderer extends LightScenegraphRenderer {
 
@@ -17,7 +18,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
   @Override
   public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView,
-      Material mat) {
+      Material mat, String textureName) {
     List<HitRecord> result = new ArrayList<>();
     switch (objectName) {
       case "sphere":
@@ -26,7 +27,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
                 ray.getStartingPoint(),
                 ray.getDirection(),
                 new Matrix4f(modelView),
-                mat));
+                mat,
+                textureName));
         break;
       case "box":
         result.addAll(
@@ -34,7 +36,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
                 ray.getStartingPoint(),
                 ray.getDirection(),
                 new Matrix4f(modelView),
-                mat));
+                mat,
+                textureName));
         break;
       default:
         System.out.println("Not supported shape: " + objectName);
@@ -43,7 +46,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
   }
 
   private List<HitRecord> checkHitBox(Vector4f start, Vector4f vector, Matrix4f modelView,
-      Material mat) {
+      Material mat, String textureName) {
 
     List<HitRecord> result = new ArrayList<>();
     Matrix4f invertedMV = new Matrix4f();
@@ -66,20 +69,67 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       // hit point goes in the polygon
       HitRecord hIn = new HitRecord();
       hIn.setT(tMin);
+
+      // set material
       hIn.setMaterial(mat);
 
-      // hit point goes out the polygon
-      //HitRecord hOut = new HitRecord();
-      //hOut.setT(tMax);
-      // add to list
+      // intersection in View
+      Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(tMin));
+      hIn.setIntersection(intersectionInView);
+
+      // calculate normal vector
+      Vector4f normal = new Vector4f(0, 0, 0, 0);
+      // find intersection in obj coordinate system
+      Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(tMin));
+      // find intersection in obj coordinate system
+      if (intersection.x == .5f) {
+        normal.x = 1f;
+      } else if (intersection.x == -.5f) {
+        normal.x = -1f;
+      }
+      if (intersection.y == .5f) {
+        normal.y = 1f;
+      } else if (intersection.y == -.5f) {
+        normal.y = -1f;
+      }
+      if (intersection.z == .5f) {
+        normal.z = 1f;
+      } else if (intersection.z == -.5f) {
+        normal.z = -1f;
+      }
+      Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
+      invTranspose.transform(normal);
+      hIn.setNormal(normal.x, normal.y, normal.z);
+
+      // set texture
+      TextureImage image = this.textures.get(textureName);
+      if (textureName != "" && image != null) {
+        hIn.setTextureImage(image);
+        float x = 0, y = 0;
+        if (Math.abs(intersection.x) == .5) {
+          x = intersection.y + .5f;
+          y = intersection.z + .5f;
+        } else if (Math.abs(intersection.y) == .5) {
+          x = intersection.x + .5f;
+          y = intersection.z + .5f;
+        } else if (Math.abs(intersection.z) == .5) {
+          x = intersection.x + .5f;
+          y = intersection.y + .5f;
+        }
+        hIn.setTextureCoordinate(x, y);
+      }
+//      System.out.println("box");
+//      System.out.println("point:" + hIn.getIntersection());
+//      System.out.println("normal: " + hIn.getNormal());
+      // add the hit to hit records
       result.add(hIn);
-      //result.add(hOut);
+
     }
     return result;
   }
 
   private List<HitRecord> checkHitSphere(Vector4f start, Vector4f vector, Matrix4f modelView,
-      Material mat) {
+      Material mat, String textureName) {
     List<HitRecord> result = new ArrayList<>();
     Matrix4f invertedMV = new Matrix4f();
     modelView.invert(invertedMV);
@@ -97,22 +147,46 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       float t1 = (-b + (float) Math.sqrt(delta)) / (2 * a);
       float t2 = (-b - (float) Math.sqrt(delta)) / (2 * a);
       float t = Math.min(t1, t2);
-      // hit point 1
+      // hit point
       HitRecord hIn = new HitRecord();
       hIn.setT(t);
+
       // compute normal vector in view coordinate
-      Vector4f intersection = s.add(v.mul(t));
-      Vector4f normal = new Vector4f(intersection).mul(-1);
-      normal = modelView.transform(normal);
+      // intersection in obj coordinate system
+      Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
+      // normal vector in obj coordinate system
+      Vector4f normal = new Vector4f(intersection);
+      Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
+      invTranspose.transform(normal);
       hIn.setNormal(normal.x, normal.y, normal.z);
+
+      // set material
       hIn.setMaterial(mat);
-      hIn.setIntersection(intersection);
-      // hit point 2
-      //HitRecord hOut = new HitRecord();
-      //hOut.setT(t2);
+
+      // set intersection in View
+      Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
+      hIn.setIntersection(intersectionInView);
+
+      // set texture
+      TextureImage image = this.textures.get(textureName);
+      if (textureName != "" && image != null) {
+        hIn.setTextureImage(image);
+        float phi = (float) Math.asin(intersection.y);
+        float theta = (float) Math.atan2(intersection.z, intersection.x);
+        float imageT = phi / (float) Math.PI + .5f;
+        float imageS = theta / (2 * (float) Math.PI) + .5f;
+//        System.out.println("t: " + imageT + "s: " + imageS);
+        hIn.setTextureCoordinate(imageT, imageS);
+      }
+//      Vector4f getNorm = hIn.getNormal();
+//      if (Math.abs(getNorm.x) < 0.1 && Math.abs(getNorm.y) < 0.1) {
+//        System.out.println("sphere");
+//        System.out.println("point:" + hIn.getIntersection());
+//        System.out.println("normal: " + hIn.getNormal());
+//      }
+
       // add to list
       result.add(hIn);
-      //result.add(hOut);
     }
     return result;
   }

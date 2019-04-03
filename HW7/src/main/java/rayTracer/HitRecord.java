@@ -1,6 +1,6 @@
 package rayTracer;
 
-import org.joml.Vector2d;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import util.Material;
@@ -13,7 +13,7 @@ public class HitRecord implements Comparable<HitRecord> {
   private Vector4f normal;
   private Material material;
   private TextureImage textureImage;
-  private Vector2d textureCoordinate;
+  private Vector2f textureCoordinate;
 
   public HitRecord() {
     intersectionInView = null;
@@ -33,7 +33,7 @@ public class HitRecord implements Comparable<HitRecord> {
   }
 
   public Vector4f getIntersection() {
-    return intersectionInView;
+    return new Vector4f(intersectionInView);
   }
 
   public void setIntersection(Vector4f intersectionInView) {
@@ -45,7 +45,7 @@ public class HitRecord implements Comparable<HitRecord> {
   }
 
   public Vector4f getNormal() {
-    return normal;
+    return new Vector4f(normal);
   }
 
   public void setNormal(Vector3f normal) {
@@ -76,16 +76,16 @@ public class HitRecord implements Comparable<HitRecord> {
     this.textureImage = textureImage;
   }
 
-  public Vector2d getTextureCoordinate() {
-    return textureCoordinate;
+  public Vector2f getTextureCoordinate() {
+    return new Vector2f(textureCoordinate);
   }
 
-  public void setTextureCoordinate(Vector2d textureCoordinate) {
-    this.textureCoordinate = new Vector2d(textureCoordinate);
+  public void setTextureCoordinate(Vector2f textureCoordinate) {
+    this.textureCoordinate = new Vector2f(textureCoordinate);
   }
 
   public void setTextureCoordinate(float x, float y) {
-    this.textureCoordinate = new Vector2d(x, y);
+    this.textureCoordinate = new Vector2f(x, y);
   }
 
   @Override

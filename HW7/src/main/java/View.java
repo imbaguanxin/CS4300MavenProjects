@@ -2,6 +2,7 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.*;
 
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
+import com.sun.tools.javadoc.Start;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -277,6 +278,7 @@ public class View {
     switch (e.getKeyCode()) {
       // Other keys should not detected as not available
       case KeyEvent.VK_SPACE:
+        System.out.println("Start ray trace!");
         scenegraph.rayTrace(WINDOW_WIDTH, WINDOW_HEIGHT, modelViewBuildHelper(), ANGLE_OF_VIEW);
         break;
       case KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:

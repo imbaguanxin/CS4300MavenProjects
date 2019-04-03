@@ -89,5 +89,6 @@ public interface IScenegraphRenderer {
 
   void dispose();
 
-  List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView, Material mat);
+  List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView, Material mat,
+      String textureName);
 }

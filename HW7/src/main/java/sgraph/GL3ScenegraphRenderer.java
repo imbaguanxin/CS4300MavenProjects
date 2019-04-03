@@ -151,7 +151,7 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
 
   @Override
   public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView,
-      Material mat) {
+      Material mat, String textureName) {
     System.out.println("Not supported, use RayTraceRenderer");
     return null;
   }
