@@ -7,6 +7,7 @@ import org.joml.Matrix4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
 import util.IVertexData;
+import util.Material;
 import util.TextureImage;
 
 import java.io.IOException;
@@ -149,7 +150,8 @@ public class GL3ScenegraphRenderer implements IScenegraphRenderer {
   }
 
   @Override
-  public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView) {
+  public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView,
+      Material mat) {
     System.out.println("Not supported, use RayTraceRenderer");
     return null;
   }

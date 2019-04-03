@@ -44,10 +44,14 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
   private List<HitRecord> checkHitBox(Vector4f start, Vector4f vector, Matrix4f modelView,
       Material mat) {
+
     List<HitRecord> result = new ArrayList<>();
-    Matrix4f invertedMV = modelView.invert();
-    Vector4f s = invertedMV.transform(start);
-    Vector4f v = invertedMV.transform(vector);
+    Matrix4f invertedMV = new Matrix4f();
+    modelView.invert(invertedMV);
+    Vector4f s = new Vector4f();
+    Vector4f v = new Vector4f();
+    invertedMV.transform(start, s);
+    invertedMV.transform(vector, v);
 
     float txMin = Math.min((-0.5f - s.x) / v.x, (0.5f - s.x) / v.x);
     float txMax = Math.max((-0.5f - s.x) / v.x, (0.5f - s.x) / v.x);
@@ -77,12 +81,15 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
   private List<HitRecord> checkHitSphere(Vector4f start, Vector4f vector, Matrix4f modelView,
       Material mat) {
     List<HitRecord> result = new ArrayList<>();
-    Matrix4f invertedMV = modelView.invert();
-    Vector4f s = invertedMV.transform(start);
-    Vector4f v = invertedMV.transform(vector);
+    Matrix4f invertedMV = new Matrix4f();
+    modelView.invert(invertedMV);
+    Vector4f s = new Vector4f();
+    Vector4f v = new Vector4f();
+    invertedMV.transform(start, s);
+    invertedMV.transform(vector, v);
 
-    float a = (float) (Math.pow(v.x, 2) + Math.pow(v.y, 2) + Math.pow(v.z, 2));
-    float b = 2f * ((s.x * v.x) + s.y * v.y + s.z * v.z);
+    float a = v.x * v.x + v.y * v.y + v.z * v.z;
+    float b = 2f * (s.x * v.x + s.y * v.y + s.z * v.z);
     float c = s.x * s.x + s.y * s.y + s.z * s.z - 1;
 
     float delta = b * b - 4 * a * c;

@@ -67,7 +67,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
     // generate rays
     float distance =
-        ((float) Math.max(w, h) / 2) / (float) Math.tan(Math.toRadians(angleOfView / 2));
+        (h * 0.5f) / (float) Math.tan(Math.toRadians(angleOfView / 2));
     rayTracer.ThreeDRay[][] rayArray = new ThreeDRay[h][w];
     BufferedImage imageBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     for (int i = 0; i < h; i++) {
@@ -111,7 +111,6 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         imageBuffer.setRGB(j, i, rgb.getRGB());
       }
     }
-
 
     try {
       File output = new File("image.png");
