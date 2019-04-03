@@ -17,44 +17,52 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
   @Override
   public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView) {
     List<HitRecord> result = new ArrayList<>();
-    ObjectInstance obj = super.meshRenderers.get(objectName);
-
-    return result;
-  }
-
-  private List<HitRecord> checkHitSpecial(Matrix4f modelView, ThreeDRay ray, String type) {
-    List<HitRecord> result = new ArrayList<>();
+    //System.out.println(objectName);
     Matrix4f invertedMV = modelView.invert();
     Vector4f s = invertedMV.transform(ray.getStartingPoint());
-    Vector4f v = invertedMV.transform(ray.getDirection());
-    if (type.equals("polygon")) {
-      result.addAll(checkHitPolygon(s, v));
-    } else if (type.equals("sphere")) {
-      result.addAll(checkHitSphere(s, v));
+    Vector4f v = invertedMV.transform(ray.getDirection()).normalize();
+    switch (objectName) {
+      case "sphere":
+        result.addAll(checkHitSphere(s, v));
+        break;
+      case "box":
+        //System.out.println("see box");
+        result.addAll(checkHitBox(s, v));
+        break;
+      default:
+        System.out.println("Not supported shape: " + objectName);
     }
+
     return result;
   }
 
-  private List<HitRecord> checkHitPolygon(Vector4f s, Vector4f v) {
+  private List<HitRecord> checkHitBox(Vector4f s, Vector4f v) {
     List<HitRecord> result = new ArrayList<>();
-    float txMin = (-.5f - s.x) / v.x;
-    float txMax = (.5f - s.x) / v.x;
-    float tyMin = (-.5f - s.y) / v.y;
-    float tyMax = (.5f - s.y) / v.y;
-    float tzMin = (-.5f - s.z) / v.z;
-    float tzMax = (.5f - s.z) / v.z;
+    float txMin = Math.min((-0.5f - s.x) / v.x, (0.5f - s.x) / v.x);
+    float txMax = Math.max((-0.5f - s.x) / v.x, (0.5f - s.x) / v.x);
+    float tyMin = Math.min((-0.5f - s.y) / v.y, (0.5f - s.y) / v.y);
+    float tyMax = Math.max((-0.5f - s.y) / v.y, (0.5f - s.y) / v.y);
+    float tzMin = Math.min((-0.5f - s.z) / v.z, (0.5f - s.z) / v.z);
+    float tzMax = Math.max((-0.5f - s.z) / v.z, (0.5f - s.z) / v.z);
+
     float tMin = Math.max(Math.max(txMin, tyMin), tzMin);
     float tMax = Math.min(Math.min(txMax, tyMax), tzMax);
+//    if (Math.abs(v.x) < 0.1 && Math.abs(v.y) < 0.1) {
+//      System.out.println("s:" + s.toString() + " v:" + v.toString());
+//      System.out.printf("txMin %f, txMax %f, tyMin %f, tyMax %f, txMin %f, txMax %f\n",
+//          txMin, txMax, tyMin, tyMax, tzMin, tzMax);
+//      System.out.printf("tMin %f, tMax %f\n", tMin, tMax);
+//    }
     if (tMin <= tMax) {
       // hit point goes in the polygon
       HitRecord hIn = new HitRecord();
       hIn.setT(tMin);
       // hit point goes out the polygon
-      HitRecord hOut = new HitRecord();
-      hOut.setT(tMax);
+      //HitRecord hOut = new HitRecord();
+      //hOut.setT(tMax);
       // add to list
       result.add(hIn);
-      result.add(hOut);
+      //result.add(hOut);
     }
     return result;
   }
@@ -74,11 +82,11 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       HitRecord hIn = new HitRecord();
       hIn.setT(t1);
       // hit point 2
-      HitRecord hOut = new HitRecord();
-      hOut.setT(t2);
+      //HitRecord hOut = new HitRecord();
+      //hOut.setT(t2);
       // add to list
       result.add(hIn);
-      result.add(hOut);
+      //result.add(hOut);
     }
     return result;
   }

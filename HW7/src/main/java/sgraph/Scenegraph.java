@@ -1,6 +1,10 @@
 package sgraph;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
 import org.joml.Vector4f;
@@ -65,6 +69,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     float distance =
         ((float) Math.max(w, h) / 2) / (float) Math.tan(Math.toRadians(angleOfView / 2));
     rayTracer.ThreeDRay[][] rayArray = new ThreeDRay[h][w];
+    BufferedImage imageBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {
         float x = -w / 2f + j;
@@ -72,38 +77,47 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         float z = -distance;
         rayArray[i][j] = new ThreeDRay(0, 0, 0, x, y, z);
         //System.out.println(x + " " + y + " " + z);
-      }
-    }
 
-    BufferedImage imageBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-    // go through the scenegraph
-    for (int i = 0; i < h; i++) {
-      for (int j = 0; j < w; j++) {
+        // copy modelView
         Stack<Matrix4f> mvCopy1 = new Stack<>();
         Stack<Matrix4f> mvCopy2 = new Stack<>();
         for (Matrix4f mv : modelView) {
           mvCopy1.push(new Matrix4f(mv));
           mvCopy2.push(new Matrix4f(mv));
         }
+        // generate hit records
         List<HitRecord> hitRecords = this.root.rayCast(mvCopy1, rayArray[i][j], this.renderer);
+        // gather lights from nodes. the according matrix4f is light to view
         Map<Light, Matrix4f> lights = this.root.getLights(mvCopy2);
-        int rgb = 0x000000;
+
+        Color rgb;
         if (hitRecords.size() > 0) {
-          float t = Float.MAX_VALUE;
-          HitRecord closestHit = null;
-          for (HitRecord record : hitRecords) {
-            float newT = record.getT();
-            if (newT >= 0 && newT < t) {
-              closestHit = record;
-              t = newT;
-            }
-          }
-          if (closestHit != null) {
-            rgb = shade(closestHit, lights);
-          }
+          rgb = new Color(1.0f, 1.0f, 1.0f);
+//          float t = Float.MAX_VALUE;
+//          HitRecord closestHit = null;
+//          for (HitRecord record : hitRecords) {
+//            float newT = record.getT();
+//            if (newT >= 0 && newT < t) {
+//              closestHit = record;
+//              t = newT;
+//            }
+//          }
+//          if (closestHit != null) {
+//            rgb = shade(closestHit, lights);
+//          }
+        } else {
+          rgb = new Color(0f, 0f, 0f);
         }
-        imageBuffer.setRGB(j, i, rgb);
+        imageBuffer.setRGB(j, i, rgb.getRGB());
       }
+    }
+
+
+    try {
+      File output = new File("image.png");
+      ImageIO.write(imageBuffer, "png", output);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
 

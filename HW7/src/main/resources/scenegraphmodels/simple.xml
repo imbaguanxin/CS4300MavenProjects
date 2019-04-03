@@ -1,0 +1,44 @@
+<scene>
+  <instance name="sphere" path="models/sphere.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="box" path="models/box.obj"/>
+
+  <group>
+    <light>
+      <ambient>.5 .5 .5</ambient>
+      <diffuse>.3 .3 .3</diffuse>
+      <specular>.5 .5 .5</specular>
+      <direction>0 -1 0</direction>
+    </light>
+    <transform>
+      <set>
+        <translate>-20 0 0</translate>
+        <scale>10 10 10</scale>
+      </set>
+      <object instanceof="box" >
+        <material>
+          <ambient>.2 .2 .2</ambient>
+          <diffuse>.3 .3 .3</diffuse>
+          <specular>.5 .5 .5</specular>
+          <shininess>100</shininess>
+        </material>
+      </object>
+    </transform>
+    <transform>
+      <set>
+        <translate>20 0 0</translate>
+        <scale>10 10 10</scale>
+      </set>
+      <object instanceof="sphere" >
+        <material>
+          <ambient>.2 .2 .2</ambient>
+          <diffuse>.3 .3 .3</diffuse>
+          <specular>.5 .5 .5</specular>
+          <shininess>100</shininess>
+        </material>
+      </object>
+    </transform>
+  </group>
+
+</scene>

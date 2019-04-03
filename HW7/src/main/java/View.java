@@ -108,7 +108,7 @@ public class View {
     scenegraph = sgraph.SceneXMLReader.importScenegraph(in
         , new VertexAttribProducer());
 
-    this.renderer = new sgraph.LightScenegraphRenderer();
+    this.renderer = new sgraph.RayTraceRenderer();
     renderer.setContext(gla);
     Map<String, String> shaderVarsToVertexAttribs = new HashMap<>();
     shaderVarsToVertexAttribs.put("vPosition", "position");
