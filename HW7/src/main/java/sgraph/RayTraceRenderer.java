@@ -6,6 +6,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
+import util.Material;
 import util.ObjectInstance;
 
 public class RayTraceRenderer extends LightScenegraphRenderer {
@@ -15,25 +16,34 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
   }
 
   @Override
-  public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView) {
+  public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView,
+      Material mat) {
     List<HitRecord> result = new ArrayList<>();
     switch (objectName) {
       case "sphere":
         result.addAll(
-            checkHitSphere(ray.getStartingPoint(), ray.getDirection(), new Matrix4f(modelView)));
+            checkHitSphere(
+                ray.getStartingPoint(),
+                ray.getDirection(),
+                new Matrix4f(modelView),
+                mat));
         break;
       case "box":
         result.addAll(
-            checkHitBox(ray.getStartingPoint(), ray.getDirection(), new Matrix4f(modelView)));
+            checkHitBox(
+                ray.getStartingPoint(),
+                ray.getDirection(),
+                new Matrix4f(modelView),
+                mat));
         break;
       default:
         System.out.println("Not supported shape: " + objectName);
     }
-
     return result;
   }
 
-  private List<HitRecord> checkHitBox(Vector4f start, Vector4f vector, Matrix4f modelView) {
+  private List<HitRecord> checkHitBox(Vector4f start, Vector4f vector, Matrix4f modelView,
+      Material mat) {
     List<HitRecord> result = new ArrayList<>();
     Matrix4f invertedMV = modelView.invert();
     Vector4f s = invertedMV.transform(start);
@@ -52,6 +62,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       // hit point goes in the polygon
       HitRecord hIn = new HitRecord();
       hIn.setT(tMin);
+      hIn.setMaterial(mat);
 
       // hit point goes out the polygon
       //HitRecord hOut = new HitRecord();
@@ -63,7 +74,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     return result;
   }
 
-  private List<HitRecord> checkHitSphere(Vector4f start, Vector4f vector, Matrix4f modelView) {
+  private List<HitRecord> checkHitSphere(Vector4f start, Vector4f vector, Matrix4f modelView,
+      Material mat) {
     List<HitRecord> result = new ArrayList<>();
     Matrix4f invertedMV = modelView.invert();
     Vector4f s = invertedMV.transform(start);
@@ -82,9 +94,12 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       HitRecord hIn = new HitRecord();
       hIn.setT(t);
       // compute normal vector in view coordinate
-      Vector4f normal = new Vector4f(s.add(v.mul(t)).mul(-1));
+      Vector4f intersection = s.add(v.mul(t));
+      Vector4f normal = new Vector4f(intersection).mul(-1);
       normal = modelView.transform(normal);
       hIn.setNormal(normal.x, normal.y, normal.z);
+      hIn.setMaterial(mat);
+      hIn.setIntersection(intersection);
       // hit point 2
       //HitRecord hOut = new HitRecord();
       //hOut.setT(t2);
