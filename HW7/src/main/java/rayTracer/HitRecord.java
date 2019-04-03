@@ -57,7 +57,7 @@ public class HitRecord implements Comparable<HitRecord> {
   }
 
   public void setNormal(float x, float y, float z) {
-    this.normal = new Vector4f(x, y, z, 0);
+    this.normal = new Vector4f(x, y, z, 0).normalize();
   }
 
   public Material getMaterial() {
