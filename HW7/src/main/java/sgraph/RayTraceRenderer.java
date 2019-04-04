@@ -103,7 +103,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
       // set texture
       TextureImage image = this.textures.get(textureName);
-      if (textureName != "" && image != null) {
+      if (!textureName.equals("") && image != null) {
         hIn.setTextureImage(image);
         float x = 0, y = 0;
         if (Math.abs(intersection.x) == .5) {
@@ -169,14 +169,14 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
       // set texture
       TextureImage image = this.textures.get(textureName);
-      if (textureName != "" && image != null) {
+      if (!textureName.equals("") && image != null) {
         hIn.setTextureImage(image);
         float phi = (float) Math.asin(intersection.y);
         float theta = (float) Math.atan2(intersection.z, intersection.x);
         float imageT = phi / (float) Math.PI + .5f;
         float imageS = theta / (2 * (float) Math.PI) + .5f;
 //        System.out.println("t: " + imageT + "s: " + imageS);
-        hIn.setTextureCoordinate(imageT, imageS);
+        hIn.setTextureCoordinate(imageS, imageT);
       }
 //      Vector4f getNorm = hIn.getNormal();
 //      if (Math.abs(getNorm.x) < 0.1 && Math.abs(getNorm.y) < 0.1) {
