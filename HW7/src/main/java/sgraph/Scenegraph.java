@@ -136,7 +136,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         material.getSpecular().y,
         material.getSpecular().z);
     float materialShininess = material.getShininess();
-    Vector4f texRGB = textureImage.getColor((float) texCoord.x, (float) texCoord.y);
+    Vector4f texRGB = textureImage.getColor(texCoord.x, texCoord.y);
 
     Vector3f lightVec, viewVec, reflectVec, normalLightDirect;
     Vector3f normalView;
@@ -209,8 +209,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
 
     color = color.mul(texRGB);
-    Color fColor = new Color(color.x, color.y, color.z);
-    return fColor;
+    return new Color(color.x, color.y, color.z);
   }
 
   /**
@@ -267,7 +266,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
    */
   @Override
   public void lightOn(Stack<Matrix4f> modelView) {
-    if (renderer != null) {
+    if (root != null && renderer != null) {
       renderer.lightOn(root, modelView);
     }
   }

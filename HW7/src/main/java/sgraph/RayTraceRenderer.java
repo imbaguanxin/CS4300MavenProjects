@@ -195,7 +195,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         float imageT = phi / (float) Math.PI + .5f;
         float imageS = theta / (2 * (float) Math.PI) + .5f;
 //        System.out.println("t: " + imageT + "s: " + imageS);
-        hIn.setTextureCoordinate(imageT, imageS);
+        hIn.setTextureCoordinate(imageS, imageT);
       }
 //      Vector4f getNorm = hIn.getNormal();
 //      if (Math.abs(getNorm.x) < 0.1 && Math.abs(getNorm.y) < 0.1) {
