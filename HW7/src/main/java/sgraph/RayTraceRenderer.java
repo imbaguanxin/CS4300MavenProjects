@@ -103,20 +103,39 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
       // set texture
       TextureImage image = this.textures.get(textureName);
-      if (textureName != "" && image != null) {
+      if (!textureName.equals("") && image != null) {
         hIn.setTextureImage(image);
-        float x = 0, y = 0;
-        if (Math.abs(intersection.x) == .5) {
-          x = intersection.y + .5f;
-          y = intersection.z + .5f;
-        } else if (Math.abs(intersection.y) == .5) {
-          x = intersection.x + .5f;
-          y = intersection.z + .5f;
-        } else if (Math.abs(intersection.z) == .5) {
-          x = intersection.x + .5f;
-          y = intersection.y + .5f;
+        float textureX = 0, textureY = 0;
+        if (intersection.x == .5f) {
+          textureX = .5f + .25f * (intersection.z + .5f);
+          textureY = .5f - .25f * (intersection.y + .5f);
+        } else if (intersection.x == -.5f) {
+          textureX = .25f - .25f * (intersection.z + .5f);
+          textureY = .5f - .25f * (intersection.y + .5f);
+        } else if (intersection.y == .5f) {
+          textureX = .25f + .25f * (intersection.x + .5f);
+          textureY = .25f - .25f * (intersection.z + .5f);
+        } else if (intersection.y == -.5f) {
+          textureX = .25f + .25f * (intersection.x + .5f);
+          textureY = .5f + .25f * (intersection.z + .5f);
+        } else if (intersection.z == .5f) {
+          textureX = 1f - .25f * (intersection.x + .5f);
+          textureY = .5f - .25f * (intersection.y + .5f);
+        } else if (intersection.z == -.5f) {
+          textureX = .25f + .25f * (intersection.x + .5f);
+          textureY = .5f - .25f * (intersection.y + .5f);
         }
-        hIn.setTextureCoordinate(x, y);
+//        if (Math.abs(intersection.x) == .5) {
+//          x = intersection.y + .5f;
+//          y = intersection.z + .5f;
+//        } else if (Math.abs(intersection.y) == .5) {
+//          x = intersection.x + .5f;
+//          y = intersection.z + .5f;
+//        } else if (Math.abs(intersection.z) == .5) {
+//          x = intersection.x + .5f;
+//          y = intersection.y + .5f;
+//        }
+        hIn.setTextureCoordinate(textureX, textureY);
       }
 //      System.out.println("box");
 //      System.out.println("point:" + hIn.getIntersection());
@@ -169,7 +188,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
       // set texture
       TextureImage image = this.textures.get(textureName);
-      if (textureName != "" && image != null) {
+      if (!textureName.equals("") && image != null) {
         hIn.setTextureImage(image);
         float phi = (float) Math.asin(intersection.y);
         float theta = (float) Math.atan2(intersection.z, intersection.x);
