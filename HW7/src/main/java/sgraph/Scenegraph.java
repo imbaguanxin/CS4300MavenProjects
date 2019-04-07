@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import org.joml.Matrix4f;
-import org.joml.Vector2d;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -136,7 +135,12 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         material.getSpecular().y,
         material.getSpecular().z);
     float materialShininess = material.getShininess();
-    Vector4f texRGB = textureImage.getColor(texCoord.x, texCoord.y);
+    Matrix4f textureTrans = new Matrix4f().identity();
+    if (textureImage.getTexture().getMustFlipVertically()) {
+      textureTrans = new Matrix4f().translate(0, 1, 0).scale(1, -1, 1);
+    }
+    Vector4f newTexCoord = textureTrans.transform(new Vector4f(texCoord.x, texCoord.y, 0, 1));
+    Vector4f texRGB = textureImage.getColor(newTexCoord.x, newTexCoord.y);
 
     Vector3f lightVec, viewVec, reflectVec, normalLightDirect;
     Vector3f normalView;

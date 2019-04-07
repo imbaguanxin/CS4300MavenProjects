@@ -7,7 +7,6 @@ import org.joml.Vector4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
 import util.Material;
-import util.ObjectInstance;
 import util.TextureImage;
 
 public class RayTraceRenderer extends LightScenegraphRenderer {
@@ -232,24 +231,24 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         float textureX = 0, textureY = 0;
         if (intersection.x == .5f) {
           textureX = .5f + .25f * (intersection.z + .5f);
-          textureY = .5f - .25f * (intersection.y + .5f);
+          textureY = .25f + .25f * (intersection.y + .5f);
         } else if (intersection.x == -.5f) {
           textureX = .25f - .25f * (intersection.z + .5f);
-          textureY = .5f - .25f * (intersection.y + .5f);
+          textureY = .25f + .25f * (intersection.y + .5f);
         } else if (intersection.y == .5f) {
           textureX = .25f + .25f * (intersection.x + .5f);
-          textureY = .25f - .25f * (intersection.z + .5f);
+          textureY = .5f + .25f * (intersection.z + .5f);
         } else if (intersection.y == -.5f) {
           textureX = .25f + .25f * (intersection.x + .5f);
-          textureY = .5f + .25f * (intersection.z + .5f);
+          textureY = .25f - .25f * (intersection.z + .5f);
         } else if (intersection.z == .5f) {
           textureX = 1f - .25f * (intersection.x + .5f);
-          textureY = .5f - .25f * (intersection.y + .5f);
+          textureY = .25f + .25f * (intersection.y + .5f);
         } else if (intersection.z == -.5f) {
           textureX = .25f + .25f * (intersection.x + .5f);
-          textureY = .5f - .25f * (intersection.y + .5f);
+          textureY = .25f + .25f * (intersection.y + .5f);
         }
-        hIn.setTextureCoordinate(textureX, textureY);
+        hIn.setTextureCoordinate(textureX, -(textureY - 1));
       }
       result.add(hIn);
 
@@ -305,8 +304,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       TextureImage image = this.textures.get(textureName);
       if (!textureName.equals("") && image != null) {
         hIn.setTextureImage(image);
-        float phi = (float) Math.asin(intersection.y);
-        float theta = (float) Math.atan2(intersection.z, intersection.x);
+        float phi = (float) Math.asin(-intersection.y);
+        float theta = (float) Math.atan2(intersection.z, -intersection.x);
         float imageT = phi / (float) Math.PI + .5f;
         float imageS = theta / (2 * (float) Math.PI) + .5f;
 //        System.out.println("t: " + imageT + "s: " + imageS);
