@@ -138,7 +138,6 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
       float y = s.y + t * v.y;
       if (y <= 1 && y >= 0) {
-        System.out.println("t : " + t);
         HitRecord hit = new HitRecord();
         hit.setT(t);
         // set material
@@ -150,7 +149,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
         // set normal
         Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
-        Vector4f normal = new Vector4f(intersection);
+        Vector4f normal = new Vector4f(intersection.x, 0, intersection.z,0);
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
         hit.setNormal(normal.x, normal.y, normal.z);
