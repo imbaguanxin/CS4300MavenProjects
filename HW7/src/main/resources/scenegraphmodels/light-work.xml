@@ -1,0 +1,47 @@
+<scene>
+  <instance name="sphere" path="models/sphere.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="box" path="models/box-outside.obj"/>
+
+  <image name="earth" path="textures/politicalWorldMap.jpg"/>
+  <image name="cb" path="textures/checkerboard.png"/>
+  <image name="metal" path="textures/brushedMetal.jpg"/>
+  <image name="die" path="textures/die.png"/>
+
+  <transform>
+    <set>
+      <rotate>-45 0 1 0</rotate>
+      <rotate>-45 1 0 0</rotate>
+    </set>
+    <group>
+      <light>
+        <ambient>.8 .8 .8</ambient>
+        <diffuse>.8 .8 .8</diffuse>
+        <specular>.8 .8 .8</specular>
+        <direction>-1 -1 0</direction>
+      </light>
+      <light>
+        <ambient>0.8 0.8 0.8</ambient>
+        <diffuse>0.8 0.8 0.8</diffuse>
+        <specular>0.8 0.8 0.8</specular>
+        <position>0 0 30</position>
+        <spotangle>10</spotangle>
+        <spotdirection>0 0 -1</spotdirection>
+      </light>
+      <transform>
+        <set>
+          <scale>20 20 20</scale>
+        </set>
+        <object instanceof="sphere" texture="earth">
+          <material>
+            <ambient>.3 .3 .3</ambient>
+            <diffuse>.3 .3 .3</diffuse>
+            <specular>.7 .7 .7</specular>
+            <shininess>100</shininess>
+          </material>
+        </object>
+      </transform>
+    </group>
+  </transform>
+</scene>

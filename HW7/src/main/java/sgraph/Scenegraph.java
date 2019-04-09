@@ -239,7 +239,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     Vector4f texRGB = textureImage.getColor(newTexCoord.x, newTexCoord.y);
 
     color = color.mul(texRGB);
-    return new Color(color.x, color.y, color.z);
+    return new Color(Math.min(color.x, 1f), Math.min(color.y, 1f), Math.min(color.z, 1f));
   }
 
   /**

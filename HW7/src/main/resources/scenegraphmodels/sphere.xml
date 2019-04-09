@@ -5,13 +5,14 @@
   <instance name="box" path="models/box-outside.obj"/>
 
   <image name="earth" path="textures/earthmap.jpg"/>
+  <image name="earthP" path="textures/politicalWorldMap.jpg"/>
   <image name="cb" path="textures/checkerboard.png"/>
   <image name="metal" path="textures/brushedMetal.jpg"/>
   <image name="die" path="textures/die.png"/>
 
   <transform>
     <set>
-      <!--<rotate>-12 0 1 0</rotate>-->
+      <!--<rotate>45 0 1 0</rotate>-->
     </set>
     <group>
       <light>
@@ -22,35 +23,45 @@
       </light>
       <transform>
         <set>
-          <translate>-20 0 0</translate>
-          <scale>10 10 10</scale>
-        </set>
-        <object instanceof="box" texture="die">
-          <material>
-            <ambient>.3 .3 .3</ambient>
-            <diffuse>.4 .4 .4</diffuse>
-            <specular>.9 .9 .9</specular>
-            <!--<ambient>.8 .4 .2</ambient>-->
-            <!--<diffuse>.3 .15 .075</diffuse>-->
-            <!--<specular>.6 .3 .15</specular>-->
-            <shininess>100</shininess>
-          </material>
-        </object>
-      </transform>
-      <transform>
-        <set>
-          <translate>20 0 0</translate>
+          <translate>-23 0 0</translate>
           <rotate>-120 1 0 0 </rotate>
           <scale>10 10 10</scale>
         </set>
         <object instanceof="sphere" texture="earth">
           <material>
+            <ambient>.3 .3 .3</ambient>
+            <diffuse>.4 .4 .4</diffuse>
+            <specular>.9 .9 .9</specular>
+            <shininess>100</shininess>
+          </material>
+        </object>
+      </transform>
+
+      <transform>
+        <set>
+          <scale>10 10 10</scale>
+        </set>
+        <object instanceof="sphere" >
+          <material>
+            <ambient>.3 .3 .3</ambient>
+            <diffuse>.4 .4 .4</diffuse>
+            <specular>.9 .9 .9</specular>
+            <shininess>100</shininess>
+          </material>
+        </object>
+      </transform>
+
+      <transform>
+        <set>
+          <translate>23 0 0</translate>
+          <rotate>-120 1 0 0 </rotate>
+          <scale>10 10 10</scale>
+        </set>
+        <object instanceof="sphere" texture="earthP">
+          <material>
             <ambient>.4 .4 .4</ambient>
             <diffuse>.4 .4 .4</diffuse>
             <specular>.8 .8 .8</specular>
-            <!--<ambient>.2 .4 .8</ambient>-->
-            <!--<diffuse>.075 .15 .3</diffuse>-->
-            <!--<specular>.15 .3 .6</specular>-->
             <shininess>100</shininess>
           </material>
         </object>
