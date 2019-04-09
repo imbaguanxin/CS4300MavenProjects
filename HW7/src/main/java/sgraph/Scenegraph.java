@@ -213,7 +213,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
 
     color = color.mul(texRGB);
-    return new Color(color.x, color.y, color.z);
+    return new Color(Math.min(color.x, 1f), Math.min(color.y, 1f), Math.min(color.z, 1f));
   }
 
   /**
