@@ -6,6 +6,9 @@ import org.joml.Vector4f;
 import util.Material;
 import util.TextureImage;
 
+/**
+ * This class records all necessary information about a hit.
+ */
 public class HitRecord implements Comparable<HitRecord> {
 
   private float t;
@@ -15,6 +18,9 @@ public class HitRecord implements Comparable<HitRecord> {
   private TextureImage textureImage;
   private Vector2f textureCoordinate;
 
+  /**
+   * Construct a hit record with default values.
+   */
   public HitRecord() {
     intersectionInView = null;
     normal = null;
@@ -88,6 +94,13 @@ public class HitRecord implements Comparable<HitRecord> {
     this.textureCoordinate = new Vector2f(x, y);
   }
 
+  /**
+   * Comparison between hit records are based on t.
+   *
+   * @param o the other hit record
+   * @return 1 if this t is greater than the other t; 0 if equal; -1 if this t is less than the
+   * other t.
+   */
   @Override
   public int compareTo(HitRecord o) {
     float dif = this.getT() - o.getT();

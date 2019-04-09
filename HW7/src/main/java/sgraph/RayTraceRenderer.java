@@ -9,12 +9,27 @@ import rayTracer.ThreeDRay;
 import util.Material;
 import util.TextureImage;
 
+/**
+ * This class represents a renderer that support ray tracing function. All other features are
+ * succeed from LightScenegraphRenderer.
+ */
 public class RayTraceRenderer extends LightScenegraphRenderer {
 
   public RayTraceRenderer() {
     super();
   }
 
+  /**
+   * Check if a ray hit the object specified. If hit, return all hit records of the ray on that
+   * object, including ins and outs.
+   *
+   * @param objectName the name of the object that is to be checked
+   * @param ray the ray that is to be checked
+   * @param modelView the modelView transformation from world to view coordinates
+   * @param mat the material of the object that is to be checked
+   * @param textureName the name of the texture of the object that is to be checked
+   * @return a list of all hit records of the ray on the object
+   */
   @Override
   public List<HitRecord> checkHit(String objectName, ThreeDRay ray, Matrix4f modelView,
       Material mat, String textureName) {
@@ -53,6 +68,16 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     return result;
   }
 
+  /**
+   * This is a helper to check how a specified ray hit a cylinder.
+   *
+   * @param start the start point of the ray
+   * @param vector the direction of the ray
+   * @param modelView the modelView transformation from world to view coordinates
+   * @param mat the material of the object that is to be checked
+   * @param textureName the name of the texture of the object that is to be checked
+   * @return a list of all hit records of the ray on the object
+   */
   private List<HitRecord> checkHitCylinder(Vector4f start, Vector4f vector, Matrix4f modelView,
       Material mat, String textureName) {
     List<HitRecord> result = new ArrayList<>();
@@ -148,11 +173,14 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
         // set normal
         Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
-        Vector4f normal = new Vector4f(intersection.x, 0, intersection.z,0);
+        Vector4f normal = new Vector4f(intersection.x, 0, intersection.z, 0);
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
         hit.setNormal(normal.x, normal.y, normal.z);
 
+        // TODO
+        // Construction ahead!
+        // to be finished
         TextureImage image = this.textures.get(textureName);
         if (!textureName.equals("") && image != null) {
           hit.setTextureImage(image);
@@ -168,6 +196,16 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     return result;
   }
 
+  /**
+   * This is a helper to check how a specified ray hit a box.
+   *
+   * @param start the start point of the ray
+   * @param vector the direction of the ray
+   * @param modelView the modelView transformation from world to view coordinates
+   * @param mat the material of the object that is to be checked
+   * @param textureName the name of the texture of the object that is to be checked
+   * @return a list of all hit records of the ray on the object
+   */
   private List<HitRecord> checkHitBox(Vector4f start, Vector4f vector, Matrix4f modelView,
       Material mat, String textureName) {
 
@@ -225,26 +263,28 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       hIn.setNormal(normal.x, normal.y, normal.z);
 
       // set texture
+      // the origin of the texture coordinates is at lower left corner
+      // so that the texture matches openGL
       TextureImage image = this.textures.get(textureName);
       if (!textureName.equals("") && image != null) {
         hIn.setTextureImage(image);
         float textureX = 0, textureY = 0;
-        if (intersection.x == .5f) {
+        if (intersection.x == .5f) { // right
           textureX = .5f + .25f * (intersection.z + .5f);
           textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.x == -.5f) {
+        } else if (intersection.x == -.5f) { // left
           textureX = .25f - .25f * (intersection.z + .5f);
           textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.y == .5f) {
+        } else if (intersection.y == .5f) { // top
           textureX = .25f + .25f * (intersection.x + .5f);
           textureY = .5f + .25f * (intersection.z + .5f);
-        } else if (intersection.y == -.5f) {
+        } else if (intersection.y == -.5f) { // bottom
           textureX = .25f + .25f * (intersection.x + .5f);
           textureY = .25f - .25f * (intersection.z + .5f);
-        } else if (intersection.z == .5f) {
+        } else if (intersection.z == .5f) { // front
           textureX = 1f - .25f * (intersection.x + .5f);
           textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.z == -.5f) {
+        } else if (intersection.z == -.5f) { // back
           textureX = .25f + .25f * (intersection.x + .5f);
           textureY = .25f + .25f * (intersection.y + .5f);
         }
@@ -256,6 +296,16 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     return result;
   }
 
+  /**
+   * This is a helper to check how a specified ray hit a sphere.
+   *
+   * @param start the start point of the ray
+   * @param vector the direction of the ray
+   * @param modelView the modelView transformation from world to view coordinates
+   * @param mat the material of the object that is to be checked
+   * @param textureName the name of the texture of the object that is to be checked
+   * @return a list of all hit records of the ray on the object
+   */
   private List<HitRecord> checkHitSphere(Vector4f start, Vector4f vector, Matrix4f modelView,
       Material mat, String textureName) {
     List<HitRecord> result = new ArrayList<>();
@@ -301,6 +351,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       hIn.setNormal(normal.x, normal.y, normal.z);
 
       // set texture
+      // the origin of the texture coordinates is at lower left corner
+      // so that the texture matches openGL
       TextureImage image = this.textures.get(textureName);
       if (!textureName.equals("") && image != null) {
         hIn.setTextureImage(image);
@@ -308,15 +360,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         float theta = (float) Math.atan2(intersection.z, -intersection.x);
         float imageT = phi / (float) Math.PI + .5f;
         float imageS = theta / (2 * (float) Math.PI) + .5f;
-//        System.out.println("t: " + imageT + "s: " + imageS);
         hIn.setTextureCoordinate(imageS, imageT);
       }
-//      Vector4f getNorm = hIn.getNormal();
-//      if (Math.abs(getNorm.x) < 0.1 && Math.abs(getNorm.y) < 0.1) {
-//        System.out.println("sphere");
-//        System.out.println("point:" + hIn.getIntersection());
-//        System.out.println("normal: " + hIn.getNormal());
-//      }
 
       // add to list
       result.add(hIn);

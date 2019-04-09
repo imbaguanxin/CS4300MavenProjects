@@ -265,9 +265,8 @@ public class View {
   }
 
   /**
-   * This method handles the key input. It changes the cameraFlag table, which is run by a timer.
-   * The timer look at the cameraFlag table every 10 ms. If the timer sees a Flag is true, then it
-   * ask the camera to do corresponding job.
+   * This method handles the key input. When the space key is hit, start the ray tracing function to
+   * produce a image.
    *
    * @param e This is a KeyEvent from user.
    * @param pressed This is a boolean representing whether it is pressed or released. True means
@@ -279,7 +278,7 @@ public class View {
       case KeyEvent.VK_SPACE:
         System.out.println("Start ray trace!");
         scenegraph.rayTrace(WINDOW_WIDTH, WINDOW_HEIGHT, modelViewBuildHelper(), ANGLE_OF_VIEW);
-        System.out.println("完事了！");
+        System.out.println("Finish ray trace!");
         break;
       case KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:
         break;

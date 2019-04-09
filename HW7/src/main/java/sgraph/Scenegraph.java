@@ -28,6 +28,11 @@ import util.TextureImage;
 public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<VertexType> {
 
   /**
+   * The index of the image that is to be produced.
+   */
+  private static int imgIndex = 0;
+
+  /**
    * The root of the scene graph tree
    */
   protected INode root;
@@ -63,21 +68,27 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     renderer.dispose();
   }
 
+  /**
+   * Start ray trace this scene graph and write an image.
+   * @param w the width of the image
+   * @param h the height of the image
+   * @param modelView the stack of modelView storing a transformation from world to camera
+   * @param angleOfView angle of view from bottom to top
+   */
   @Override
   public void rayTrace(int w, int h, Stack<Matrix4f> modelView, float angleOfView) {
 
-    // generate rays
     float distance =
         (h * 0.5f) / (float) Math.tan(Math.toRadians(angleOfView / 2));
     rayTracer.ThreeDRay[][] rayArray = new ThreeDRay[h][w];
     BufferedImage imageBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {
+        // generate rays
         float x = -w / 2f + j;
         float y = h / 2f - i;
         float z = -distance;
         rayArray[i][j] = new ThreeDRay(0, 0, 0, x, y, z);
-        //System.out.println(x + " " + y + " " + z);
 
         // copy modelView
         Stack<Matrix4f> mvCopy1 = new Stack<>();
@@ -91,12 +102,12 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         // gather lights from nodes. the according matrix4f is light to view
         Map<Light, Matrix4f> lights = this.root.getLights(mvCopy2);
 
+        // produce color for this pixel
         Color rgb = null;
         if (hitRecords.size() > 0) {
           HitRecord closestHit = Collections.min(hitRecords);
           if (closestHit != null) {
             rgb = shade(closestHit, lights);
-            //rgb = new Color(1f,1f,1f);
           }
         }
         if (rgb == null) {
@@ -106,17 +117,25 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       }
     }
 
+    // Write image produced to file.
     try {
-      File output = new File("image.png");
+      imgIndex++;
+      String filename = String.format("image%03d.png", imgIndex);
+      File output = new File(filename);
       ImageIO.write(imageBuffer, "png", output);
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-
   }
 
+  /**
+   * This method acts as a combine of vertex and fragment shader for a pixel.
+   * @param hitRecord the closest hit on the ray
+   * @param lights all lights in this scene
+   * @return the color of this pixel
+   */
   private Color shade(HitRecord hitRecord, Map<Light, Matrix4f> lights) {
+    // data type adapting
     Material material = hitRecord.getMaterial();
     TextureImage textureImage = hitRecord.getTexture();
     Vector4f position = hitRecord.getIntersection();
@@ -135,13 +154,17 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         material.getSpecular().y,
         material.getSpecular().z);
     float materialShininess = material.getShininess();
+    float BRIGHTNESS = 0.4f;
+
+    // pass correct texture coordinates to fragment shader
     Matrix4f textureTrans = new Matrix4f().identity();
     if (textureImage.getTexture().getMustFlipVertically()) {
       textureTrans = new Matrix4f().translate(0, 1, 0).scale(1, -1, 1);
     }
+    // vertex shader jobs
     Vector4f newTexCoord = textureTrans.transform(new Vector4f(texCoord.x, texCoord.y, 0, 1));
-    Vector4f texRGB = textureImage.getColor(newTexCoord.x, newTexCoord.y);
 
+    // fragment shader jobs
     Vector3f lightVec, viewVec, reflectVec, normalLightDirect;
     Vector3f normalView;
     Vector3f ambient, diffuse, specular;
@@ -208,9 +231,12 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         color = color.add(new Vector4f(colorTemp.x, colorTemp.y, colorTemp.z, 1));
       } else {
         color = color.add(
-            new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1).mul(0.4f));
+            new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1).mul(BRIGHTNESS));
       }
     }
+
+    // sample the texture image
+    Vector4f texRGB = textureImage.getColor(newTexCoord.x, newTexCoord.y);
 
     color = color.mul(texRGB);
     return new Color(color.x, color.y, color.z);
@@ -255,14 +281,10 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
    */
   @Override
   public void draw(Stack<Matrix4f> modelView) {
-    if ((root != null) && renderer != null) {
-      //System.out.println("light on");
-      renderer.lightOn(root, modelView);
-    }
     if ((root != null) && (renderer != null)) {
+      renderer.lightOn(root, modelView);
       renderer.draw(root, modelView);
     }
-
   }
 
   /**
