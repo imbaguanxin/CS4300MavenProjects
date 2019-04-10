@@ -173,7 +173,8 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     Vector3f normalView;
     Vector3f ambient, diffuse, specular;
     float nDotL, rDotV, dDotMinusL;
-    Vector4f color = new Vector4f(0, 0, 0, 1);
+    //Vector4f color = new Vector4f(0,0,0,1);
+    Vector4f color = new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1);
 
     for (Light light : lights.keySet()) {
       if (canSeeLight(hitRecord, light, new Matrix4f(lights.get(light)), modelView)) {
@@ -182,7 +183,6 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
             .transform(new Vector4f(light.getSpotDirection()));
 
         if (light.getPosition().w != 0) {
-          //
           lightVec = new Vector3f(
               lightPosition.x - position.x,
               lightPosition.y - position.y,
@@ -262,8 +262,10 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
           lightPosition.x - hitPosition.x,
           lightPosition.y - hitPosition.y,
           lightPosition.z - hitPosition.z);
-      hitToLightRay = new ThreeDRay(
-          new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z), hitToLightDir);
+      Vector3f normalHitToLightDir = new Vector3f(hitToLightDir).normalize();
+      Vector3f position = new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z)
+          .add(normalHitToLightDir.mul(0.001f));
+      hitToLightRay = new ThreeDRay(position, hitToLightDir);
       List<HitRecord> records = this.root.rayCast(modelView, hitToLightRay, this.renderer);
       for (HitRecord hit : records) {
         if (hit.getT() < 1 && hit.getT() > 0) {
@@ -276,8 +278,9 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
           -lightPosition.y,
           -lightPosition.z)
           .normalize();
-      hitToLightRay = new ThreeDRay(
-          new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z), hitToLightDir);
+      Vector3f position = new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z)
+          .add(new Vector3f(hitToLightDir).mul(0.001f));
+      hitToLightRay = new ThreeDRay(position, hitToLightDir);
       List<HitRecord> records = this.root.rayCast(modelView, hitToLightRay, this.renderer);
       for (HitRecord hit : records) {
         if (hit.getT() > 0) {

@@ -248,19 +248,19 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         // find intersection in obj coordinate system
         Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
         // find intersection in obj coordinate system
-        if (intersection.x == .5f) {
+        if (intersection.x >= .499f && intersection.x <= .501f) {
           normal.x = 1f;
-        } else if (intersection.x == -.5f) {
+        } else if (intersection.x <= -.499f && intersection.x >= -.501f) {
           normal.x = -1f;
         }
-        if (intersection.y == .5f) {
+        if (intersection.y >= .499f && intersection.y <= .501f) {
           normal.y = 1f;
-        } else if (intersection.y == -.5f) {
+        } else if (intersection.y <= -.499f && intersection.y >= -.501f) {
           normal.y = -1f;
         }
-        if (intersection.z == .5f) {
+        if (intersection.z >= .499f && intersection.z <= .501f) {
           normal.z = 1f;
-        } else if (intersection.z == -.5f) {
+        } else if (intersection.z <= -.499f && intersection.z >= -.501f) {
           normal.z = -1f;
         }
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
@@ -353,6 +353,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
         // normal vector in obj coordinate system
         Vector4f normal = new Vector4f(intersection);
+        normal.w = 0;
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
         hit.setNormal(normal.x, normal.y, normal.z);

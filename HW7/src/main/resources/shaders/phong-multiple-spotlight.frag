@@ -42,7 +42,7 @@ void main()
     vec3 ambient, diffuse, specular;
     float nDotL, rDotV, dDotMinusL, cosTheta;
 
-    fColor = vec4(0, 0, 0, 1);
+    fColor = vec4(material.ambient, 1.0);
 
     for (int i=0;i<numLights;i++)
     {
