@@ -23,7 +23,7 @@
   This is a render from ray tracer
   ![box](box_rayTracer.png)
   This is a render from OpenGL
-  ![box_openGL](box_openGL.png)
+  ![box_openGL](box_OpenGL.png)
 
 ## sphere rendering
 
@@ -31,7 +31,7 @@
   This is a render from ray tracer
   ![sphere](sphere_rayTracer.png)
   This is a render from OpenGL
-  ![sphere_openGL](sphere_openGL.png)
+  ![sphere_openGL](sphere_OpenGL.png)
 
 ## light works
   There is a spot light and a directional light
