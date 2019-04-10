@@ -274,22 +274,22 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         if (!textureName.equals("") && image != null) {
           hit.setTextureImage(image);
           float textureX = 0, textureY = 0;
-          if (intersection.x == .5f) { // right
+          if (intersection.x >= .499f && intersection.x <= .501f) { // right
             textureX = .5f + .25f * (intersection.z + .5f);
             textureY = .25f + .25f * (intersection.y + .5f);
-          } else if (intersection.x == -.5f) { // left
+          } else if (intersection.x <= -.499f && intersection.x >= -.501f) { // left
             textureX = .25f - .25f * (intersection.z + .5f);
             textureY = .25f + .25f * (intersection.y + .5f);
-          } else if (intersection.y == .5f) { // top
+          } else if (intersection.y >= .499f && intersection.y <= .501f) { // top
             textureX = .25f + .25f * (intersection.x + .5f);
             textureY = .5f + .25f * (intersection.z + .5f);
-          } else if (intersection.y == -.5f) { // bottom
+          } else if (intersection.y <= -.499f && intersection.y >= -.501f) { // bottom
             textureX = .25f + .25f * (intersection.x + .5f);
             textureY = .25f - .25f * (intersection.z + .5f);
-          } else if (intersection.z == .5f) { // front
+          } else if (intersection.z >= .499f && intersection.z <= .501f) { // front
             textureX = 1f - .25f * (intersection.x + .5f);
             textureY = .25f + .25f * (intersection.y + .5f);
-          } else if (intersection.z == -.5f) { // back
+          } else if (intersection.z <= -.499f && intersection.z >= -.501f) { // back
             textureX = .25f + .25f * (intersection.x + .5f);
             textureY = .25f + .25f * (intersection.y + .5f);
           }
@@ -328,7 +328,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     float c = s.x * s.x + s.y * s.y + s.z * s.z - 1;
 
     float delta = b * b - 4 * a * c;
-    if (delta >= 0) {
+    if (delta >= -0.001f) {
       float t1 = (-b + (float) Math.sqrt(delta)) / (2 * a);
       float t2 = (-b - (float) Math.sqrt(delta)) / (2 * a);
       List<Float> tlist = new ArrayList<>();
