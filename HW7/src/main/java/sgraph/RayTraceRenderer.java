@@ -243,19 +243,19 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       // find intersection in obj coordinate system
       Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(tMin));
       // find intersection in obj coordinate system
-      if (intersection.x == .5f) {
+      if (intersection.x >= .499f && intersection.x <= .501f) {
         normal.x = 1f;
-      } else if (intersection.x == -.5f) {
+      } else if (intersection.x <= -.499f && intersection.x >= -.501f) {
         normal.x = -1f;
       }
-      if (intersection.y == .5f) {
+      if (intersection.y >= .499f && intersection.y <= .501f) {
         normal.y = 1f;
-      } else if (intersection.y == -.5f) {
+      } else if (intersection.y <= -.499f && intersection.y >= -.501f) {
         normal.y = -1f;
       }
-      if (intersection.z == .5f) {
+      if (intersection.z >= .499f && intersection.z <= .501f) {
         normal.z = 1f;
-      } else if (intersection.z == -.5f) {
+      } else if (intersection.z <= -.499f && intersection.z >= -.501f) {
         normal.z = -1f;
       }
       Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
@@ -269,22 +269,22 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       if (!textureName.equals("") && image != null) {
         hIn.setTextureImage(image);
         float textureX = 0, textureY = 0;
-        if (intersection.x == .5f) { // right
+        if (intersection.x >= .499f && intersection.x <= .501f) { // right
           textureX = .5f + .25f * (intersection.z + .5f);
           textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.x == -.5f) { // left
+        } else if (intersection.x <= -.499f && intersection.x >= -.501f) { // left
           textureX = .25f - .25f * (intersection.z + .5f);
           textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.y == .5f) { // top
+        } else if (intersection.y >= .499f && intersection.y <= .501f) { // top
           textureX = .25f + .25f * (intersection.x + .5f);
           textureY = .5f + .25f * (intersection.z + .5f);
-        } else if (intersection.y == -.5f) { // bottom
+        } else if (intersection.y <= -.499f && intersection.y >= -.501f) { // bottom
           textureX = .25f + .25f * (intersection.x + .5f);
           textureY = .25f - .25f * (intersection.z + .5f);
-        } else if (intersection.z == .5f) { // front
+        } else if (intersection.z >= .499f && intersection.z <= .501f) { // front
           textureX = 1f - .25f * (intersection.x + .5f);
           textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.z == -.5f) { // back
+        } else if (intersection.z <= -.499f && intersection.z >= -.501f) { // back
           textureX = .25f + .25f * (intersection.x + .5f);
           textureY = .25f + .25f * (intersection.y + .5f);
         }
