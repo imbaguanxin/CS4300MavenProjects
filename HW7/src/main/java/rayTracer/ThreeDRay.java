@@ -8,8 +8,8 @@ import org.joml.Vector4f;
  */
 public class ThreeDRay {
 
-  private Vector4f startingPoint;
-  private Vector4f direction;
+  private Vector3f startingPoint;
+  private Vector3f direction;
 
   /**
    * Construct a ray with all variables in float.
@@ -22,19 +22,8 @@ public class ThreeDRay {
    * @param vz z component of the direction
    */
   public ThreeDRay(float sx, float sy, float sz, float vx, float vy, float vz) {
-    this.startingPoint = new Vector4f(sx, sy, sz, 1);
-    this.direction = new Vector4f(vx, vy, vz, 0);
-  }
-
-  /**
-   * Construct a ray with all variables in Vector4f.
-   *
-   * @param startingPoint the starting point of ray
-   * @param direction the direction of ray
-   */
-  public ThreeDRay(Vector4f startingPoint, Vector4f direction) {
-    this.startingPoint = startingPoint;
-    this.direction = direction;
+    this.startingPoint = new Vector3f(sx, sy, sz);
+    this.direction = new Vector3f(vx, vy, vz);
   }
 
   /**
@@ -44,31 +33,30 @@ public class ThreeDRay {
    * @param direction the direction of ray
    */
   public ThreeDRay(Vector3f startingPoint, Vector3f direction) {
-    this.startingPoint = new Vector4f(startingPoint.x, startingPoint.y, startingPoint.z, 1);
-    this.direction = new Vector4f(direction.x, direction.y, direction.z, 0);
+    this.startingPoint = new Vector3f(startingPoint.x, startingPoint.y, startingPoint.z);
+    this.direction = new Vector3f(direction.x, direction.y, direction.z);
   }
 
   public Vector4f getStartingPoint() {
-    return startingPoint;
-  }
-
-  public void setStartingPoint(Vector4f startingPoint) {
-    this.startingPoint = new Vector4f(startingPoint);
+    return new Vector4f(startingPoint.x, startingPoint.y, startingPoint.z, 1);
   }
 
   public void setStartingPoint(float sx, float sy, float sz) {
-    this.startingPoint = new Vector4f(sx, sy, sz, 1);
+    this.startingPoint = new Vector3f(sx, sy, sz);
   }
 
   public Vector4f getDirection() {
-    return direction;
+    return new Vector4f(direction.x, direction.y, direction.z, 0);
   }
 
   public void setDirection(Vector4f direction) {
-    this.direction = new Vector4f(direction);
+    if (direction.w != 0) {
+      System.out.println("Given Direction is not a direction!, use x, y, z as direction");
+    }
+    this.direction = new Vector3f(direction.x, direction.y, direction.z);
   }
 
   public void setDirection(float vx, float vy, float vz) {
-    this.direction = new Vector4f(vx, vy, vz, 0);
+    this.direction = new Vector3f(vx, vy, vz);
   }
 }

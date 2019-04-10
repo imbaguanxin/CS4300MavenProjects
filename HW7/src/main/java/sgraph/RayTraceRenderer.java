@@ -227,70 +227,77 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     float tMin = Math.max(Math.max(txMin, tyMin), tzMin);
     float tMax = Math.min(Math.min(txMax, tyMax), tzMax);
     if (tMin <= tMax) {
-      // hit point goes in the polygon
-      HitRecord hIn = new HitRecord();
-      hIn.setT(tMin);
+      List<Float> tlist = new ArrayList<>();
+      tlist.add(tMin);
+      tlist.add(tMax);
 
-      // set material
-      hIn.setMaterial(mat);
+      for (Float t : tlist) {
+        // hit point goes in the polygon
+        HitRecord hit = new HitRecord();
+        hit.setT(t);
 
-      // intersection in View
-      Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(tMin));
-      hIn.setIntersection(intersectionInView);
+        // set material
+        hit.setMaterial(mat);
 
-      // calculate normal vector
-      Vector4f normal = new Vector4f(0, 0, 0, 0);
-      // find intersection in obj coordinate system
-      Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(tMin));
-      // find intersection in obj coordinate system
-      if (intersection.x == .5f) {
-        normal.x = 1f;
-      } else if (intersection.x == -.5f) {
-        normal.x = -1f;
-      }
-      if (intersection.y == .5f) {
-        normal.y = 1f;
-      } else if (intersection.y == -.5f) {
-        normal.y = -1f;
-      }
-      if (intersection.z == .5f) {
-        normal.z = 1f;
-      } else if (intersection.z == -.5f) {
-        normal.z = -1f;
-      }
-      Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
-      invTranspose.transform(normal);
-      hIn.setNormal(normal.x, normal.y, normal.z);
+        // intersection in View
+        Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
+        hit.setIntersection(intersectionInView);
 
-      // set texture
-      // the origin of the texture coordinates is at lower left corner
-      // so that the texture matches openGL
-      TextureImage image = this.textures.get(textureName);
-      if (!textureName.equals("") && image != null) {
-        hIn.setTextureImage(image);
-        float textureX = 0, textureY = 0;
-        if (intersection.x == .5f) { // right
-          textureX = .5f + .25f * (intersection.z + .5f);
-          textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.x == -.5f) { // left
-          textureX = .25f - .25f * (intersection.z + .5f);
-          textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.y == .5f) { // top
-          textureX = .25f + .25f * (intersection.x + .5f);
-          textureY = .5f + .25f * (intersection.z + .5f);
-        } else if (intersection.y == -.5f) { // bottom
-          textureX = .25f + .25f * (intersection.x + .5f);
-          textureY = .25f - .25f * (intersection.z + .5f);
-        } else if (intersection.z == .5f) { // front
-          textureX = 1f - .25f * (intersection.x + .5f);
-          textureY = .25f + .25f * (intersection.y + .5f);
-        } else if (intersection.z == -.5f) { // back
-          textureX = .25f + .25f * (intersection.x + .5f);
-          textureY = .25f + .25f * (intersection.y + .5f);
+        // calculate normal vector
+        Vector4f normal = new Vector4f(0, 0, 0, 0);
+        // find intersection in obj coordinate system
+        Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
+        // find intersection in obj coordinate system
+        if (intersection.x == .5f) {
+          normal.x = 1f;
+        } else if (intersection.x == -.5f) {
+          normal.x = -1f;
         }
-        hIn.setTextureCoordinate(textureX, -(textureY - 1));
+        if (intersection.y == .5f) {
+          normal.y = 1f;
+        } else if (intersection.y == -.5f) {
+          normal.y = -1f;
+        }
+        if (intersection.z == .5f) {
+          normal.z = 1f;
+        } else if (intersection.z == -.5f) {
+          normal.z = -1f;
+        }
+        Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
+        invTranspose.transform(normal);
+        hit.setNormal(normal.x, normal.y, normal.z);
+
+        // set texture
+        // the origin of the texture coordinates is at lower left corner
+        // so that the texture matches openGL
+        TextureImage image = this.textures.get(textureName);
+        if (!textureName.equals("") && image != null) {
+          hit.setTextureImage(image);
+          float textureX = 0, textureY = 0;
+          if (intersection.x == .5f) { // right
+            textureX = .5f + .25f * (intersection.z + .5f);
+            textureY = .25f + .25f * (intersection.y + .5f);
+          } else if (intersection.x == -.5f) { // left
+            textureX = .25f - .25f * (intersection.z + .5f);
+            textureY = .25f + .25f * (intersection.y + .5f);
+          } else if (intersection.y == .5f) { // top
+            textureX = .25f + .25f * (intersection.x + .5f);
+            textureY = .5f + .25f * (intersection.z + .5f);
+          } else if (intersection.y == -.5f) { // bottom
+            textureX = .25f + .25f * (intersection.x + .5f);
+            textureY = .25f - .25f * (intersection.z + .5f);
+          } else if (intersection.z == .5f) { // front
+            textureX = 1f - .25f * (intersection.x + .5f);
+            textureY = .25f + .25f * (intersection.y + .5f);
+          } else if (intersection.z == -.5f) { // back
+            textureX = .25f + .25f * (intersection.x + .5f);
+            textureY = .25f + .25f * (intersection.y + .5f);
+          }
+          hit.setTextureCoordinate(textureX, -(textureY - 1));
+        }
+        result.add(hit);
+
       }
-      result.add(hIn);
 
     }
     return result;
@@ -324,49 +331,50 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     if (delta >= 0) {
       float t1 = (-b + (float) Math.sqrt(delta)) / (2 * a);
       float t2 = (-b - (float) Math.sqrt(delta)) / (2 * a);
-      float t;
-      if (t2 >= 0) {
-        t = t2;
-      } else {
-        t = t1;
+      List<Float> tlist = new ArrayList<>();
+      tlist.add(t1);
+      tlist.add(t2);
+
+      for (Float t : tlist) {
+        // hit point
+        HitRecord hit = new HitRecord();
+
+        hit.setT(t);
+
+        // set material
+        hit.setMaterial(mat);
+
+        // set intersection in View
+        Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
+        hit.setIntersection(intersectionInView);
+
+        // compute normal vector in view coordinate
+        // intersection in obj coordinate system
+        Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
+        // normal vector in obj coordinate system
+        Vector4f normal = new Vector4f(intersection);
+        Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
+        invTranspose.transform(normal);
+        hit.setNormal(normal.x, normal.y, normal.z);
+
+        // set texture
+        // the origin of the texture coordinates is at lower left corner
+        // so that the texture matches openGL
+        TextureImage image = this.textures.get(textureName);
+        if (!textureName.equals("") && image != null) {
+          hit.setTextureImage(image);
+          float phi = (float) Math.asin(-intersection.y);
+          float theta = (float) Math.atan2(intersection.z, -intersection.x);
+          float imageT = phi / (float) Math.PI + .5f;
+          float imageS = theta / (2 * (float) Math.PI) + .5f;
+          hit.setTextureCoordinate(imageS, imageT);
+        }
+        // add to list
+        result.add(hit);
       }
-      // hit point
-      HitRecord hIn = new HitRecord();
-      hIn.setT(t);
 
-      // set material
-      hIn.setMaterial(mat);
 
-      // set intersection in View
-      Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
-      hIn.setIntersection(intersectionInView);
-
-      // compute normal vector in view coordinate
-      // intersection in obj coordinate system
-      Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
-      // normal vector in obj coordinate system
-      Vector4f normal = new Vector4f(intersection);
-      Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
-      invTranspose.transform(normal);
-      hIn.setNormal(normal.x, normal.y, normal.z);
-
-      // set texture
-      // the origin of the texture coordinates is at lower left corner
-      // so that the texture matches openGL
-      TextureImage image = this.textures.get(textureName);
-      if (!textureName.equals("") && image != null) {
-        hIn.setTextureImage(image);
-        float phi = (float) Math.asin(-intersection.y);
-        float theta = (float) Math.atan2(intersection.z, -intersection.x);
-        float imageT = phi / (float) Math.PI + .5f;
-        float imageS = theta / (2 * (float) Math.PI) + .5f;
-        hIn.setTextureCoordinate(imageS, imageT);
-      }
-
-      // add to list
-      result.add(hIn);
     }
     return result;
   }
-
 }
