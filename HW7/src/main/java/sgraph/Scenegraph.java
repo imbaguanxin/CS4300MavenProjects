@@ -218,10 +218,10 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
         rDotV = Math.max(reflectVec.dot(viewVec), 0);
 
-        ambient = materialAmbient.mul(light.getAmbient());
-        diffuse = materialDiffuse.mul(light.getDiffuse()).mul(Math.max(nDotL, 0));
+        ambient = new Vector3f(materialAmbient).mul(light.getAmbient());
+        diffuse = new Vector3f(materialDiffuse).mul(light.getDiffuse()).mul(Math.max(nDotL, 0));
         if (nDotL > 0) {
-          specular = materialSpecular.mul(light.getSpecular())
+          specular = new Vector3f(materialSpecular).mul(light.getSpecular())
               .mul((float) Math.pow(rDotV, materialShininess));
         } else {
           specular = new Vector3f(0, 0, 0);
@@ -268,7 +268,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       hitToLightRay = new ThreeDRay(position, hitToLightDir);
       List<HitRecord> records = this.root.rayCast(modelView, hitToLightRay, this.renderer);
       for (HitRecord hit : records) {
-        if (hit.getT() < 1 && hit.getT() > 0) {
+        if (hit.getT() < 1.001 && hit.getT() > 0.001) {
           result = false;
         }
       }
@@ -283,7 +283,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       hitToLightRay = new ThreeDRay(position, hitToLightDir);
       List<HitRecord> records = this.root.rayCast(modelView, hitToLightRay, this.renderer);
       for (HitRecord hit : records) {
-        if (hit.getT() > 0) {
+        if (hit.getT() > 0.001) {
           result = false;
         }
       }

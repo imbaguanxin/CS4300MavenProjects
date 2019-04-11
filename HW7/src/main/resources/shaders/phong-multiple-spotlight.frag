@@ -24,7 +24,7 @@ in vec4 fPosition;
 in vec4 fTexCoord;
 
 const int MAXLIGHTS = 10;
-const float BRIGHTNESS = 0.4;
+const float BRIGHTNESS = 0.2;
 
 uniform MaterialProperties material;
 uniform LightProperties light[MAXLIGHTS];
@@ -42,7 +42,7 @@ void main()
     vec3 ambient, diffuse, specular;
     float nDotL, rDotV, dDotMinusL, cosTheta;
 
-    fColor = vec4(material.ambient, 1.0);
+    fColor = BRIGHTNESS * vec4(material.ambient, 1.0);
 
     for (int i=0;i<numLights;i++)
     {
@@ -78,9 +78,6 @@ void main()
 
         if (dDotMinusL > light[i].cutOff) {
             fColor = fColor + vec4(ambient+diffuse+specular, 1.0);
-        }
-        else {
-            fColor = fColor + BRIGHTNESS * vec4(material.ambient, 1.0);
         }
     }
     fColor = fColor * texture(image, fTexCoord.st);
