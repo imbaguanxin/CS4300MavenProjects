@@ -24,7 +24,7 @@ in vec4 fPosition;
 in vec4 fTexCoord;
 
 const int MAXLIGHTS = 10;
-const float BRIGHTNESS = 0.2;
+//const float BRIGHTNESS = 0.2;
 
 uniform MaterialProperties material;
 uniform LightProperties light[MAXLIGHTS];
@@ -42,7 +42,7 @@ void main()
     vec3 ambient, diffuse, specular;
     float nDotL, rDotV, dDotMinusL, cosTheta;
 
-    fColor = BRIGHTNESS * vec4(material.ambient, 1.0);
+    fColor = vec4(material.ambient, 1.0);
 
     for (int i=0;i<numLights;i++)
     {

@@ -42,6 +42,9 @@ public class HitRecord implements Comparable<HitRecord> {
     return new Vector4f(intersectionInView);
   }
 
+  /**
+   * Set the intersection in view.
+   */
   public void setIntersection(Vector4f intersectionInView) {
     this.intersectionInView = new Vector4f(intersectionInView);
   }
@@ -55,11 +58,11 @@ public class HitRecord implements Comparable<HitRecord> {
   }
 
   public void setNormal(Vector3f normal) {
-    this.normal = new Vector4f(normal.x, normal.y, normal.z, 0);
+    this.normal = new Vector4f(normal.x, normal.y, normal.z, 0).normalize();
   }
 
   public void setNormal(Vector4f normal) {
-    this.normal = new Vector4f(normal);
+    this.normal = new Vector4f(normal).normalize();
   }
 
   public void setNormal(float x, float y, float z) {

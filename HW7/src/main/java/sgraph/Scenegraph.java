@@ -56,6 +56,8 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
    */
   protected IScenegraphRenderer renderer;
 
+  protected final int MAX_REFLECTION_COUNT = 1;
+
 
   public Scenegraph() {
     root = null;
@@ -111,8 +113,10 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
           if (closestHit != null) {
             rgb = shade(closestHit, lights, modelView);
             Material mat = closestHit.getMaterial();
+//            System.out.println("reflection:" + mat.getReflection());
             if (mat.getReflection() > 0) {
-              Vector3f reflectRGB = reflect(closestHit, lights, modelView, 3);
+              Vector3f reflectRGB = reflect(closestHit, lights, modelView, MAX_REFLECTION_COUNT,
+                  new Vector4f(0, 0, 0, 1));
               rgb = rgb.mul(mat.getAbsorption()).add(reflectRGB.mul(mat.getReflection()));
             }
           }
@@ -142,7 +146,8 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
    * @param lights all lights in this scene
    * @return the color of this pixel
    */
-  private Vector3f shade(HitRecord hitRecord, Map<Light, Matrix4f> lights, Stack<Matrix4f> modelView) {
+  private Vector3f shade(HitRecord hitRecord, Map<Light, Matrix4f> lights,
+      Stack<Matrix4f> modelView) {
     // data type adapting
     Material material = hitRecord.getMaterial();
     TextureImage textureImage = hitRecord.getTexture();
@@ -162,7 +167,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         material.getSpecular().y,
         material.getSpecular().z);
     float materialShininess = material.getShininess();
-    float BRIGHTNESS = 0.4f;
+    //float BRIGHTNESS = 0.4f;
 
     // pass correct texture coordinates to fragment shader
     Matrix4f textureTrans = new Matrix4f().identity();
@@ -240,10 +245,6 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         if (dDotMinusL > light.getSpotCutoff()) {
           Vector3f colorTemp = new Vector3f(ambient).add(diffuse).add(specular);
           color = color.add(new Vector4f(colorTemp.x, colorTemp.y, colorTemp.z, 1));
-        } else {
-          color = color.add(
-              new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1)
-                  .mul(BRIGHTNESS));
         }
       }
     }
@@ -256,8 +257,9 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     return new Vector3f(Math.min(color.x, 1f), Math.min(color.y, 1f), Math.min(color.z, 1f));
   }
 
-  private Vector3f reflect(HitRecord hitRecord, Map<Light, Matrix4f> lights, Stack<Matrix4f> modelView, int bound) {
-    if (bound == 0) {
+  private Vector3f reflect(HitRecord hitRecord, Map<Light, Matrix4f> lights,
+      Stack<Matrix4f> modelView, int bound, Vector4f fromPoint) {
+    if (bound <= 0) {
       return new Vector3f(0, 0, 0);
     }
 
@@ -269,23 +271,34 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     // Construct the reflection ray
     Vector4f intersection = hitRecord.getIntersection();
     Vector4f normal = hitRecord.getNormal();
-    Vector4f inDir = new Vector4f(-intersection.x, -intersection.y, -intersection.z, 0);
-    inDir = new Matrix4f(mvCopy.peek()).invert().transform(inDir);
-    normal = new Matrix4f(mvCopy.peek()).invert().transform(normal);
-    Vector4f reflectDir = new Vector4f(new Vector3f(inDir.x, inDir.y, inDir.z).reflect(new Vector3f(normal.x, normal.y, normal.z)), 0);
-    reflectDir = mvCopy.peek().transform(new Vector4f(reflectDir.x, reflectDir.y, reflectDir.z, 0));
-    ThreeDRay reflectRay = new ThreeDRay(intersection.x, intersection.y, intersection.z, reflectDir.x, reflectDir.y, reflectDir.z);
+    Vector4f inDir = new Vector4f(intersection).sub(fromPoint);
+//    inDir = inDir.mul(-1);
+    Vector4f reflectDir =
+        new Vector4f(new Vector3f(inDir.x, inDir.y, inDir.z)
+            .normalize()
+            .reflect(new Vector3f(normal.x, normal.y, normal.z).normalize()), 0);
+//    reflectDir = mvCopy.peek().transform(new Vector4f(reflectDir.x, reflectDir.y, reflectDir.z, 0));
+    ThreeDRay reflectRay = new ThreeDRay(intersection.x, intersection.y, intersection.z,
+        reflectDir.x, reflectDir.y, reflectDir.z);
 
     List<HitRecord> reflectRecords = this.root.rayCast(mvCopy, reflectRay, this.renderer);
 
     Vector3f rgb = null;
     if (reflectRecords.size() > 0) {
-      HitRecord closestHit = Collections.min(reflectRecords);
+      HitRecord closestHit = null;
+      float minT = Float.MAX_VALUE;
+      for (HitRecord hit : reflectRecords) {
+        if (hit.getT() > 0.01 && hit.getT() < minT) {
+          closestHit = hit;
+          minT = hit.getT();
+        }
+      }
       if (closestHit != null) {
         rgb = shade(closestHit, lights, mvCopy);
         Material mat = closestHit.getMaterial();
         if (mat.getReflection() > 0) {
-          Vector3f reflectRGB = reflect(closestHit, lights, modelView, bound - 1);
+          Vector3f reflectRGB = reflect(closestHit, lights, modelView, bound - 1,
+              hitRecord.getIntersection());
           rgb = rgb.mul(mat.getAbsorption()).add(reflectRGB.mul(mat.getReflection()));
         }
       }
@@ -299,7 +312,6 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
   boolean canSeeLight(HitRecord hitRecord, Light light, Matrix4f LightModelView,
       Stack<Matrix4f> modelView) {
-    boolean result = true;
     Stack<Matrix4f> mvCopy = new Stack<>();
     for (Matrix4f mv : modelView) {
       mvCopy.push(mv);
@@ -313,13 +325,19 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
           lightPosition.y - hitPosition.y,
           lightPosition.z - hitPosition.z);
       Vector3f normalHitToLightDir = new Vector3f(hitToLightDir).normalize();
-      Vector3f position = new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z)
-          .add(normalHitToLightDir.mul(0.001f));
-      hitToLightRay = new ThreeDRay(position, hitToLightDir);
-      List<HitRecord> records = this.root.rayCast(mvCopy, hitToLightRay, this.renderer);
-      for (HitRecord hit : records) {
-        if (hit.getT() < 1.001 && hit.getT() > 0.001) {
-          result = false;
+      float hitToLightDotNormal = new Vector4f(hitRecord.getNormal())
+          .dot(new Vector4f(normalHitToLightDir, 0));
+      if (hitToLightDotNormal < 0.001f && hitToLightDotNormal > -0.001f) {
+        return false;
+      } else {
+        Vector3f position = new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z)
+            .add(normalHitToLightDir.mul(0.005f));
+        hitToLightRay = new ThreeDRay(position, hitToLightDir);
+        List<HitRecord> records = this.root.rayCast(mvCopy, hitToLightRay, this.renderer);
+        for (HitRecord hit : records) {
+          if (hit.getT() < 0.99 && hit.getT() > 0.001f) {
+            return false;
+          }
         }
       }
     } else {
@@ -329,16 +347,23 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
           -lightPosition.z)
           .normalize();
       Vector3f position = new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z)
-          .add(new Vector3f(hitToLightDir).mul(0.001f));
-      hitToLightRay = new ThreeDRay(position, hitToLightDir);
-      List<HitRecord> records = this.root.rayCast(mvCopy, hitToLightRay, this.renderer);
-      for (HitRecord hit : records) {
-        if (hit.getT() > 0.001) {
-          result = false;
+          .add(new Vector3f(hitToLightDir).mul(0.005f));
+      float hitToLightDotNormal = new Vector4f(hitRecord.getNormal())
+          .dot(new Vector4f(hitToLightDir, 0));
+      if (hitToLightDotNormal < 0.001f && hitToLightDotNormal > -0.001f) {
+        return false;
+      } else {
+
+        hitToLightRay = new ThreeDRay(position, hitToLightDir);
+        List<HitRecord> records = this.root.rayCast(mvCopy, hitToLightRay, this.renderer);
+        for (HitRecord hit : records) {
+          if (hit.getT() > 0.001f) {
+            return false;
+          }
         }
       }
     }
-    return result;
+    return true;
   }
 
   /**
