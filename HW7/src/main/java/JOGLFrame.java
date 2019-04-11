@@ -157,6 +157,7 @@ public class JOGLFrame extends JFrame {
 
     private String objectPath;
     private float[] fixed_cameraPosition, fixed_centerPosition;
+    private float angle;
 
     /**
      * Construct a ConfigurationReader class that read the config file.
@@ -166,6 +167,7 @@ public class JOGLFrame extends JFrame {
     ConfigurationReader(String configPath) {
       this.fixed_cameraPosition = new float[]{0, 0, 500, 0};
       this.fixed_centerPosition = new float[]{0, 0, 0, 0};
+      this.angle = 120f;
 
       Scanner scanner;
       try {
@@ -191,6 +193,10 @@ public class JOGLFrame extends JFrame {
             fixed_centerPosition[1] = scanner.nextFloat();
             fixed_centerPosition[2] = scanner.nextFloat();
             fixed_centerPosition[3] = 1f;
+            break;
+          case "angle-of-view":
+            angle = scanner.nextFloat();
+            break;
         }
       }
     }
@@ -211,8 +217,9 @@ public class JOGLFrame extends JFrame {
       float[] fixed_center = new float[3];
       System.arraycopy(fixed_cameraPosition, 0, fixed_camera, 0, fixed_camera.length);
       System.arraycopy(fixed_centerPosition, 0, fixed_center, 0, fixed_center.length);
-      view.setFixedCameraPosition(fixed_cameraPosition);
-      view.setFixedCenterPosition(fixed_centerPosition);
+      view.setFixedCameraPosition(fixed_camera);
+      view.setFixedCenterPosition(fixed_center);
+      view.setAngleOfView(angle);
     }
   }
 }

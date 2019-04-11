@@ -29,7 +29,7 @@ import sgraph.IScenegraphRenderer;
  */
 public class View {
 
-  private final float ANGLE_OF_VIEW = 120f;
+  private float angleOfView;
 
   private int WINDOW_WIDTH, WINDOW_HEIGHT;
   private Stack<Matrix4f> modelViewWorld;
@@ -63,6 +63,7 @@ public class View {
     // The more time it is pressed, the more changes the camera is going to make.
     cameraPosition = new Vector3f(0, 0, 500);
     centerPosition = new Vector3f(0, 0, 0);
+    angleOfView = 120;
   }
 
   /**
@@ -86,6 +87,14 @@ public class View {
   public void setFixedCenterPosition(float[] position) {
     if (position != null && position.length >= 3) {
       this.centerPosition = new Vector3f(position[0], position[1], position[2]);
+    }
+  }
+
+  public void setAngleOfView(float angle){
+    if (angle > 1f && angle < 180f){
+      this.angleOfView = angle;
+    } else {
+      System.out.printf("Invalid angle of view: %f", angle);
     }
   }
 
@@ -277,7 +286,7 @@ public class View {
       // Other keys should not detected as not available
       case KeyEvent.VK_SPACE:
         System.out.println("Start ray trace!");
-        scenegraph.rayTrace(WINDOW_WIDTH, WINDOW_HEIGHT, modelViewBuildHelper(), ANGLE_OF_VIEW);
+        scenegraph.rayTrace(WINDOW_WIDTH, WINDOW_HEIGHT, modelViewBuildHelper(), angleOfView);
         System.out.println("Finish ray trace!");
         break;
       case KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:
@@ -301,7 +310,7 @@ public class View {
     WINDOW_HEIGHT = height;
     aspect = (float) width / height;
     projection = new Matrix4f()
-        .perspective((float) Math.toRadians(ANGLE_OF_VIEW), aspect, 0.1f, 10000.0f);
+        .perspective((float) Math.toRadians(angleOfView), aspect, 0.1f, 10000.0f);
     // proj = new Matrix4f().ortho(-400,400,-400,400,0.1f,10000.0f);
 
   }
