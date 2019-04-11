@@ -1,5 +1,6 @@
 package sgraph;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.StringStack;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -94,11 +95,9 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         // copy modelView
         Stack<Matrix4f> mvCopy1 = new Stack<>();
         Stack<Matrix4f> mvCopy2 = new Stack<>();
-        Stack<Matrix4f> mvCopy3 = new Stack<>();
         for (Matrix4f mv : modelView) {
           mvCopy1.push(new Matrix4f(mv));
           mvCopy2.push(new Matrix4f(mv));
-          mvCopy3.push(new Matrix4f(mv));
         }
         // generate hit records
         List<HitRecord> hitRecords = this.root.rayCast(mvCopy1, rayArray[i][j], this.renderer);
@@ -106,17 +105,22 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         Map<Light, Matrix4f> lights = this.root.getLights(mvCopy2);
 
         // produce color for this pixel
-        Color rgb = null;
+        Vector3f rgb = null;
         if (hitRecords.size() > 0) {
           HitRecord closestHit = Collections.min(hitRecords);
           if (closestHit != null) {
-            rgb = shade(closestHit, lights, mvCopy3);
+            rgb = shade(closestHit, lights, modelView);
+            Material mat = closestHit.getMaterial();
+            if (mat.getReflection() > 0) {
+              Vector3f reflectRGB = reflect(closestHit, lights, modelView, 3);
+              rgb = rgb.mul(mat.getAbsorption()).add(reflectRGB.mul(mat.getReflection()));
+            }
           }
         }
         if (rgb == null) {
-          rgb = new Color(0, 0, 0);
+          rgb = new Vector3f(0, 0, 0);
         }
-        imageBuffer.setRGB(j, i, rgb.getRGB());
+        imageBuffer.setRGB(j, i, new Color(rgb.x, rgb.y, rgb.z).getRGB());
       }
     }
 
@@ -138,7 +142,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
    * @param lights all lights in this scene
    * @return the color of this pixel
    */
-  private Color shade(HitRecord hitRecord, Map<Light, Matrix4f> lights, Stack<Matrix4f> modelView) {
+  private Vector3f shade(HitRecord hitRecord, Map<Light, Matrix4f> lights, Stack<Matrix4f> modelView) {
     // data type adapting
     Material material = hitRecord.getMaterial();
     TextureImage textureImage = hitRecord.getTexture();
@@ -248,12 +252,58 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     Vector4f texRGB = textureImage.getColor(newTexCoord.x, newTexCoord.y);
 
     color = color.mul(texRGB);
-    return new Color(Math.min(color.x, 1f), Math.min(color.y, 1f), Math.min(color.z, 1f));
+
+    return new Vector3f(Math.min(color.x, 1f), Math.min(color.y, 1f), Math.min(color.z, 1f));
+  }
+
+  private Vector3f reflect(HitRecord hitRecord, Map<Light, Matrix4f> lights, Stack<Matrix4f> modelView, int bound) {
+    if (bound == 0) {
+      return new Vector3f(0, 0, 0);
+    }
+
+    Stack<Matrix4f> mvCopy = new Stack<>();
+    for (Matrix4f mv : modelView) {
+      mvCopy.push(new Matrix4f(mv));
+    }
+
+    // Construct the reflection ray
+    Vector4f intersection = hitRecord.getIntersection();
+    Vector4f normal = hitRecord.getNormal();
+    Vector4f inDir = new Vector4f(-intersection.x, -intersection.y, -intersection.z, 0);
+    inDir = new Matrix4f(mvCopy.peek()).invert().transform(inDir);
+    normal = new Matrix4f(mvCopy.peek()).invert().transform(normal);
+    Vector4f reflectDir = new Vector4f(new Vector3f(inDir.x, inDir.y, inDir.z).reflect(new Vector3f(normal.x, normal.y, normal.z)), 0);
+    reflectDir = mvCopy.peek().transform(new Vector4f(reflectDir.x, reflectDir.y, reflectDir.z, 0));
+    ThreeDRay reflectRay = new ThreeDRay(intersection.x, intersection.y, intersection.z, reflectDir.x, reflectDir.y, reflectDir.z);
+
+    List<HitRecord> reflectRecords = this.root.rayCast(mvCopy, reflectRay, this.renderer);
+
+    Vector3f rgb = null;
+    if (reflectRecords.size() > 0) {
+      HitRecord closestHit = Collections.min(reflectRecords);
+      if (closestHit != null) {
+        rgb = shade(closestHit, lights, mvCopy);
+        Material mat = closestHit.getMaterial();
+        if (mat.getReflection() > 0) {
+          Vector3f reflectRGB = reflect(closestHit, lights, modelView, bound - 1);
+          rgb = rgb.mul(mat.getAbsorption()).add(reflectRGB.mul(mat.getReflection()));
+        }
+      }
+    }
+    if (rgb == null) {
+      rgb = new Vector3f(0, 0, 0);
+    }
+
+    return rgb;
   }
 
   boolean canSeeLight(HitRecord hitRecord, Light light, Matrix4f LightModelView,
       Stack<Matrix4f> modelView) {
     boolean result = true;
+    Stack<Matrix4f> mvCopy = new Stack<>();
+    for (Matrix4f mv : modelView) {
+      mvCopy.push(mv);
+    }
     Vector4f lightPosition = LightModelView.transform(new Vector4f(light.getPosition()));
     Vector4f hitPosition = new Vector4f(hitRecord.getIntersection());
     ThreeDRay hitToLightRay = null;
@@ -266,7 +316,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       Vector3f position = new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z)
           .add(normalHitToLightDir.mul(0.001f));
       hitToLightRay = new ThreeDRay(position, hitToLightDir);
-      List<HitRecord> records = this.root.rayCast(modelView, hitToLightRay, this.renderer);
+      List<HitRecord> records = this.root.rayCast(mvCopy, hitToLightRay, this.renderer);
       for (HitRecord hit : records) {
         if (hit.getT() < 1.001 && hit.getT() > 0.001) {
           result = false;
@@ -281,7 +331,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       Vector3f position = new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z)
           .add(new Vector3f(hitToLightDir).mul(0.001f));
       hitToLightRay = new ThreeDRay(position, hitToLightDir);
-      List<HitRecord> records = this.root.rayCast(modelView, hitToLightRay, this.renderer);
+      List<HitRecord> records = this.root.rayCast(mvCopy, hitToLightRay, this.renderer);
       for (HitRecord hit : records) {
         if (hit.getT() > 0.001) {
           result = false;
