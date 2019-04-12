@@ -3,6 +3,7 @@ package sgraph;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
@@ -111,9 +112,10 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       TextureImage image = this.textures.get(textureName);
       if (!textureName.equals("") && image != null) {
         topHit.setTextureImage(image);
-        topHit.setTextureCoordinate(0, 0);
+        float theta = (float) Math.atan2(topInterZ, topInterX);
+        float texCoordX = (float) (theta / (2 * Math.PI)) + .5f;
+        topHit.setTextureCoordinate(texCoordX, 1);
       }
-
       result.add(topHit);
     }
 
@@ -140,9 +142,10 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       TextureImage image = this.textures.get(textureName);
       if (!textureName.equals("") && image != null) {
         botHit.setTextureImage(image);
-        botHit.setTextureCoordinate(0, 0);
+        float theta = (float) Math.atan2(botInterX, botInterZ);
+        float texCoordX = (float) (theta / (2 * Math.PI)) + .5f;
+        botHit.setTextureCoordinate(texCoordX, 0);
       }
-
       result.add(botHit);
     }
 
@@ -160,7 +163,9 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         t = tBig;
       }
 
+      float x = s.x + t * v.x;
       float y = s.y + t * v.y;
+      float z = s.z + t * v.z;
       if (y <= 1 && y >= 0) {
         HitRecord hit = new HitRecord();
         hit.setT(t);
@@ -178,21 +183,16 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         invTranspose.transform(normal);
         hit.setNormal(normal.x, normal.y, normal.z);
 
-        // TODO
-        // Construction ahead!
-        // to be finished
         TextureImage image = this.textures.get(textureName);
         if (!textureName.equals("") && image != null) {
           hit.setTextureImage(image);
-          hit.setTextureCoordinate(0, 0);
+          float theta = (float) Math.atan2(-z, -x);
+          float texCoordX = (float) (theta / (2 * Math.PI)) + .5f;
+          hit.setTextureCoordinate(texCoordX, 1 - y);
         }
-
         result.add(hit);
       }
-
-
     }
-
     return result;
   }
 

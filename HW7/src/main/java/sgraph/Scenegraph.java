@@ -403,7 +403,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     return rgb;
   }
 
-  boolean canSeeLight(HitRecord hitRecord, Light light, Matrix4f LightModelView,
+  private boolean canSeeLight(HitRecord hitRecord, Light light, Matrix4f LightModelView,
       Stack<Matrix4f> modelView) {
     Stack<Matrix4f> mvCopy = new Stack<>();
     for (Matrix4f mv : modelView) {
