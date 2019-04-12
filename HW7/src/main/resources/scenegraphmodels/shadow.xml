@@ -5,6 +5,7 @@
   <instance name="box" path="models/box-outside.obj"/>
 
   <image name="earth" path="textures/earthmap.jpg"/>
+  <image name="earthp" path="textures/politicalWorldMap.jpg"/>
   <image name="cb" path="textures/checkerboard.jpg"/>
   <image name="metal" path="textures/brushedMetal.jpg"/>
   <image name="die" path="textures/die.png"/>
@@ -35,16 +36,16 @@
         <direction>-1 -1 0</direction>
       </light>
 
-      <!--<light>-->
-        <!--<ambient>.8 .8 .8</ambient>-->
-        <!--<diffuse>.8 .8 .8</diffuse>-->
-        <!--<specular>.8 .8 .8</specular>-->
-        <!--<direction>0 0 -1</direction>-->
-      <!--</light>-->
+      <light>
+        <ambient>.8 .8 .8</ambient>
+        <diffuse>.8 .8 .8</diffuse>
+        <specular>.8 .8 .8</specular>
+        <direction>0 0 -1</direction>
+      </light>
 
       <transform>
         <set>
-          <translate>8 10 0</translate>
+          <translate>8 5 0</translate>
           <scale>5 5 5</scale>
         </set>
         <object instanceof="sphere" texture="earth">
@@ -67,7 +68,7 @@
           <translate>-8 5 0</translate>
           <scale>5 5 5</scale>
         </set>
-        <object instanceof="sphere">
+        <object instanceof="sphere" texture="earthp">
           <material>
             <ambient>.1 .1 .1</ambient>
             <diffuse>.4 .4 .4</diffuse>

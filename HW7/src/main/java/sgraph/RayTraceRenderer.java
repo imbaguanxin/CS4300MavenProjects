@@ -231,6 +231,11 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       tlist.add(tMin);
       tlist.add(tMax);
 
+      boolean startInObject = false;
+      if (tMax * tMin < 0) {
+        startInObject = true;
+      }
+
       for (Float t : tlist) {
         // hit point goes in the polygon
         HitRecord hit = new HitRecord();
@@ -243,6 +248,21 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
         hit.setIntersection(intersectionInView);
 
+        // set refraction
+        if (startInObject){
+          hit.setFromRefraction(mat.getRefractiveIndex());
+          hit.setToRefraction(1f);
+        } else {
+          if (Math.abs(t) < Math.abs(tMin) || Math.abs(t)  < Math.abs(tMax)){
+            hit.setFromRefraction(1f);
+            hit.setToRefraction(mat.getRefractiveIndex());
+          } else {
+            hit.setFromRefraction(mat.getRefractiveIndex());
+            hit.setToRefraction(1f);
+          }
+        }
+        System.out.println("mat.refraction" + mat.getReflection());
+        System.out.println("from refract: " + hit.getFromRefraction() + " to refract:" + hit.getToRefraction());
         // calculate normal vector
         Vector4f normal = new Vector4f(0, 0, 0, 0);
         // find intersection in obj coordinate system
@@ -334,7 +354,10 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       List<Float> tlist = new ArrayList<>();
       tlist.add(t1);
       tlist.add(t2);
-
+      boolean startInObject = false;
+      if (t1 * t2 < 0) {
+        startInObject = true;
+      }
       for (Float t : tlist) {
         // hit point
         HitRecord hit = new HitRecord();
@@ -343,6 +366,20 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
         // set material
         hit.setMaterial(mat);
+
+        // set refraction
+        if (startInObject){
+          hit.setFromRefraction(mat.getRefractiveIndex());
+          hit.setToRefraction(1f);
+        } else {
+          if (Math.abs(t) < Math.abs(t1) || Math.abs(t)  < Math.abs(t2)){
+            hit.setFromRefraction(1f);
+            hit.setToRefraction(mat.getRefractiveIndex());
+          } else {
+            hit.setFromRefraction(mat.getRefractiveIndex());
+            hit.setToRefraction(1f);
+          }
+        }
 
         // set intersection in View
         Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));

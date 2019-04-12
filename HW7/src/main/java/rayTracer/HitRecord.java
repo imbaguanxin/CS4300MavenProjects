@@ -12,6 +12,8 @@ import util.TextureImage;
 public class HitRecord implements Comparable<HitRecord> {
 
   private float t;
+  private float fromRefraction;
+  private float toRefraction;
   private Vector4f intersectionInView;
   private Vector4f normal;
   private Material material;
@@ -28,6 +30,8 @@ public class HitRecord implements Comparable<HitRecord> {
     textureImage = null;
     t = -1;
     textureCoordinate = null;
+    fromRefraction = 1;
+    toRefraction = 1;
   }
 
   public float getT() {
@@ -95,6 +99,22 @@ public class HitRecord implements Comparable<HitRecord> {
 
   public void setTextureCoordinate(float x, float y) {
     this.textureCoordinate = new Vector2f(x, y);
+  }
+
+  public float getFromRefraction() {
+    return fromRefraction;
+  }
+
+  public float getToRefraction() {
+    return toRefraction;
+  }
+
+  public void setFromRefraction(float fromRefraction) {
+    this.fromRefraction = fromRefraction;
+  }
+
+  public void setToRefraction(float toRefraction) {
+    this.toRefraction = toRefraction;
   }
 
   /**

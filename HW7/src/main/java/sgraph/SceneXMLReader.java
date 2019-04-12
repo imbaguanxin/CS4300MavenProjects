@@ -329,7 +329,12 @@ class MyHandler<K extends IVertexData> extends DefaultHandler {
         break;
       case "refractive":
         sc = new Scanner(data);
-        material.setRefractiveIndex(sc.nextFloat());
+        float index = sc.nextFloat();
+        if (index < 1) {
+          System.out.println("refractive Index should be greater than 1. Set to default value 1.");
+          index = 1;
+        }
+        material.setRefractiveIndex(index);
         break;
       case "light":
         lightFlag = false;
