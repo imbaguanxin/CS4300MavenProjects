@@ -377,21 +377,21 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
         // set refraction
-        if (startInObject){
+        if (startInObject) {
+          hit.setFromRefraction(mat.getRefractiveIndex());
+          hit.setToRefraction(1f);
+          hit.setFlipNormal(true);
+          //System.out.println("start in object");
+        } else if (Math.abs(t) < Math.abs(tMin) || Math.abs(t) < Math.abs(tMax)) {
+          hit.setFromRefraction(1f);
+          hit.setToRefraction(mat.getRefractiveIndex());
+        } else {
           hit.setFromRefraction(mat.getRefractiveIndex());
           hit.setToRefraction(1f);
           normal = normal.mul(-1);
-          System.out.println("start in object");
-        } else {
-          if (Math.abs(t) < Math.abs(tMin) || Math.abs(t)  < Math.abs(tMax)){
-            hit.setFromRefraction(1f);
-            hit.setToRefraction(mat.getRefractiveIndex());
-          } else {
-            hit.setFromRefraction(mat.getRefractiveIndex());
-            hit.setToRefraction(1f);
-            normal = normal.mul(-1);
-          }
+          hit.setFlipNormal(true);
         }
+
         hit.setNormal(normal.x, normal.y, normal.z);
 
         // set texture
@@ -474,8 +474,6 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         // set material
         hit.setMaterial(mat);
 
-
-
         // set intersection in View
         Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
         hit.setIntersection(intersectionInView);
@@ -493,16 +491,14 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
           hit.setFromRefraction(mat.getRefractiveIndex());
           hit.setToRefraction(1f);
           hit.setFlipNormal(true);
-          System.out.println("start in object");
+//          System.out.println("start in object");
+        } else if (Math.abs(t) < Math.abs(t1) || Math.abs(t) < Math.abs(t2)) {
+          hit.setFromRefraction(1f);
+          hit.setToRefraction(mat.getRefractiveIndex());
         } else {
-          if (Math.abs(t) < Math.abs(t1) || Math.abs(t) < Math.abs(t2)) {
-            hit.setFromRefraction(1f);
-            hit.setToRefraction(mat.getRefractiveIndex());
-          } else {
-            hit.setFromRefraction(mat.getRefractiveIndex());
-            hit.setToRefraction(1f);
-            hit.setFlipNormal(true);
-          }
+          hit.setFromRefraction(mat.getRefractiveIndex());
+          hit.setToRefraction(1f);
+          hit.setFlipNormal(true);
         }
 
         hit.setNormal(normal.x, normal.y, normal.z);

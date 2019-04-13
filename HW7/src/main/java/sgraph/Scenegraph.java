@@ -86,6 +86,25 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     float distance =
         (h * 0.5f) / (float) Math.tan(Math.toRadians(angleOfView / 2));
     rayTracer.ThreeDRay[][] rayArray = new ThreeDRay[h][w];
+
+//    // generate rays
+//    float x = 0;
+//    float y = 0;
+//    float z = -distance;
+//    ThreeDRay ray = new ThreeDRay(0, 0, 0, x, y, z);
+//
+//    // copy modelView
+//    Stack<Matrix4f> mvCopy1 = copyMV(modelView);
+//    Stack<Matrix4f> mvCopy2 = copyMV(modelView);
+//    // generate hit records
+//    List<HitRecord> hitRecords = this.root.rayCast(mvCopy1, ray, this.renderer);
+//    // gather lights from nodes. the according matrix4f is light to view
+//    Map<Light, Matrix4f> lights = this.root.getLights(mvCopy2);
+//
+//    // produce color for this pixel
+//    Vector3f rgb = this.getRGB(hitRecords, lights, modelView, new Vector4f(0, 0, 0, 1),
+//        MAX_REFLECTION_COUNT);
+
     BufferedImage imageBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {
@@ -123,8 +142,8 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
   private Vector3f refraction(HitRecord hitRecord, Map<Light, Matrix4f> lights,
       Stack<Matrix4f> modelView, int bound, Vector4f fromPoint) {
     if (bound <= 0) {
-      Vector3f res = shade(hitRecord,lights,modelView);
-      System.out.println("bound == 0" + res.toString());
+      Vector3f res = shade(hitRecord, lights, modelView);
+      //System.out.println("bound == 0" + res.toString());
       return res;
     }
     Stack<Matrix4f> mvCopy = copyMV(modelView);
@@ -132,39 +151,51 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     // Construct the refraction ray
     Vector4f intersection = hitRecord.getIntersection();
     Vector4f normal = hitRecord.getNormal();
+    if (hitRecord.getFlipNormal()) {
+      System.out.println("flip normal!");
+      normal = normal.mul(-1);
+    }
+
+    System.out.println("First hitRecord in refract: " + hitRecord.toString());
     Vector4f inDir = new Vector4f(intersection).sub(fromPoint);
-    inDir.z = 0;
+    System.out.println(
+        "intersection: " + intersection.toString() + " from point: " + fromPoint.toString());
     inDir = inDir.normalize();
-    float cosIn = new Vector4f(inDir).mul(-1).dot(normal);
-//    if(cosIn < .01f && cosIn > -.01f){
-//      return shade()
-//    }
+    System.out.println("in direction: " + inDir.toString());
+    float cosIn = new Vector4f(inDir).dot(normal) * -1f;
     float sinIn = (float) Math.sqrt(1 - cosIn * cosIn);
     float sinOut = sinIn * hitRecord.getFromRefraction() / hitRecord.getToRefraction();
-    System.out.printf("cosIn = %f, sinIn = %f\n" ,cosIn, sinIn);
-    System.out.println("from = " + hitRecord.getFromRefraction());
-    System.out.println("to = " + hitRecord.getToRefraction());
-    if (sinOut > 1) {
-      return new Vector3f(0, 0, 0);
+    System.out.printf("sin in: %f, sin out: %f\n", sinIn, sinOut);
+//    System.out.printf("cosIn = %f, sinIn = %f\n", cosIn, sinIn);
+//    System.out.println("from = " + hitRecord.getFromRefraction());
+//    System.out.println("to = " + hitRecord.getToRefraction());
+    if (sinOut > 1f) {
+      System.out.println("sin out greater than 1");
+      return reflect(hitRecord, lights, modelView, bound, fromPoint);
     } else {
       float cosOut = (float) Math.sqrt(1 - sinOut * sinOut);
-      System.out.printf("cosOut = %f, sinOut = %f\n" ,cosOut, sinOut);
+      System.out.printf("cosOut = %f, sinOut = %f\n", cosOut, sinOut);
       Vector4f refraction = null;
       if (sinIn < 0.001f && sinIn > -0.001f) {
+        System.out.println("in direction parallel to normal");
         refraction = new Vector4f(normal).mul(-1);
       } else {
         Vector4f b = new Vector4f(normal).mul(-1).mul(cosOut);
         Vector4f a = new Vector4f(inDir).add(new Vector4f(normal).mul(cosIn)).mul(sinOut / sinIn);
         refraction = a.add(b);
-        System.out.println("in and out equal?" + refraction.equals(inDir,0.01f));
+
+//        System.out.println("in and out equal?" + refraction.equals(inDir,0.01f));
       }
+      System.out.println("Refraction light: " + refraction.toString());
       // refraction
-      intersection = intersection.add(new Vector4f(normal).mul(-.01f));
+      intersection = intersection.add(new Vector4f(normal).mul(-.001f));
       ThreeDRay refractionRay = new ThreeDRay(intersection.x, intersection.y, intersection.z,
           refraction.x, refraction.y, refraction.z);
+      System.out.println("3dRay: " + refractionRay.toString());
       List<HitRecord> refractionRecords = this.root.rayCast(mvCopy, refractionRay, this.renderer);
-      Vector3f rgb = getRGB(refractionRecords, lights, modelView, hitRecord.getIntersection(),
+      Vector3f rgb = getRGB(refractionRecords, lights, modelView, intersection,
           bound - 1);
+      System.out.println("ray color:" + rgb.toString() + " bound: " + bound);
       return rgb;
     }
   }
@@ -242,7 +273,9 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     Vector4f color = new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1);
 
     for (Light light : lights.keySet()) {
-      if (canSeeLight(hitRecord, light, new Matrix4f(lights.get(light)), modelView)) {
+      float lightIndex = canSeeLight(hitRecord, light, new Matrix4f(lights.get(light)), modelView);
+      System.out.println("light index:" + lightIndex);
+      if (lightIndex > 0) {
         Vector4f lightPosition = lights.get(light).transform(new Vector4f(light.getPosition()));
         Vector4f lightDirection = lights.get(light)
             .transform(new Vector4f(light.getSpotDirection()));
@@ -299,7 +332,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
             .dot(lightVec);
 
         if (dDotMinusL > light.getSpotCutoff()) {
-          Vector3f colorTemp = new Vector3f(ambient).add(diffuse).add(specular);
+          Vector3f colorTemp = new Vector3f(ambient).add(diffuse).add(specular).mul(lightIndex);
           color = color.add(new Vector4f(colorTemp.x, colorTemp.y, colorTemp.z, 1));
         }
       }
@@ -329,16 +362,18 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       }
       if (closestHit != null) {
         Material mat = closestHit.getMaterial();
+        System.out.println("hit in getRGB: " + closestHit.toString());
+        System.out.println("mat absorption: " + mat.getAbsorption());
         rgb = shade(closestHit, lights, mvCopy).mul(mat.getAbsorption());
+        System.out.println("shade color in getRGB: " + rgb.toString());
         if (mat.getReflection() > 0) {
           Vector3f reflectRGB = reflect(closestHit, lights, modelView, bound,
               fromPoint).mul(mat.getReflection());
           rgb = rgb.add(reflectRGB);
         }
         float refract = 1 - mat.getAbsorption() - mat.getReflection();
-//        System.out.println("refraction: " + refract);
+        System.out.println("refraction: " + refract);
         if (refract > 0) {
-          System.out.println("refraction: " + refract);
           Vector3f refractionRGB = refraction(closestHit, lights, modelView, bound,
               fromPoint).mul(refract);
           rgb = rgb.add(refractionRGB);
@@ -350,38 +385,50 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
 
     rgb = new Vector3f(Math.min(1f, rgb.x), Math.min(1f, rgb.y), Math.min(1f, rgb.z));
+    System.out.println("final color in getRGB: " + rgb.toString());
     return rgb;
   }
 
-  private boolean canSeeLight(HitRecord hitRecord, Light light, Matrix4f LightModelView,
+  private float canSeeLight(HitRecord hitRecord, Light light, Matrix4f LightModelView,
       Stack<Matrix4f> modelView) {
+    // copy model view
     Stack<Matrix4f> mvCopy = new Stack<>();
     for (Matrix4f mv : modelView) {
       mvCopy.push(mv);
     }
+    // find the starting point of light in view
     Vector4f lightPosition = LightModelView.transform(new Vector4f(light.getPosition()));
+    // find the hit position in view
     Vector4f hitPosition = new Vector4f(hitRecord.getIntersection());
     ThreeDRay hitToLightRay = null;
-    if (lightPosition.w != 0) {
+    if (lightPosition.w != 0) { // A spot light
       Vector3f hitToLightDir = new Vector3f(
           lightPosition.x - hitPosition.x,
           lightPosition.y - hitPosition.y,
           lightPosition.z - hitPosition.z);
+      // find out the the direction from hit point to light origin, normalized
       Vector3f normalHitToLightDir = new Vector3f(hitToLightDir).normalize();
       float hitToLightDotNormal = new Vector4f(hitRecord.getNormal())
           .dot(new Vector4f(normalHitToLightDir, 0));
+      // light is from the back of that point
       if (hitToLightDotNormal < 0.001f && hitToLightDotNormal > -0.001f) {
-        return false;
+        Material mat = hitRecord.getMaterial();
+        float refraction = 1 - mat.getAbsorption() - mat.getReflection();
+        return refraction;
       } else {
         Vector3f position = new Vector3f(hitPosition.x, hitPosition.y, hitPosition.z)
             .add(normalHitToLightDir.mul(0.005f));
         hitToLightRay = new ThreeDRay(position, hitToLightDir);
         List<HitRecord> records = this.root.rayCast(mvCopy, hitToLightRay, this.renderer);
+        float transparency = 1;
         for (HitRecord hit : records) {
           if (hit.getT() < 0.99 && hit.getT() > 0.001f) {
-            return false;
+            Material mat = hit.getMaterial();
+            float refraction = 1 - mat.getAbsorption() - mat.getReflection();
+            transparency = transparency * refraction;
           }
         }
+        return transparency;
       }
     } else {
       Vector3f hitToLightDir = new Vector3f(
@@ -394,19 +441,26 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       float hitToLightDotNormal = new Vector4f(hitRecord.getNormal())
           .dot(new Vector4f(hitToLightDir, 0));
       if (hitToLightDotNormal < 0.001f && hitToLightDotNormal > -0.001f) {
-        return false;
+        Material mat = hitRecord.getMaterial();
+        float refraction = 1 - mat.getAbsorption() - mat.getReflection();
+        return refraction;
       } else {
 
         hitToLightRay = new ThreeDRay(position, hitToLightDir);
         List<HitRecord> records = this.root.rayCast(mvCopy, hitToLightRay, this.renderer);
+        float transparency = 1;
         for (HitRecord hit : records) {
-          if (hit.getT() > 0.001f) {
-            return false;
+          if (hit.getT() > 0.01f) {
+            System.out.println("can see light transparency: " + transparency);
+            Material mat = hit.getMaterial();
+            float refraction = 1 - mat.getAbsorption() - mat.getReflection();
+            transparency = transparency * refraction;
           }
         }
+        System.out.println("can see light transparency: " + transparency);
+        return transparency;
       }
     }
-    return true;
   }
 
   /**

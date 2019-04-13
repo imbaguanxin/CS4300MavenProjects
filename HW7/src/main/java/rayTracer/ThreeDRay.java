@@ -59,4 +59,9 @@ public class ThreeDRay {
   public void setDirection(float vx, float vy, float vz) {
     this.direction = new Vector3f(vx, vy, vz);
   }
+
+  public String toString() {
+    return "start:" + this.getStartingPoint().toString() + " dir: " + this.getDirection()
+        .toString();
+  }
 }

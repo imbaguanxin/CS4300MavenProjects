@@ -21,7 +21,6 @@ public class HitRecord implements Comparable<HitRecord> {
   private Vector2f textureCoordinate;
 
 
-
   private boolean flipNormal;
 
   /**
@@ -147,5 +146,17 @@ public class HitRecord implements Comparable<HitRecord> {
     } else {
       return -1;
     }
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder();
+    str.append(String.format("\n    t: %f\n", this.getT()))
+        .append("    intersection in view: " + this.getIntersection().toString() + "\n")
+        .append("    normal in view: " + this.getNormal().toString() + "\n")
+        .append("    from refraction in view: " + this.getFromRefraction() + "\n")
+        .append("    to refraction in view: " + this.getToRefraction() + "\n")
+        .append("    flip normal: " + this.getFlipNormal() + "\n");
+    return str.toString();
   }
 }
