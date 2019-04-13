@@ -3,7 +3,6 @@ package sgraph;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
@@ -63,6 +62,15 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
                 mat,
                 textureName));
         break;
+      case "cone":
+        result.addAll(
+            checkHitCone(
+                ray.getStartingPoint(),
+                ray.getDirection(),
+                new Matrix4f(modelView),
+                mat,
+                textureName));
+        break;
       default:
         System.out.println("Not supported shape: " + objectName);
     }
@@ -112,7 +120,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       TextureImage image = this.textures.get(textureName);
       if (!textureName.equals("") && image != null) {
         topHit.setTextureImage(image);
-        float theta = (float) Math.atan2(topInterZ, topInterX);
+        float theta = (float) Math.atan2(-topInterZ, -topInterX);
         float texCoordX = (float) (theta / (2 * Math.PI)) + .5f;
         topHit.setTextureCoordinate(texCoordX, 1);
       }
@@ -142,7 +150,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       TextureImage image = this.textures.get(textureName);
       if (!textureName.equals("") && image != null) {
         botHit.setTextureImage(image);
-        float theta = (float) Math.atan2(botInterX, botInterZ);
+        float theta = (float) Math.atan2(-botInterX, -botInterZ);
         float texCoordX = (float) (theta / (2 * Math.PI)) + .5f;
         botHit.setTextureCoordinate(texCoordX, 0);
       }
@@ -155,7 +163,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     float delta = b * b - 4 * a * c;
     if (delta >= 0) {
       float tsmall = (float) (-b - Math.sqrt(delta)) / (2 * a);
-      float tBig = (float) (-b - Math.sqrt(delta)) / (2 * a);
+      float tBig = (float) (-b + Math.sqrt(delta)) / (2 * a);
       float t;
       if (tsmall >= 0) {
         t = tsmall;
@@ -193,6 +201,104 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         result.add(hit);
       }
     }
+    return result;
+  }
+
+  private List<HitRecord> checkHitCone(Vector4f start, Vector4f vector, Matrix4f modelView,
+      Material mat, String textureName) {
+    List<HitRecord> result = new ArrayList<>();
+    Matrix4f invertedMV = new Matrix4f();
+    modelView.invert(invertedMV);
+    Vector4f s = new Vector4f();
+    Vector4f v = new Vector4f();
+    invertedMV.transform(start, s);
+    invertedMV.transform(vector, v);
+
+    // intersect with the bottom surface
+    float tBot = -s.y / v.y;
+    float botInterX = s.x + tBot * v.x;
+    float botInterZ = s.z + tBot * v.z;
+    float botDisSq = botInterX * botInterX + botInterZ * botInterZ;
+    if (botDisSq <= 1.001) {
+      HitRecord botHit = new HitRecord();
+      botHit.setT(tBot);
+      // set material
+      botHit.setMaterial(mat);
+
+      // intersection in View
+      Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(tBot));
+      botHit.setIntersection(intersectionInView);
+
+      Vector4f normal = new Vector4f(0, -1, 0, 0);
+      Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
+      invTranspose.transform(normal);
+      botHit.setNormal(normal);
+
+      TextureImage image = this.textures.get(textureName);
+      if (!textureName.equals("") && image != null) {
+        botHit.setTextureImage(image);
+        float theta = (float) Math.atan2(-botInterX, botInterZ);
+        float texCoordY = (float) Math.sqrt(botDisSq);
+        float texCoordX = (float) (((theta / (2 * Math.PI)) + 1.25f) % 1f) * texCoordY;
+        botHit.setTextureCoordinate(texCoordX, texCoordY);
+      }
+      result.add(botHit);
+    }
+
+    // intersect with side surface
+    float a = v.y * v.y - v.x * v.x - v.z * v.z;
+    float b = 2 * (s.y * v.y - s.x * v.x - s.z * v.z - v.y);
+    float c = (s.y - 1) * (s.y - 1) - s.x * s.x - s.z * s.z;
+    float delta = b * b - 4 * a * c;
+    if (delta >= 0) {
+      // intersection with double cone
+      float t1 = (float) (-b + Math.sqrt(delta)) / (2 * a);
+      float t2 = (float) (-b - Math.sqrt(delta)) / (2 * a);
+
+      Vector4f intersection1 = new Vector4f(s).add(new Vector4f(v).mul(t1));
+      Vector4f intersection2 = new Vector4f(s).add(new Vector4f(v).mul(t2));
+
+      // check if t is in range
+      Float t = null;
+      Vector4f intersection = null;
+      if (t1 > 0 && intersection1.y >= -0.001 && intersection1.y <= 1.001) {
+        t = t1;
+        intersection = intersection1;
+      } else if (t2 > 0 && intersection2.y >= -0.001 && intersection2.y <= 1.001) {
+        t = t2;
+        intersection = intersection2;
+      }
+
+      if (t != null) {
+        Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
+        Vector4f normal;
+        if (intersection.y < 0.999f) {
+          normal = new Vector4f(intersection.x / (1 - intersection.y), 1f,
+              intersection.z / (1 - intersection.y), 0).normalize();
+        } else {
+          // the top vertex is singular
+          normal = new Vector4f(0, 1, 0, 0);
+        }
+        Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
+        invTranspose.transform(normal);
+
+        HitRecord hitRecord = new HitRecord();
+        hitRecord.setT(t);
+        hitRecord.setIntersection(intersectionInView);
+        hitRecord.setNormal(normal);
+        hitRecord.setMaterial(mat);
+
+        TextureImage image = this.textures.get(textureName);
+        if (!textureName.equals("") && image != null) {
+          hitRecord.setTextureImage(image);
+          float theta = (float) Math.atan2(-intersection.z, -intersection.x);
+          float texCoordX = (float) (theta / (2 * Math.PI)) + .5f;
+          hitRecord.setTextureCoordinate(texCoordX, 1 - intersection.y);
+        }
+        result.add(hitRecord);
+      }
+    }
+
     return result;
   }
 
@@ -249,11 +355,11 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         hit.setIntersection(intersectionInView);
 
         // set refraction
-        if (startInObject){
+        if (startInObject) {
           hit.setFromRefraction(mat.getRefractiveIndex());
           hit.setToRefraction(1f);
         } else {
-          if (Math.abs(t) < Math.abs(tMin) || Math.abs(t)  < Math.abs(tMax)){
+          if (Math.abs(t) < Math.abs(tMin) || Math.abs(t) < Math.abs(tMax)) {
             hit.setFromRefraction(1f);
             hit.setToRefraction(mat.getRefractiveIndex());
           } else {
@@ -262,7 +368,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
           }
         }
         System.out.println("mat.refraction" + mat.getReflection());
-        System.out.println("from refract: " + hit.getFromRefraction() + " to refract:" + hit.getToRefraction());
+        System.out.println(
+            "from refract: " + hit.getFromRefraction() + " to refract:" + hit.getToRefraction());
         // calculate normal vector
         Vector4f normal = new Vector4f(0, 0, 0, 0);
         // find intersection in obj coordinate system
@@ -368,11 +475,11 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         hit.setMaterial(mat);
 
         // set refraction
-        if (startInObject){
+        if (startInObject) {
           hit.setFromRefraction(mat.getRefractiveIndex());
           hit.setToRefraction(1f);
         } else {
-          if (Math.abs(t) < Math.abs(t1) || Math.abs(t)  < Math.abs(t2)){
+          if (Math.abs(t) < Math.abs(t1) || Math.abs(t) < Math.abs(t2)) {
             hit.setFromRefraction(1f);
             hit.setToRefraction(mat.getRefractiveIndex());
           } else {
