@@ -40,28 +40,28 @@
         <ambient>.8 .8 .8</ambient>
         <diffuse>.8 .8 .8</diffuse>
         <specular>.8 .8 .8</specular>
-        <direction>0 0 -1</direction>
+        <direction>0 -1 -1</direction>
       </light>
 
-      <transform>
-        <set>
-          <translate>8 5 0</translate>
-          <scale>5 5 5</scale>
-        </set>
-        <object instanceof="sphere" texture="earth">
-          <material>
-            <ambient>.5 .5 .5</ambient>
-            <diffuse>.4 .4 .4</diffuse>
-            <specular>.9 .9 .9</specular>
-            <!--<absorption>.5</absorption>-->
-            <!--<reflection>.5</reflection>-->
-            <!--<ambient>.8 .4 .2</ambient>-->
-            <!--<diffuse>.3 .15 .075</diffuse>-->
-            <!--<specular>.6 .3 .15</specular>-->
-            <shininess>100</shininess>
-          </material>
-        </object>
-      </transform>
+      <!--<transform>-->
+        <!--<set>-->
+          <!--<translate>8 5 0</translate>-->
+          <!--<scale>5 5 5</scale>-->
+        <!--</set>-->
+        <!--<object instanceof="sphere" texture="earth">-->
+          <!--<material>-->
+            <!--<ambient>.5 .5 .5</ambient>-->
+            <!--<diffuse>.4 .4 .4</diffuse>-->
+            <!--<specular>.9 .9 .9</specular>-->
+            <!--&lt;!&ndash;<absorption>.5</absorption>&ndash;&gt;-->
+            <!--&lt;!&ndash;<reflection>.5</reflection>&ndash;&gt;-->
+            <!--&lt;!&ndash;<ambient>.8 .4 .2</ambient>&ndash;&gt;-->
+            <!--&lt;!&ndash;<diffuse>.3 .15 .075</diffuse>&ndash;&gt;-->
+            <!--&lt;!&ndash;<specular>.6 .3 .15</specular>&ndash;&gt;-->
+            <!--<shininess>100</shininess>-->
+          <!--</material>-->
+        <!--</object>-->
+      <!--</transform>-->
 
       <transform>
         <set>

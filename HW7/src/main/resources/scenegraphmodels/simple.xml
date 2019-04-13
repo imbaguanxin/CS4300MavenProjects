@@ -41,14 +41,14 @@
         <set>
           <translate>0 0 10</translate>
           <!--<rotate>-120 1 0 0 </rotate>-->
-          <scale>5 5 5</scale>
+          <scale>5 5 .5</scale>
         </set>
-        <object instanceof="sphere">
+        <object instanceof="box">
           <material>
             <ambient>.4 .4 .4</ambient>
             <diffuse>.4 .4 .4</diffuse>
             <specular>.8 .8 .8</specular>
-            <absorption>.1</absorption>
+            <absorption>.01</absorption>
             <reflection>0</reflection>
             <refractive>1</refractive>
             <shininess>100</shininess>

@@ -248,21 +248,6 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
         hit.setIntersection(intersectionInView);
 
-        // set refraction
-        if (startInObject){
-          hit.setFromRefraction(mat.getRefractiveIndex());
-          hit.setToRefraction(1f);
-        } else {
-          if (Math.abs(t) < Math.abs(tMin) || Math.abs(t)  < Math.abs(tMax)){
-            hit.setFromRefraction(1f);
-            hit.setToRefraction(mat.getRefractiveIndex());
-          } else {
-            hit.setFromRefraction(mat.getRefractiveIndex());
-            hit.setToRefraction(1f);
-          }
-        }
-        System.out.println("mat.refraction" + mat.getReflection());
-        System.out.println("from refract: " + hit.getFromRefraction() + " to refract:" + hit.getToRefraction());
         // calculate normal vector
         Vector4f normal = new Vector4f(0, 0, 0, 0);
         // find intersection in obj coordinate system
@@ -285,6 +270,22 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         }
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
+        // set refraction
+        if (startInObject){
+          hit.setFromRefraction(mat.getRefractiveIndex());
+          hit.setToRefraction(1f);
+          normal = normal.mul(-1);
+          System.out.println("start in object");
+        } else {
+          if (Math.abs(t) < Math.abs(tMin) || Math.abs(t)  < Math.abs(tMax)){
+            hit.setFromRefraction(1f);
+            hit.setToRefraction(mat.getRefractiveIndex());
+          } else {
+            hit.setFromRefraction(mat.getRefractiveIndex());
+            hit.setToRefraction(1f);
+            normal = normal.mul(-1);
+          }
+        }
         hit.setNormal(normal.x, normal.y, normal.z);
 
         // set texture
@@ -367,19 +368,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         // set material
         hit.setMaterial(mat);
 
-        // set refraction
-        if (startInObject){
-          hit.setFromRefraction(mat.getRefractiveIndex());
-          hit.setToRefraction(1f);
-        } else {
-          if (Math.abs(t) < Math.abs(t1) || Math.abs(t)  < Math.abs(t2)){
-            hit.setFromRefraction(1f);
-            hit.setToRefraction(mat.getRefractiveIndex());
-          } else {
-            hit.setFromRefraction(mat.getRefractiveIndex());
-            hit.setToRefraction(1f);
-          }
-        }
+
 
         // set intersection in View
         Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
@@ -393,6 +382,23 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         normal.w = 0;
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
+        // set refraction
+        if (startInObject){
+          hit.setFromRefraction(mat.getRefractiveIndex());
+          hit.setToRefraction(1f);
+          hit.setFlipNormal(true);
+          System.out.println("start in object");
+        } else {
+          if (Math.abs(t) < Math.abs(t1) || Math.abs(t)  < Math.abs(t2)){
+            hit.setFromRefraction(1f);
+            hit.setToRefraction(mat.getRefractiveIndex());
+          } else {
+            hit.setFromRefraction(mat.getRefractiveIndex());
+            hit.setToRefraction(1f);
+            hit.setFlipNormal(true);
+          }
+        }
+
         hit.setNormal(normal.x, normal.y, normal.z);
 
         // set texture

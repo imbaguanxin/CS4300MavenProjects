@@ -20,6 +20,10 @@ public class HitRecord implements Comparable<HitRecord> {
   private TextureImage textureImage;
   private Vector2f textureCoordinate;
 
+
+
+  private boolean flipNormal;
+
   /**
    * Construct a hit record with default values.
    */
@@ -116,6 +120,15 @@ public class HitRecord implements Comparable<HitRecord> {
   public void setToRefraction(float toRefraction) {
     this.toRefraction = toRefraction;
   }
+
+  public boolean getFlipNormal() {
+    return flipNormal;
+  }
+
+  public void setFlipNormal(boolean flipNormal) {
+    this.flipNormal = flipNormal;
+  }
+
 
   /**
    * Comparison between hit records are based on t.
