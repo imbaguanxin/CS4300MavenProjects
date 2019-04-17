@@ -289,6 +289,9 @@ public class View {
         scenegraph.rayTrace(WINDOW_WIDTH, WINDOW_HEIGHT, modelViewBuildHelper(), angleOfView);
         System.out.println("Finish ray trace!");
         break;
+      case KeyEvent.VK_R:
+        this.trackballTransform.identity();
+        break;
       case KeyEvent.VK_SHIFT | KeyEvent.VK_G | KeyEvent.VK_T:
         break;
       default:
