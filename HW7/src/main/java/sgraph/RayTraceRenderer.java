@@ -201,6 +201,21 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         result.add(hit);
       }
     }
+
+    for (HitRecord hit : result) {
+      Vector4f normal = new Vector4f(hit.getNormal()).normalize();
+      Vector4f vec = new Vector4f(vector).normalize();
+      float cosIn = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
+      if (cosIn >= 0.001) {
+        hit.setFromRefraction(mat.getRefractiveIndex());
+        hit.setToRefraction(1f);
+        hit.setFlipNormal(true);
+      } else {
+        hit.setFromRefraction(1f);
+        hit.setToRefraction(mat.getRefractiveIndex());
+      }
+    }
+
     return result;
   }
 
@@ -259,22 +274,25 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       Vector4f intersection2 = new Vector4f(s).add(new Vector4f(v).mul(t2));
 
       // check if t is in range
-      Float t = null;
-      Vector4f intersection = null;
+      List<Float> t = new ArrayList<>();
+      List<Vector4f> intersections = new ArrayList<>();
       if (t1 > 0 && intersection1.y >= -0.001 && intersection1.y <= 1.001) {
-        t = t1;
-        intersection = intersection1;
-      } else if (t2 > 0 && intersection2.y >= -0.001 && intersection2.y <= 1.001) {
-        t = t2;
-        intersection = intersection2;
+        t.add(t1);
+        intersections.add(intersection1);
+      }
+      if (t2 > 0 && intersection2.y >= -0.001 && intersection2.y <= 1.001) {
+        t.add(t2);
+        intersections.add(intersection2);
       }
 
-      if (t != null) {
-        Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
+      for (int i = 0; i < t.size(); i++) {
+        float curT = t.get(i);
+        Vector4f intersection = intersections.get(i);
+        Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(curT));
         Vector4f normal;
         if (intersection.y < 0.999f) {
           normal = new Vector4f(intersection.x / (1 - intersection.y), 1f,
-              intersection.z / (1 - intersection.y), 0).normalize();
+              intersection.z / (1 - intersection.y), 0);
         } else {
           // the top vertex is singular
           normal = new Vector4f(0, 1, 0, 0);
@@ -283,7 +301,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         invTranspose.transform(normal);
 
         HitRecord hitRecord = new HitRecord();
-        hitRecord.setT(t);
+        hitRecord.setT(curT);
         hitRecord.setIntersection(intersectionInView);
         hitRecord.setNormal(normal);
         hitRecord.setMaterial(mat);
@@ -296,6 +314,20 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
           hitRecord.setTextureCoordinate(texCoordX, 1 - intersection.y);
         }
         result.add(hitRecord);
+      }
+    }
+
+    for (HitRecord hit : result) {
+      Vector4f normal = new Vector4f(hit.getNormal()).normalize();
+      Vector4f vec = new Vector4f(vector).normalize();
+      float cosIn = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
+      if (cosIn >= 0.001) {
+        hit.setFromRefraction(mat.getRefractiveIndex());
+        hit.setToRefraction(1f);
+        hit.setFlipNormal(true);
+      } else {
+        hit.setFromRefraction(1f);
+        hit.setToRefraction(mat.getRefractiveIndex());
       }
     }
 
@@ -381,7 +413,6 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
           hit.setFromRefraction(mat.getRefractiveIndex());
           hit.setToRefraction(1f);
           hit.setFlipNormal(true);
-          //System.out.println("start in object");
         } else if (Math.abs(t) < Math.abs(tMin) || Math.abs(t) < Math.abs(tMax)) {
           hit.setFromRefraction(1f);
           hit.setToRefraction(mat.getRefractiveIndex());
@@ -491,7 +522,6 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
           hit.setFromRefraction(mat.getRefractiveIndex());
           hit.setToRefraction(1f);
           hit.setFlipNormal(true);
-//          System.out.println("start in object");
         } else if (Math.abs(t) < Math.abs(t1) || Math.abs(t) < Math.abs(t2)) {
           hit.setFromRefraction(1f);
           hit.setToRefraction(mat.getRefractiveIndex());
