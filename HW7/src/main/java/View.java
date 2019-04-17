@@ -56,11 +56,6 @@ public class View {
     trackballTransform = new Matrix4f();
     scenegraph = null;
     screenCaptureUtil = null;
-    // Timer here help to execute camera.
-    // When it is in Ring mode, time runs and camera position is determined by time.
-    // When a term in cameraFlag table is true, it execute the corresponding command.
-    // Therefore, as a key pressed, the camera changes according to that key.
-    // The more time it is pressed, the more changes the camera is going to make.
     cameraPosition = new Vector3f(0, 0, 500);
     centerPosition = new Vector3f(0, 0, 0);
     angleOfView = 120;
