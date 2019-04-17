@@ -369,11 +369,6 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       tlist.add(tMin);
       tlist.add(tMax);
 
-      boolean startInObject = false;
-      if (tMax * tMin < 0) {
-        startInObject = true;
-      }
-
       for (Float t : tlist) {
         // hit point goes in the polygon
         HitRecord hit = new HitRecord();
@@ -409,20 +404,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
         // set refraction
-        if (startInObject) {
-          hit.setFromRefraction(mat.getRefractiveIndex());
-          hit.setToRefraction(1f);
-          hit.setFlipNormal(true);
-        } else if (Math.abs(t) < Math.abs(tMin) || Math.abs(t) < Math.abs(tMax)) {
-          hit.setFromRefraction(1f);
-          hit.setToRefraction(mat.getRefractiveIndex());
-        } else {
-          hit.setFromRefraction(mat.getRefractiveIndex());
-          hit.setToRefraction(1f);
-          normal = normal.mul(-1);
-          hit.setFlipNormal(true);
-        }
-
+        hitSetFraction(t, tMax, tMin, hit, mat);
         hit.setNormal(normal.x, normal.y, normal.z);
 
         // set texture
@@ -492,10 +474,6 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       List<Float> tlist = new ArrayList<>();
       tlist.add(t1);
       tlist.add(t2);
-      boolean startInObject = false;
-      if (t1 * t2 < 0) {
-        startInObject = true;
-      }
       for (Float t : tlist) {
         // hit point
         HitRecord hit = new HitRecord();
@@ -518,19 +496,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
         // set refraction
-        if (startInObject) {
-          hit.setFromRefraction(mat.getRefractiveIndex());
-          hit.setToRefraction(1f);
-          hit.setFlipNormal(true);
-        } else if (Math.abs(t) < Math.abs(t1) || Math.abs(t) < Math.abs(t2)) {
-          hit.setFromRefraction(1f);
-          hit.setToRefraction(mat.getRefractiveIndex());
-        } else {
-          hit.setFromRefraction(mat.getRefractiveIndex());
-          hit.setToRefraction(1f);
-          hit.setFlipNormal(true);
-        }
-
+        hitSetFraction(t, t1, t2, hit, mat);
+        // set normal vector
         hit.setNormal(normal.x, normal.y, normal.z);
 
         // set texture
@@ -552,5 +519,22 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
     }
     return result;
+  }
+
+  private void hitSetFraction(float tThis, float t1, float t2, HitRecord hit, Material mat) {
+    // set refraction
+    if (t1 * t2 < 0) { // light origin in object
+      hit.setFromRefraction(mat.getRefractiveIndex());
+      hit.setToRefraction(1f);
+      hit.setFlipNormal(true);
+    } else if (Math.abs(tThis) < Math.abs(t1) || Math.abs(tThis) < Math
+        .abs(t2)) { // from outside to object
+      hit.setFromRefraction(1f);
+      hit.setToRefraction(mat.getRefractiveIndex());
+    } else { // from inside to object
+      hit.setFromRefraction(mat.getRefractiveIndex());
+      hit.setToRefraction(1f);
+      hit.setFlipNormal(true);
+    }
   }
 }
