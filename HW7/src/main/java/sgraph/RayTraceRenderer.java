@@ -202,19 +202,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       }
     }
 
-    for (HitRecord hit : result) {
-      Vector4f normal = new Vector4f(hit.getNormal()).normalize();
-      Vector4f vec = new Vector4f(vector).normalize();
-      float cosIn = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
-      if (cosIn >= 0.001) {
-        hit.setFromRefraction(mat.getRefractiveIndex());
-        hit.setToRefraction(1f);
-        hit.setFlipNormal(true);
-      } else {
-        hit.setFromRefraction(1f);
-        hit.setToRefraction(mat.getRefractiveIndex());
-      }
-    }
+    // set refraction
+    hitSetFraction(result, vector);
 
     return result;
   }
@@ -327,19 +316,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       }
     }
 
-    for (HitRecord hit : result) {
-      Vector4f normal = new Vector4f(hit.getNormal()).normalize();
-      Vector4f vec = new Vector4f(vector).normalize();
-      float cosIn = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
-      if (cosIn >= 0.001) {
-        hit.setFromRefraction(mat.getRefractiveIndex());
-        hit.setToRefraction(1f);
-        hit.setFlipNormal(true);
-      } else {
-        hit.setFromRefraction(1f);
-        hit.setToRefraction(mat.getRefractiveIndex());
-      }
-    }
+    // set refraction
+    hitSetFraction(result, vector);
 
     return result;
   }
@@ -413,8 +391,6 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         }
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
-        // set refraction
-        hitSetFraction(t, tMax, tMin, hit, mat);
         hit.setNormal(normal.x, normal.y, normal.z);
 
         // set texture
@@ -450,6 +426,8 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       }
 
     }
+    // set refraction
+    hitSetFraction(result, vector);
     return result;
   }
 
@@ -505,8 +483,7 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
         normal.w = 0;
         Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
         invTranspose.transform(normal);
-        // set refraction
-        hitSetFraction(t, t1, t2, hit, mat);
+
         // set normal vector
         hit.setNormal(normal.x, normal.y, normal.z);
 
@@ -528,32 +505,32 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
 
 
     }
+    // set refraction
+    hitSetFraction(result, vector);
     return result;
   }
 
   /**
    * Set refraction on hit records passed in.
    *
-   * @param tThis the t that is to be checked
-   * @param t1 the first t
-   * @param t2 the second t
-   * @param hit current HitRecord that is to be modified
-   * @param mat the material of that HitRecord
+   * @param records a list of hit records that is to be checked
+   * @param rayVec the direction of the ray
    */
-  private void hitSetFraction(float tThis, float t1, float t2, HitRecord hit, Material mat) {
+  private void hitSetFraction(List<HitRecord> records, Vector4f rayVec) {
     // set refraction
-    if (t1 * t2 < 0) { // light origin in object
-      hit.setFromRefraction(mat.getRefractiveIndex());
-      hit.setToRefraction(1f);
-      hit.setFlipNormal(true);
-    } else if (Math.abs(tThis) < Math.abs(t1) || Math.abs(tThis) < Math
-        .abs(t2)) { // from outside to object
-      hit.setFromRefraction(1f);
-      hit.setToRefraction(mat.getRefractiveIndex());
-    } else { // from inside to object
-      hit.setFromRefraction(mat.getRefractiveIndex());
-      hit.setToRefraction(1f);
-      hit.setFlipNormal(true);
+    for (HitRecord hit : records) {
+      Material mat = hit.getMaterial();
+      Vector4f normal = new Vector4f(hit.getNormal()).normalize();
+      Vector4f vec = new Vector4f(rayVec).normalize();
+      float cosIn = vec.x * normal.x + vec.y * normal.y + vec.z * normal.z;
+      if (cosIn >= 0.001) {
+        hit.setFromRefraction(mat.getRefractiveIndex());
+        hit.setToRefraction(1f);
+        hit.setFlipNormal(true);
+      } else {
+        hit.setFromRefraction(1f);
+        hit.setToRefraction(mat.getRefractiveIndex());
+      }
     }
   }
 }
