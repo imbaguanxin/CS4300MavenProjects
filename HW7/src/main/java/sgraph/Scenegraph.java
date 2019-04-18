@@ -1,6 +1,5 @@
 package sgraph;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.StringStack;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -56,8 +55,11 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
    */
   protected IScenegraphRenderer renderer;
 
-  protected final int MAX_REFLECTION_COUNT = 5;
-  protected final int MAX_REFRACTION_COUNT = 1;
+  /**
+   * The number of recurrence that refraction and reflection should do is limited. This limitation
+   * should be not less than 4, otherwise it will not be effective.
+   */
+  protected static final int MAX_RECURRENCE_COUNT = 5;
 
 
   public Scenegraph() {
@@ -106,7 +108,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
         // produce color for this pixel
         Vector3f rgb = this.getRGB(hitRecords, lights, modelView, new Vector4f(0, 0, 0, 1),
-            MAX_REFLECTION_COUNT);
+            MAX_RECURRENCE_COUNT);
         imageBuffer.setRGB(j, i, new Color(rgb.x, rgb.y, rgb.z).getRGB());
       }
     }
@@ -121,12 +123,20 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     }
   }
 
+  /**
+   * This method determine the color that a point will get from refraction.
+   *
+   * @param hitRecord the closest hit on the refracted ray
+   * @param lights all the lights in the scene with their transformations
+   * @param modelView the stack of modelView from the world to the start point of the ray
+   * @param bound the current recurrence bound
+   * @param fromPoint the start point of the ray
+   * @return the color that a point will get from refraction
+   */
   private Vector3f refraction(HitRecord hitRecord, Map<Light, Matrix4f> lights,
       Stack<Matrix4f> modelView, int bound, Vector4f fromPoint) {
     if (bound <= 0) {
-      Vector3f res = shade(hitRecord, lights, modelView);
-      //System.out.println("bound == 0" + res.toString());
-      return res;
+      return shade(hitRecord, lights, modelView);
     }
     Stack<Matrix4f> mvCopy = copyMV(modelView);
 
@@ -146,7 +156,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       return reflect(hitRecord, lights, modelView, bound, fromPoint);
     } else {
       float cosOut = (float) Math.sqrt(1 - sinOut * sinOut);
-      Vector4f refraction = null;
+      Vector4f refraction;
       if (sinIn < 0.001f && sinIn > -0.001f) {
         refraction = new Vector4f(normal).mul(-1);
       } else {
@@ -159,12 +169,21 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
       ThreeDRay refractionRay = new ThreeDRay(intersection.x, intersection.y, intersection.z,
           refraction.x, refraction.y, refraction.z);
       List<HitRecord> refractionRecords = this.root.rayCast(mvCopy, refractionRay, this.renderer);
-      Vector3f rgb = getRGB(refractionRecords, lights, modelView, intersection,
+      return getRGB(refractionRecords, lights, modelView, intersection,
           bound - 1);
-      return rgb;
     }
   }
 
+  /**
+   * This method determine the color that a point will get from reflection.
+   *
+   * @param hitRecord the closest hit on the refracted ray
+   * @param lights all the lights in the scene with their transformations
+   * @param modelView the stack of modelView from the world to the start point of the ray
+   * @param bound the current recurrence bound
+   * @param fromPoint the start point of the ray
+   * @return the color that a point will get from reflection
+   */
   private Vector3f reflect(HitRecord hitRecord, Map<Light, Matrix4f> lights,
       Stack<Matrix4f> modelView, int bound, Vector4f fromPoint) {
     if (bound <= 0) {
@@ -185,14 +204,13 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         reflectDir.x, reflectDir.y, reflectDir.z);
     List<HitRecord> reflectRecords = this.root.rayCast(mvCopy, reflectRay, this.renderer);
 
-    Vector3f rgb = getRGB(reflectRecords, lights, modelView, hitRecord.getIntersection(),
+    return getRGB(reflectRecords, lights, modelView, hitRecord.getIntersection(),
         bound - 1);
-
-    return rgb;
   }
 
   /**
-   * This method acts as a combine of vertex and fragment shader for a pixel.
+   * This method acts as a combine of vertex and fragment shader for a pixel. Shade of light is also
+   * supported in this shader.
    *
    * @param hitRecord the closest hit on the ray
    * @param lights all lights in this scene
@@ -219,7 +237,6 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
         material.getSpecular().y,
         material.getSpecular().z);
     float materialShininess = material.getShininess();
-    //float BRIGHTNESS = 0.4f;
 
     // pass correct texture coordinates to fragment shader
     Matrix4f textureTrans = new Matrix4f().identity();
@@ -234,12 +251,10 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     Vector3f normalView;
     Vector3f ambient, diffuse, specular;
     float nDotL, rDotV, dDotMinusL;
-    //Vector4f color = new Vector4f(0,0,0,1);
     Vector4f color = new Vector4f(materialAmbient.x, materialAmbient.y, materialAmbient.z, 1);
 
     for (Light light : lights.keySet()) {
       float lightIndex = canSeeLight(hitRecord, light, new Matrix4f(lights.get(light)), modelView);
-      System.out.println("light index:" + lightIndex);
       if (lightIndex > 0) {
         Vector4f lightPosition = lights.get(light).transform(new Vector4f(light.getPosition()));
         Vector4f lightDirection = lights.get(light)
@@ -311,7 +326,16 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     return new Vector3f(Math.min(color.x, 1f), Math.min(color.y, 1f), Math.min(color.z, 1f));
   }
 
-
+  /**
+   * Get RGB color for a list of hit records. This method acts as the shader for ray tracing with
+   * reflection and refraction features added.
+   *
+   * @param records list of hit records that is to be shaded
+   * @param lights all lights in the environment along with their transformations
+   * @param modelView the stack of modelView from the world to the start point of the ray
+   * @param fromPoint the start point of the ray in world coordinate system
+   * @param bound the index that
+   */
   private Vector3f getRGB(List<HitRecord> records, Map<Light, Matrix4f> lights,
       Stack<Matrix4f> modelView, Vector4f fromPoint, int bound) {
     Stack<Matrix4f> mvCopy = copyMV(modelView);
@@ -349,6 +373,15 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     return rgb;
   }
 
+  /**
+   * The method determines how much light a point can see. This can be used as
+   *
+   * @param hitRecord the closest hit on the ray
+   * @param light the light that is to be checked
+   * @param LightModelView the modelView that is to be applied to the light
+   * @param modelView the stack of modelView from the object to the world
+   * @return a ratio of how much light this point can see
+   */
   private float canSeeLight(HitRecord hitRecord, Light light, Matrix4f LightModelView,
       Stack<Matrix4f> modelView) {
     // copy model view
@@ -360,7 +393,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
     Vector4f lightPosition = LightModelView.transform(new Vector4f(light.getPosition()));
     // find the hit position in view
     Vector4f hitPosition = new Vector4f(hitRecord.getIntersection());
-    ThreeDRay hitToLightRay = null;
+    ThreeDRay hitToLightRay;
     if (lightPosition.w != 0) { // A spot light
       Vector3f hitToLightDir = new Vector3f(
           lightPosition.x - hitPosition.x,
