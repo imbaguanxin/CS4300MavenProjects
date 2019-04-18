@@ -2,21 +2,30 @@ package sgraph;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.IOException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.TreeMap;
+
 import javax.imageio.ImageIO;
+
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
+
 import util.IVertexData;
 import util.Light;
 import util.Material;
 import util.PolygonMesh;
-
-import java.util.*;
 import util.TextureImage;
 
 /**
