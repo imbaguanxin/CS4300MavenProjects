@@ -240,6 +240,16 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     return result;
   }
 
+  /**
+   * This is a helper to check how a specified ray hit a cone.
+   *
+   * @param start the start point of the ray
+   * @param vector the direction of the ray
+   * @param modelView the modelView transformation from world to view coordinates
+   * @param mat the material of the object that is to be checked
+   * @param textureName the name of the texture of the object that is to be checked
+   * @return a list of all hit records of the ray on the object
+   */
   private List<HitRecord> checkHitCone(Vector4f start, Vector4f vector, Matrix4f modelView,
       Material mat, String textureName) {
     List<HitRecord> result = new ArrayList<>();
@@ -542,6 +552,15 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     return result;
   }
 
+  /**
+   * Set refraction on hit records passed in.
+   *
+   * @param tThis the t that is to be checked
+   * @param t1 the first t
+   * @param t2 the second t
+   * @param hit current HitRecord that is to be modified
+   * @param mat the material of that HitRecord
+   */
   private void hitSetFraction(float tThis, float t1, float t2, HitRecord hit, Material mat) {
     // set refraction
     if (t1 * t2 < 0) { // light origin in object
