@@ -362,6 +362,9 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       Vector4f normal = hit.getNormal();
       normal.mul(-1);
       hit.setNormal(normal);
+      Vector4f intersect = hit.getIntersection();
+      intersect = intersect.add(normal.mul(0.1f));
+      hit.setIntersection(intersect);
     }
     return result;
   }

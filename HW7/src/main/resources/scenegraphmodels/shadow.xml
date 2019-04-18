@@ -30,16 +30,16 @@
       <!--</light>-->
 
       <light>
-        <ambient>.8 .8 .8</ambient>
-        <diffuse>.8 .8 .8</diffuse>
-        <specular>.8 .8 .8</specular>
+        <ambient>.4 .4 .4</ambient>
+        <diffuse>.4 .4 .4</diffuse>
+        <specular>.4 .4 .4</specular>
         <direction>-1 -1 0</direction>
       </light>
 
       <light>
-        <ambient>.8 .8 .8</ambient>
-        <diffuse>.8 .8 .8</diffuse>
-        <specular>.8 .8 .8</specular>
+        <ambient>.4 .4 .4</ambient>
+        <diffuse>.4 .4 .4</diffuse>
+        <specular>.4 .4 .4</specular>
         <direction>0 -1 -1</direction>
       </light>
 
@@ -73,11 +73,6 @@
             <ambient>.1 .1 .1</ambient>
             <diffuse>.4 .4 .4</diffuse>
             <specular>.9 .9 .9</specular>
-            <!--<absorption>.5</absorption>-->
-            <!--<reflection>.5</reflection>-->
-            <!--<ambient>.8 .4 .2</ambient>-->
-            <!--<diffuse>.3 .15 .075</diffuse>-->
-            <!--<specular>.6 .3 .15</specular>-->
             <shininess>100</shininess>
           </material>
         </object>

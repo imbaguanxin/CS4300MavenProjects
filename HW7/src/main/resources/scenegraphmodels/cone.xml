@@ -1,84 +1,52 @@
 <scene>
   <instance name="sphere" path="models/sphere.obj"/>
-  <instance name="box" path="models/box.obj"/>
-  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="sphereInside" path="models/sphere.obj"/>
   <instance name="cone" path="models/cone.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="box" path="models/box-outside.obj"/>
+  <instance name="boxOneSide" path="models/box-outside.obj"/>
 
-  <image name="earth" path="textures/earthmap.png"/>
-  <image name="cb" path="textures/checkerboard.png"/>
-  <image name="amit" path="textures/AmitShesh.jpg"/>
+  <image name="earth" path="textures/earthmap.jpg"/>
+  <image name="cb" path="textures/diamond.jpg"/>
   <image name="metal" path="textures/brushedMetal.jpg"/>
+  <image name="die" path="textures/die.png"/>
 
-  <group>
-    <light>
-      <ambient>.5 .5 .5</ambient>
-      <diffuse>.8 .8 .8</diffuse>
-      <specular>.5 .5 .5</specular>
-      <spotangle>10</spotangle>
-      <spotdirection>0 0 -1</spotdirection>
-      <position>0 0 50</position>
-    </light>
+<group>
+  <light>
+    <ambient>.8 .8 .8</ambient>
+    <diffuse>.8 .8 .8</diffuse>
+    <specular>.8 .8 .8</specular>
+    <position>10 20 0</position>
+    <spotdirection>-1 0 0</spotdirection>
+  </light>
+  <transform>
+    <set>
+      <translate>0 -.5 0</translate>
+      <scale>100 1 100</scale>
+    </set>
+    <object instanceof="boxOneSide" texture="metal">
+      <material>
+        <ambient>.2 .2 .2</ambient>
+        <diffuse>.5 .5 .5</diffuse>
+        <specular>.5 .5 .5</specular>
+        <absorption>1</absorption>
+      </material>
+    </object>
+  </transform>
 
-    <transform>
-      <set>
-        <translate>15 0 0</translate>
-        <scale>30 30 30</scale>
-      </set>
-      <object instanceof="box" texture="amit">
-        <material>
-          <ambient>.3 .3 .3</ambient>
-          <diffuse>.7 .7 .7</diffuse>
-          <specular>.7 .7 .7</specular>
-          <shininess>100</shininess>
-        </material>
-      </object>
-    </transform>
-
-    <transform>
-      <set>
-        <translate>-15 0 0</translate>
-        <scale>30 30 30</scale>
-      </set>
-      <object instanceof="box" texture="metal">
-        <material>
-          <ambient>.3 .3 .3</ambient>
-          <diffuse>.7 .7 .7</diffuse>
-          <specular>.7 .7 .7</specular>
-          <shininess>100</shininess>
-        </material>
-      </object>
-    </transform>
-
-    <!--<transform>-->
-    <!--<set>-->
-    <!--<translate>-15 0 0</translate>-->
-    <!--<scale>30 30 30</scale>-->
-    <!--</set>-->
-    <!--<group>-->
-    <!--<object instanceof="box" texture="earth">-->
-    <!--<material>-->
-    <!--<ambient>.3 .3 .3</ambient>-->
-    <!--<diffuse>.7 .7 .7</diffuse>-->
-    <!--<specular>.7 .7 .7</specular>-->
-    <!--<shininess>100</shininess>-->
-    <!--</material>-->
-    <!--</object>-->
-    <!--</group>-->
-    <!--</transform>-->
-
-    <!--
-      <transform>
-        <set>
-        <translate> 0 25 0 </translate>
-        <scale> 50 50 50 </scale>
-        </set>
-        <group>
-          <object instanceof="cone">
-            <material>
-            <color> 1 0 0 </color>
-            </material>
-          </object>
-        </group>
-      </transform> -->
-  </group>
+  <transform>
+    <set>
+      <scale>5 10 5</scale>
+    </set>
+    <object instanceof="cone">
+      <material>
+        <ambient>1 0 0</ambient>
+        <diffuse>1 0 0</diffuse>
+        <specular>1 0 0</specular>
+        <absorption>.5</absorption>
+        <reflection>.5</reflection>
+      </material>
+    </object>
+  </transform>
+</group>
 </scene>

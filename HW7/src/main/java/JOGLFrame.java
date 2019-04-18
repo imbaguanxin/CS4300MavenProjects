@@ -210,7 +210,6 @@ public class JOGLFrame extends JFrame {
      */
     void applyConfig(View view, GLAutoDrawable glAutoDrawable) throws Exception {
       InputStream in = getClass().getClassLoader().getResourceAsStream(objectPath);
-//      InputStream in = getClass().getClassLoader().getResourceAsStream("scenegraphmodels/cone.xml");
       System.out.println(objectPath);
       view.initScenegraph(glAutoDrawable, in);
       float[] fixed_camera = new float[3];

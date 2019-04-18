@@ -104,7 +104,7 @@ public class LightScenegraphRenderer extends GL3ScenegraphRenderer {
         texture.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
         texture.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 
-//        texture.setMustFlipVertically(true);
+        texture.setMustFlipVertically(true);
         Matrix4f textureTrans = new Matrix4f();
         if (texture.getMustFlipVertically()) { //for flipping the image vertically
           textureTrans = new Matrix4f().translate(0, 1, 0).scale(1, -1, 1);
