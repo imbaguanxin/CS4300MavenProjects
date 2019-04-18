@@ -239,7 +239,7 @@ public class Scenegraph<VertexType extends IVertexData> implements IScenegraph<V
 
     for (Light light : lights.keySet()) {
       float lightIndex = canSeeLight(hitRecord, light, new Matrix4f(lights.get(light)), modelView);
-      System.out.println("light index:" + lightIndex);
+//      System.out.println("light index:" + lightIndex);
       if (lightIndex > 0) {
         Vector4f lightPosition = lights.get(light).transform(new Vector4f(light.getPosition()));
         Vector4f lightDirection = lights.get(light)

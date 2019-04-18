@@ -3,6 +3,7 @@ package sgraph;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import rayTracer.HitRecord;
 import rayTracer.ThreeDRay;
@@ -38,6 +39,15 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       case "sphere":
         result.addAll(
             checkHitSphere(
+                ray.getStartingPoint(),
+                ray.getDirection(),
+                new Matrix4f(modelView),
+                mat,
+                textureName));
+        break;
+      case "sphereInside":
+        result.addAll(
+            checkHitSphereInside(
                 ray.getStartingPoint(),
                 ray.getDirection(),
                 new Matrix4f(modelView),
@@ -216,6 +226,17 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
       }
     }
 
+    return result;
+  }
+
+  private List<HitRecord> checkHitSphereInside(Vector4f start, Vector4f vector, Matrix4f modelView,
+      Material mat, String textureName) {
+    List<HitRecord> result = checkHitSphere(start, vector, modelView, mat, textureName);
+    for (HitRecord hit : result) {
+      Vector4f normal = hit.getNormal();
+      normal.mul(-1);
+      hit.setNormal(normal);
+    }
     return result;
   }
 

@@ -1,0 +1,83 @@
+<scene>
+  <instance name="sphere" path="models/sphere.obj"/>
+  <instance name="sphereInside" path="models/sphere.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="box" path="models/box-outside.obj"/>
+
+  <image name="snow" path="textures/snow.jpg"/>
+
+  <transform>
+    <set>
+      <scale>1000 1000 1000</scale>
+    </set>
+    <object instanceof="sphere" texture="snow">
+      <material>
+        <ambient>1 1 1</ambient>
+        <diffuse>1 1 1</diffuse>
+        <specular>1 1 1</specular>
+      </material>
+    </object>
+  </transform>
+
+  <transform>
+    <set>
+      <translate>10 0 0</translate>
+    </set>
+    <object instanceof="box">
+      <material>
+        <ambient>1 1 1</ambient>
+        <diffuse>1 1 1</diffuse>
+        <specular>1 1 1</specular>
+        <absorption>.01</absorption>
+        <refractive>1.55</refractive>
+      </material>
+    </object>
+  </transform>
+
+  <transform>
+    <set>
+      <translate>10 0 0</translate>
+    </set>
+    <object instanceof="box">
+      <material>
+        <ambient>1 1 1</ambient>
+        <diffuse>1 1 1</diffuse>
+        <specular>1 1 1</specular>
+        <absorption>.01</absorption>
+        <refractive>1.55</refractive>
+      </material>
+    </object>
+  </transform>
+
+  <transform>
+    <set>
+      <translate>10 0 0</translate>
+    </set>
+    <object instanceof="sphere">
+      <material>
+        <ambient>1 1 1</ambient>
+        <diffuse>1 1 1</diffuse>
+        <specular>1 1 1</specular>
+        <absorption>.01</absorption>
+        <refractive>1.55</refractive>
+      </material>
+    </object>
+  </transform>
+
+  <transform>
+    <set>
+      <translate>10 0 0</translate>
+    </set>
+    <object instanceof="box">
+      <material>
+        <ambient>1 1 1</ambient>
+        <diffuse>1 1 1</diffuse>
+        <specular>1 1 1</specular>
+        <absorption>.01</absorption>
+        <refractive>1.55</refractive>
+      </material>
+    </object>
+  </transform>
+
+</scene>
