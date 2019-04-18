@@ -124,14 +124,31 @@
         </set>
         <object instanceof="box">
           <material>
-            <ambient>.5 .5 .5</ambient>
-            <diffuse>.5 .5 .5</diffuse>
-            <specular>.5 .5 .5</specular>
+            <ambient>0 0 .5</ambient>
+            <diffuse>0 0 .5</diffuse>
+            <specular>0 0 .5</specular>
             <absorption>.5</absorption>
             <reflection>.5</reflection>
           </material>
         </object>
       </transform>
+
+      <!--<transform>-->
+        <!--<set>-->
+          <!--<translate>0 0 50</translate>-->
+          <!--<scale>100 100 1</scale>-->
+        <!--</set>-->
+        <!--<object instanceof="box">-->
+          <!--<material>-->
+            <!--<ambient>.5 .5 .5</ambient>-->
+            <!--<diffuse>.5 .5 .5</diffuse>-->
+            <!--<specular>.5 .5 .5</specular>-->
+            <!--<absorption>.5</absorption>-->
+            <!--<reflection>.5</reflection>-->
+          <!--</material>-->
+        <!--</object>-->
+      <!--</transform>-->
+
 
       <group>
         <group>

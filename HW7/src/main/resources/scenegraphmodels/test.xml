@@ -1,0 +1,51 @@
+<scene>
+  <instance name="sphere" path="models/sphere.obj"/>
+  <instance name="sphereInside" path="models/sphere.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="box" path="models/box-outside.obj"/>
+  <instance name="boxOneSide" path="models/box-outside.obj"/>
+
+  <image name="earth" path="textures/earthmap.jpg"/>
+  <image name="cb" path="textures/diamond.jpg"/>
+  <image name="metal" path="textures/brushedMetal.jpg"/>
+  <image name="die" path="textures/die.png"/>
+
+<group>
+  <light>
+    <ambient>.8 .8 .8</ambient>
+    <diffuse>.8 .8 .8</diffuse>
+    <specular>.8 .8 .8</specular>
+    <direction>-1 -1 0</direction>
+  </light>
+  <transform>
+    <set>
+      <translate>0 -.5 0</translate>
+      <scale>100 1 100</scale>
+    </set>
+    <object instanceof="boxOneSide" texture="metal">
+      <material>
+        <ambient>.2 .2 .2</ambient>
+        <diffuse>.5 .5 .5</diffuse>
+        <specular>.5 .5 .5</specular>
+        <absorption>1</absorption>
+      </material>
+    </object>
+  </transform>
+
+  <transform>
+    <set>
+      <scale>5 10 5</scale>
+    </set>
+    <object instanceof="cone">
+      <material>
+        <ambient>1 0 0</ambient>
+        <diffuse>1 0 0</diffuse>
+        <specular>1 0 0</specular>
+        <absorption>.5</absorption>
+        <reflection>.5</reflection>
+      </material>
+    </object>
+  </transform>
+</group>
+</scene>
