@@ -18,13 +18,21 @@ See this picture render from `shadow.xml` and `shadow.config`
 We have finished all the extra credits.
 
 1. Cone: cone.xml
+
 <img src="images/cone.png" alt="drawing" width="500"/>
+
 2. Cylinder: cylilnder.xml
+
 <img src="images/cylinder.png" alt="drawing" width="500"/>
+
 3. refraction: snow.xml, refraction.example
+
 <img src="images/refraction.png" alt="drawing" width="500"/>
+
 <img src="images/refraction2.png" alt="drawing" width="500"/>
+
 4. creative scene: simple.xml
+
 <img src="images/creativeScene.png" alt="drawing" width="500"/>
 
 **You may find that when running our code, the texture is inversed. We have asked this problem in Piazza and we were told to fit our image with OpenGL even though OpenGL is rendering the wrong one. We were originally rendering the "correct" image and inverted our rendering after reading the Piazza post.**
