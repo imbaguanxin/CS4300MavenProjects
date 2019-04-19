@@ -44,9 +44,27 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
                 mat,
                 textureName));
         break;
+      case "sphereInside":
+        result.addAll(
+            checkHitSphereInside(
+                ray.getStartingPoint(),
+                ray.getDirection(),
+                new Matrix4f(modelView),
+                mat,
+                textureName));
+        break;
       case "box":
         result.addAll(
             checkHitBox(
+                ray.getStartingPoint(),
+                ray.getDirection(),
+                new Matrix4f(modelView),
+                mat,
+                textureName));
+        break;
+      case "boxOneSide":
+        result.addAll(
+            checkHitBoxOneSide(
                 ray.getStartingPoint(),
                 ray.getDirection(),
                 new Matrix4f(modelView),
@@ -432,6 +450,114 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
   }
 
   /**
+   * This is a helper to check how a specified ray hit a box. Texture looks like box.obj
+   *
+   * @param start the start point of the ray
+   * @param vector the direction of the ray
+   * @param modelView the modelView transformation from world to view coordinates
+   * @param mat the material of the object that is to be checked
+   * @param textureName the name of the texture of the object that is to be checked
+   * @return a list of all hit records of the ray on the object
+   */
+  private List<HitRecord> checkHitBoxOneSide(Vector4f start, Vector4f vector, Matrix4f modelView,
+      Material mat, String textureName) {
+    List<HitRecord> result = new ArrayList<>();
+    Matrix4f invertedMV = new Matrix4f();
+    modelView.invert(invertedMV);
+    Vector4f s = new Vector4f();
+    Vector4f v = new Vector4f();
+    invertedMV.transform(start, s);
+    invertedMV.transform(vector, v);
+
+    float txMin = Math.min((-0.5f - s.x) / v.x, (0.5f - s.x) / v.x);
+    float txMax = Math.max((-0.5f - s.x) / v.x, (0.5f - s.x) / v.x);
+    float tyMin = Math.min((-0.5f - s.y) / v.y, (0.5f - s.y) / v.y);
+    float tyMax = Math.max((-0.5f - s.y) / v.y, (0.5f - s.y) / v.y);
+    float tzMin = Math.min((-0.5f - s.z) / v.z, (0.5f - s.z) / v.z);
+    float tzMax = Math.max((-0.5f - s.z) / v.z, (0.5f - s.z) / v.z);
+
+    float tMin = Math.max(Math.max(txMin, tyMin), tzMin);
+    float tMax = Math.min(Math.min(txMax, tyMax), tzMax);
+    if (tMin <= tMax) {
+      List<Float> tlist = new ArrayList<>();
+      tlist.add(tMin);
+      tlist.add(tMax);
+
+      for (Float t : tlist) {
+        // hit point goes in the polygon
+        HitRecord hit = new HitRecord();
+        hit.setT(t);
+
+        // set material
+        hit.setMaterial(mat);
+
+        // intersection in View
+        Vector4f intersectionInView = new Vector4f(start).add(new Vector4f(vector).mul(t));
+        hit.setIntersection(intersectionInView);
+
+        // calculate normal vector
+        Vector4f normal = new Vector4f(0, 0, 0, 0);
+        // find intersection in obj coordinate system
+        Vector4f intersection = new Vector4f(s).add(new Vector4f(v).mul(t));
+        // find intersection in obj coordinate system
+        if (intersection.x >= .499f && intersection.x <= .501f) {
+          normal.x = 1f;
+        } else if (intersection.x <= -.499f && intersection.x >= -.501f) {
+          normal.x = -1f;
+        }
+        if (intersection.y >= .499f && intersection.y <= .501f) {
+          normal.y = 1f;
+        } else if (intersection.y <= -.499f && intersection.y >= -.501f) {
+          normal.y = -1f;
+        }
+        if (intersection.z >= .499f && intersection.z <= .501f) {
+          normal.z = 1f;
+        } else if (intersection.z <= -.499f && intersection.z >= -.501f) {
+          normal.z = -1f;
+        }
+        Matrix4f invTranspose = new Matrix4f(modelView).transpose().invert();
+        invTranspose.transform(normal);
+        // set refraction
+        hit.setNormal(normal.x, normal.y, normal.z);
+
+        // set texture
+        // the origin of the texture coordinates is at lower left corner
+        // so that the texture matches openGL
+        TextureImage image = this.textures.get(textureName);
+        if (!textureName.equals("") && image != null) {
+          hit.setTextureImage(image);
+          float textureX = 0, textureY = 0;
+          if (intersection.x >= .499f && intersection.x <= .501f) { // right
+            textureX = .5f + intersection.z;
+            textureY = .5f + intersection.y;
+          } else if (intersection.x <= -.499f && intersection.x >= -.501f) { // left
+            textureX = .5f - intersection.z;
+            textureY = .5f + intersection.y;
+          } else if (intersection.y >= .499f && intersection.y <= .501f) { // top
+            textureX = .5f + intersection.x;
+            textureY = .5f - intersection.z;
+          } else if (intersection.y <= -.499f && intersection.y >= -.501f) { // bottom
+            textureX = .5f + intersection.x;
+            textureY = .5f + intersection.z;
+          } else if (intersection.z >= .499f && intersection.z <= .501f) { // front
+            textureX = .5f + intersection.x;
+            textureY = .5f + intersection.y;
+          } else if (intersection.z <= -.499f && intersection.z >= -.501f) { // back
+            textureX = .5f - intersection.x;
+            textureY = .5f + intersection.y;
+          }
+          hit.setTextureCoordinate(textureX, textureY);
+        }
+        result.add(hit);
+
+      }
+
+    }
+    this.hitSetFraction(result, vector);
+    return result;
+  }
+
+  /**
    * This is a helper to check how a specified ray hit a sphere.
    *
    * @param start the start point of the ray
@@ -507,6 +633,30 @@ public class RayTraceRenderer extends LightScenegraphRenderer {
     }
     // set refraction
     hitSetFraction(result, vector);
+    return result;
+  }
+
+  /**
+   * This is a helper to check how a specified ray hit a sphere, but the normal is facing inside.
+   *
+   * @param start the start point of the ray
+   * @param vector the direction of the ray
+   * @param modelView the modelView transformation from world to view coordinates
+   * @param mat the material of the object that is to be checked
+   * @param textureName the name of the texture of the object that is to be checked
+   * @return a list of all hit records of the ray on the object
+   */
+  private List<HitRecord> checkHitSphereInside(Vector4f start, Vector4f vector, Matrix4f modelView,
+      Material mat, String textureName) {
+    List<HitRecord> result = checkHitSphere(start, vector, modelView, mat, textureName);
+    for (HitRecord hit : result) {
+      Vector4f normal = hit.getNormal();
+      normal.mul(-1);
+      hit.setNormal(normal);
+      Vector4f intersect = hit.getIntersection();
+      intersect = intersect.add(normal.mul(0.1f));
+      hit.setIntersection(intersect);
+    }
     return result;
   }
 

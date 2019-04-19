@@ -1,0 +1,94 @@
+<scene>
+  <instance name="sphere" path="models/sphere.obj"/>
+  <instance name="sphereInside" path="models/sphere.obj"/>
+  <instance name="cone" path="models/cone.obj"/>
+  <instance name="cylinder" path="models/cylinder.obj"/>
+  <instance name="box" path="models/box-outside.obj"/>
+  <instance name="boxOneSide" path="models/box-outside.obj"/>
+
+  <image name="snow" path="textures/snow.jpg"/>
+  <image name="diamond" path="textures/diamond.jpg"/>
+  <image name="cb" path="textures/checkerboard.jpg"/>
+
+  <transform>
+    <set>
+      <translate>0 0 -10</translate>
+      <scale>100 100 1</scale>
+    </set>
+    <object instanceof="boxOneSide" texture="diamond">
+      <material>
+        <ambient>1 1 1</ambient>
+        <diffuse>1 1 1</diffuse>
+        <specular>1 1 1</specular>
+      </material>
+    </object>
+  </transform>
+
+  <transform>
+    <set>
+      <translate>-25 0 0</translate>
+      <scale>10 10 10</scale>
+    </set>
+    <object instanceof="box">
+      <material>
+        <ambient>0.034 0.359 0.405</ambient>
+        <diffuse>0.034 0.359 0.405</diffuse>
+        <specular>0.034 0.359 0.405</specular>
+        <absorption>.2</absorption>
+        <refractive>1.55</refractive>
+      </material>
+    </object>
+  </transform>
+
+
+
+  <transform>
+    <set>
+      <translate>25 0 0</translate>
+      <scale>5 5 5</scale>
+    </set>
+    <object instanceof="sphere">
+      <material>
+        <ambient>0.092 0.223 0.28</ambient>
+        <diffuse>0.092 0.223 0.28</diffuse>
+        <specular>0.092 0.223 0.28</specular>
+        <absorption>.2</absorption>
+        <refractive>1.55</refractive>
+      </material>
+    </object>
+  </transform>
+
+  <transform>
+    <set>
+      <translate>-10 -5 0</translate>
+      <scale>5 10 5</scale>
+    </set>
+    <object instanceof="cylinder">
+      <material>
+        <ambient>0.148 0.338 0.059</ambient>
+        <diffuse>0.148 0.338 0.059</diffuse>
+        <specular>0.148 0.338 0.059</specular>
+        <absorption>.2</absorption>
+        <refractive>1.55</refractive>
+      </material>
+    </object>
+  </transform>
+
+  <transform>
+    <set>
+      <translate>10 -5 0</translate>
+      <!--<rotate>-90 1 0 0</rotate>-->
+      <scale>5 10 5</scale>
+    </set>
+    <object instanceof="cone">
+      <material>
+        <ambient>0.197 0.224 0.11</ambient>
+        <diffuse>0.197 0.224 0.11</diffuse>
+        <specular>0.197 0.224 0.11</specular>
+        <absorption>.2</absorption>
+        <refractive>1.001</refractive>
+      </material>
+    </object>
+  </transform>
+
+</scene>

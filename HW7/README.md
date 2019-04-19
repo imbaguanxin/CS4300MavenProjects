@@ -6,42 +6,39 @@
 
   For example, just copy `src/main/resources/configs/camera.config` to configuration and the code is going to run.
 
-  `camera.config` is displaying the final rendering. Camera position: (0,0,30) looking at (0,0,0).
+  `camera.config` is displaying the final rendering. Camera position: (0,0,150) looking at (0,0,0). The angle of view is set to 70 degrees.
 
-  We are rendering a die and an earth.
+  We are rendering a refraction image there.
 
-  Similarly, other 3 files work as well, including `camera.config`, `box.config`, `sphere.config` and `light.config`.
+We have finished shadowing and reflection.
+See this picture render from `shadow.xml` and `shadow.config`
 
-## Final rendering
-  This is a render from ray tracer
-  ![final_rendering](final_rendering_rayTracer.png)
-  This is a render from OpenGL
-  ![final_rendering_opengl](final_rendering_OpenGL.png)
+<img src="images/shadowAndReflection.png" alt="drawing" width="500"/>
 
-## box rendering
-  There are two box in this scene. One has texture, the other doesn't.
-  This is a render from ray tracer
-  ![box](box_rayTracer.png)
-  This is a render from OpenGL
-  ![box_openGL](box_OpenGL.png)
+We have finished all the extra credits.
 
-## sphere rendering
+1. Cone: cone.xml
 
-  There are three spheres in this scene.
-  This is a render from ray tracer
-  ![sphere](sphere_rayTracer.png)
-  This is a render from OpenGL
-  ![sphere_openGL](sphere_OpenGL.png)
+<img src="images/cone.png" alt="drawing" width="500"/>
 
-## light works
-  There is a spot light and a directional light
-  This is a render from ray tracer
-  ![light](light_works_rayTracer.png)
+2. Cylinder: cylilnder.xml
 
-## Texture works
-  This is a render from ray tracer
-  ![texture](texture_rayTracer.png)
+<img src="images/cylinder.png" alt="drawing" width="500"/>
 
-**You may find that the map is inversed in our renderings. We have asked this problem in Piazza and we were told to fit our image with OpenGL even though OpenGL is rendering the wrong one. We were originally rendering the "correct" image and inverted our rendering after reading the Piazza post.**
+3. refraction: snow.xml, refraction.example
+
+<img src="images/refraction.png" alt="drawing" width="500"/>
+
+<img src="images/refraction2.png" alt="drawing" width="500"/>
+
+4. creative scene: simple.xml
+
+<img src="images/creativeScene.png" alt="drawing" width="500"/>
+
+**You may find that when running our code, the texture is inversed. We have asked this problem in Piazza and we were told to fit our image with OpenGL even though OpenGL is rendering the wrong one. We were originally rendering the "correct" image and inverted our rendering after reading the Piazza post.**
 
 Textures coordinates in obj files and corresponding texture images are using upper left corner of image as the origin, while OpenGL is setting the origin at the lower left. In order to have boxes to have texture on all sides, we can just simply flip the image upside down. However, this operation will also be applied spheres and thus cause inverted image. According to the [piazza post](https://piazza.com/class/jqmk9wn2e48c4?cid=196), our ray tracer now simulates OpenGL to have its origin at the lower left corner.
+
+Citation:
+snow.jpg http://www.nwicon.com/3608.htm
+diamond.jpg painter: wlop https://wlop.artstation.com/

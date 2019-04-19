@@ -1,0 +1,44 @@
+<scene>
+  <instance name="sphere" path="models/sphere.obj"/>
+  <instance name="sphereInside" path="models/sphere.obj"/>
+  <instance name="box" path="models/box-outside.obj"/>
+  <image name="snow" path="textures/snow.jpg"/>
+
+    <group>
+
+      <light>
+        <ambient>1 1 1</ambient>
+        <diffuse>1 1 1</diffuse>
+        <specular>1 1 1</specular>
+        <position>0 100 0</position>
+      </light>
+
+      <transform>
+        <set>
+          <scale>10000 10000 10000</scale>
+        </set>
+        <object instanceof="sphereInside" texture="snow">
+          <material>
+            <ambient>1 1 1</ambient>
+            <diffuse>1 1 1</diffuse>
+            <specular>1 1 1</specular>
+          </material>
+        </object>
+      </transform>
+
+      <transform>
+        <set>
+          <scale>50 50 50</scale>
+        </set>
+        <object instanceof="sphere">
+          <material>
+            <ambient>1 1 1</ambient>
+            <diffuse>1 1 1</diffuse>
+            <specular>1 1 1</specular>
+            <absorption>.1</absorption>
+            <refractive>1.55</refractive>
+          </material>
+        </object>
+      </transform>
+    </group>
+</scene>

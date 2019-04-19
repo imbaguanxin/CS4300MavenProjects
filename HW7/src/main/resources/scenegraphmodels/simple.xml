@@ -1,5 +1,6 @@
 <scene>
   <instance name="sphere" path="models/sphere.obj"/>
+  <instance name="sphereInside" path="models/sphere.obj"/>
   <instance name="cone" path="models/cone.obj"/>
   <instance name="cylinder" path="models/cylinder.obj"/>
   <instance name="box" path="models/box-outside.obj"/>
@@ -11,50 +12,835 @@
 
   <transform>
     <set>
-      <!--<rotate>-12 0 1 0</rotate>-->
+      <!--<rotate>45 0 0 1</rotate>-->
+      <!--<rotate>-90 0 1 0</rotate>-->
     </set>
     <group>
       <light>
         <ambient>.8 .8 .8</ambient>
         <diffuse>.8 .8 .8</diffuse>
         <specular>.8 .8 .8</specular>
-        <direction>0 0 -1</direction>
+        <position>0 0 50</position>
       </light>
+      <light>
+        <ambient>.8 .8 .8</ambient>
+        <diffuse>.8 .8 .8</diffuse>
+        <specular>.8 .8 .8</specular>
+        <position>50 0 0</position>
+      </light>
+      <light>
+        <ambient>.8 .8 .8</ambient>
+        <diffuse>.8 .8 .8</diffuse>
+        <specular>.8 .8 .8</specular>
+        <position>0 50 0</position>
+      </light>
+      <light>
+        <ambient>.8 .8 .8</ambient>
+        <diffuse>.8 .8 .8</diffuse>
+        <specular>.8 .8 .8</specular>
+        <position>0 0 -50</position>
+      </light>
+      <light>
+        <ambient>.8 .8 .8</ambient>
+        <diffuse>.8 .8 .8</diffuse>
+        <specular>.8 .8 .8</specular>
+        <position>-50 0 0</position>
+      </light>
+      <light>
+        <ambient>.8 .8 .8</ambient>
+        <diffuse>.8 .8 .8</diffuse>
+        <specular>.8 .8 .8</specular>
+        <position>0 -50 0</position>
+      </light>
+
       <transform>
         <set>
-          <translate>0 0 -20</translate>
-          <scale>50 50 10</scale>
+          <translate>0 0 -50</translate>
+          <scale>100 100 1</scale>
         </set>
-        <object instanceof="box" texture="cb">
+        <object instanceof="box">
           <material>
-            <ambient>.3 .3 .3</ambient>
-            <diffuse>.4 .4 .4</diffuse>
-            <specular>.9 .9 .9</specular>
-            <!--<ambient>.8 .4 .2</ambient>-->
-            <!--<diffuse>.3 .15 .075</diffuse>-->
-            <!--<specular>.6 .3 .15</specular>-->
-            <shininess>100</shininess>
+            <ambient>.5 .5 .5</ambient>
+            <diffuse>.5 .5 .5</diffuse>
+            <specular>.5 .5 .5</specular>
+            <absorption>.1</absorption>
+            <reflection>.9</reflection>
           </material>
         </object>
       </transform>
+
       <transform>
         <set>
-          <!--<translate>-1 -1 0</translate>-->
-          <!--<rotate>-120 1 0 0 </rotate>-->
-          <scale>8 8 8</scale>
+          <translate>-50 0 0</translate>
+          <scale>1 100 100</scale>
         </set>
-        <object instanceof="sphere">
+        <object instanceof="box">
           <material>
             <ambient>1 0 0</ambient>
-            <diffuse>1 1 1</diffuse>
-            <specular>1 1 1</specular>
-            <absorption>.1</absorption>
-            <reflection>0</reflection>
-            <refractive>1.2</refractive>
-            <shininess>100</shininess>
+            <diffuse>1 0 0</diffuse>
+            <specular>1 0 0</specular>
+            <absorption>.5</absorption>
+            <reflection>.5</reflection>
           </material>
         </object>
       </transform>
+
+      <transform>
+        <set>
+          <translate>50 0 0</translate>
+          <scale>1 100 100</scale>
+        </set>
+        <object instanceof="box">
+          <material>
+            <ambient>0 1 0</ambient>
+            <diffuse>0 1 0</diffuse>
+            <specular>0 1 0</specular>
+            <absorption>.5</absorption>
+            <reflection>.5</reflection>
+          </material>
+        </object>
+      </transform>
+
+      <transform>
+        <set>
+          <translate>0 -50 0</translate>
+          <scale>100 1 100</scale>
+        </set>
+        <object instanceof="box">
+          <material>
+            <ambient>.5 .5 .5</ambient>
+            <diffuse>.5 .5 .5</diffuse>
+            <specular>.5 .5 .5</specular>
+            <absorption>.5</absorption>
+            <reflection>.5</reflection>
+          </material>
+        </object>
+      </transform>
+
+      <transform>
+        <set>
+          <translate>0 50 0</translate>
+          <scale>100 1 100</scale>
+        </set>
+        <object instanceof="box">
+          <material>
+            <ambient>0 0 .5</ambient>
+            <diffuse>0 0 .5</diffuse>
+            <specular>0 0 .5</specular>
+            <absorption>.5</absorption>
+            <reflection>.5</reflection>
+          </material>
+        </object>
+      </transform>
+
+      <!--<transform>-->
+        <!--<set>-->
+          <!--<translate>0 0 50</translate>-->
+          <!--<scale>100 100 1</scale>-->
+        <!--</set>-->
+        <!--<object instanceof="box">-->
+          <!--<material>-->
+            <!--<ambient>.5 .5 .5</ambient>-->
+            <!--<diffuse>.5 .5 .5</diffuse>-->
+            <!--<specular>.5 .5 .5</specular>-->
+            <!--<absorption>.5</absorption>-->
+            <!--<reflection>.5</reflection>-->
+          <!--</material>-->
+        <!--</object>-->
+      <!--</transform>-->
+
+
+      <group>
+        <group>
+          <transform>
+            <set>
+              <translate>7 0 0</translate>
+              <scale>2 2 2</scale>
+            </set>
+            <object instanceof="sphere">
+              <material>
+                <ambient>0.041 0.467 0.334</ambient>
+                <diffuse>0.041 0.467 0.334</diffuse>
+                <specular>0.041 0.467 0.334</specular>
+                <absorption>.3</absorption>
+                <reflection>.7</reflection>
+                <refractive>1.55</refractive>
+                <shininess>100</shininess>
+              </material>
+            </object>
+          </transform>
+          <transform>
+            <set>
+              <translate>-7 0 0</translate>
+              <!--<rotate>-120 1 0 0 </rotate>-->
+              <scale>2 2 2</scale>
+            </set>
+            <object instanceof="sphere">
+              <material>
+                <ambient>0.5 0.169 0.724</ambient>
+                <diffuse>0.5 0.169 0.724</diffuse>
+                <specular>0.5 0.169 0.724</specular>
+                <absorption>0.3</absorption>
+                <refractive>1.55</refractive>
+                <shininess>100</shininess>
+              </material>
+            </object>
+          </transform>
+          <transform>
+            <set>
+              <rotate>-90 0 0 1 0 </rotate>
+              <translate>0 .5 0</translate>
+              <scale>.5 4.5 .5</scale>
+            </set>
+            <object instanceof="cylinder">
+              <material>
+                <ambient>0 0 .5</ambient>
+                <diffuse>0 0 .5</diffuse>
+                <specular>0 0 .5</specular>
+                <absorption>0.2</absorption>
+                <refractive>1.55</refractive>
+                <shininess>100</shininess>
+              </material>
+            </object>
+          </transform>
+          <transform>
+            <set>
+              <rotate>90 0 0 1 0 </rotate>
+              <translate>0 .5 0</translate>
+              <scale>.5 4.5 .5</scale>
+            </set>
+            <object instanceof="cylinder">
+              <material>
+                <ambient>.5 0 0</ambient>
+                <diffuse>.5 0 0 </diffuse>
+                <specular>.5 0 0 </specular>
+                <absorption>.2</absorption>
+                <!--<reflection>1</reflection>-->
+                <refractive>1.55</refractive>
+                <shininess>100</shininess>
+              </material>
+            </object>
+          </transform>
+        </group>
+        <transform>
+          <set>
+            <translate>0 4.5 0</translate>
+            <rotate>20 0 1 0</rotate>
+          </set>
+          <group>
+            <transform>
+              <set>
+                <translate>7 0 0</translate>
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.478 0.358 0.962</ambient>
+                  <diffuse>0.478 0.358 0.962</diffuse>
+                  <specular>0.478 0.358 0.962</specular>
+                  <absorption>.3</absorption>
+                  <reflection>.7</reflection>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <translate>-7 0 0</translate>
+                <!--<rotate>-120 1 0 0 </rotate>-->
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.464 0.705 0.145</ambient>
+                  <diffuse>0.464 0.705 0.145</diffuse>
+                  <specular>0.464 0.705 0.145</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>-90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>0 0 .5</ambient>
+                  <diffuse>0 0 .5</diffuse>
+                  <specular>0 0 .5</specular>
+                  <absorption>0.2</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>.5 0 0</ambient>
+                  <diffuse>.5 0 0 </diffuse>
+                  <specular>.5 0 0 </specular>
+                  <absorption>0.2</absorption>
+                  <!--<reflection>1</reflection>-->
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+          </group>
+        </transform>
+        <transform>
+          <set>
+            <translate>0 9 0</translate>
+            <rotate>40 0 1 0</rotate>
+          </set>
+          <group>
+            <transform>
+              <set>
+                <translate>7 0 0</translate>
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.055 0.409 0.555</ambient>
+                  <diffuse>0.055 0.409 0.555</diffuse>
+                  <specular>0.055 0.409 0.555</specular>
+                  <absorption>.3</absorption>
+                  <reflection>.7</reflection>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <translate>-7 0 0</translate>
+                <!--<rotate>-120 1 0 0 </rotate>-->
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.098 0.299 0.414</ambient>
+                  <diffuse>0.098 0.299 0.414</diffuse>
+                  <specular>0.098 0.299 0.414</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>-90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>0 0 .5</ambient>
+                  <diffuse>0 0 .5</diffuse>
+                  <specular>0 0 .5</specular>
+                  <absorption>0.2</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>.5 0 0</ambient>
+                  <diffuse>.5 0 0 </diffuse>
+                  <specular>.5 0 0 </specular>
+                  <absorption>0.2</absorption>
+                  <!--<reflection>1</reflection>-->
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+          </group>
+        </transform>
+        <transform>
+          <set>
+            <translate>0 13.5 0</translate>
+            <rotate>60 0 1 0</rotate>
+          </set>
+          <group>
+            <transform>
+              <set>
+                <translate>7 0 0</translate>
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.186 0.362 0.226</ambient>
+                  <diffuse>0.186 0.362 0.226</diffuse>
+                  <specular>0.186 0.362 0.226</specular>
+                  <absorption>.3</absorption>
+                  <reflection>.7</reflection>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <translate>-7 0 0</translate>
+                <!--<rotate>-120 1 0 0 </rotate>-->
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.225 0.271 0.22</ambient>
+                  <diffuse>0.225 0.271 0.22</diffuse>
+                  <specular>0.225 0.271 0.22</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>-90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>0 0 .5</ambient>
+                  <diffuse>0 0 .5</diffuse>
+                  <specular>0 0 .5</specular>
+                  <absorption>0.2</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>.5 0 0</ambient>
+                  <diffuse>.5 0 0 </diffuse>
+                  <specular>.5 0 0 </specular>
+                  <absorption>0.2</absorption>
+                  <!--<reflection>1</reflection>-->
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+          </group>
+        </transform>
+        <transform>
+          <set>
+            <translate>0 18 0</translate>
+            <rotate>80 0 1 0</rotate>
+          </set>
+          <group>
+            <transform>
+              <set>
+                <translate>7 0 0</translate>
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.3 0.34 0.88</ambient>
+                  <diffuse>0.3 0.34 0.88</diffuse>
+                  <specular>0.3 0.34 0.88</specular>
+                  <absorption>.3</absorption>
+                  <reflection>.7</reflection>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <translate>-7 0 0</translate>
+                <!--<rotate>-120 1 0 0 </rotate>-->
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.336 0.5 0.778</ambient>
+                  <diffuse>0.336 0.5 0.778</diffuse>
+                  <specular>0.336 0.5 0.778</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>-90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>0 0 .5</ambient>
+                  <diffuse>0 0 .5</diffuse>
+                  <specular>0 0 .5</specular>
+                  <absorption>0.2</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>.5 0 0</ambient>
+                  <diffuse>.5 0 0 </diffuse>
+                  <specular>.5 0 0 </specular>
+                  <absorption>0.2</absorption>
+                  <!--<reflection>1</reflection>-->
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+          </group>
+        </transform>
+        <transform>
+          <set>
+            <translate>0 -4.5 0</translate>
+            <rotate>-20 0 1 0</rotate>
+          </set>
+          <group>
+            <transform>
+              <set>
+                <translate>7 0 0</translate>
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.366 0.7 0.716</ambient>
+                  <diffuse>0.366 0.7 0.716</diffuse>
+                  <specular>0.366 0.7 0.716</specular>
+                  <absorption>.3</absorption>
+                  <reflection>.7</reflection>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <translate>-7 0 0</translate>
+                <!--<rotate>-120 1 0 0 </rotate>-->
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.366 0.7 0.716</ambient>
+                  <diffuse>0.366 0.7 0.716</diffuse>
+                  <specular>0.366 0.7 0.716</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>-90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>0 0 .5</ambient>
+                  <diffuse>0 0 .5</diffuse>
+                  <specular>0 0 .5</specular>
+                  <absorption>0.2</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>.5 0 0</ambient>
+                  <diffuse>.5 0 0 </diffuse>
+                  <specular>.5 0 0 </specular>
+                  <absorption>0.2</absorption>
+                  <!--<reflection>1</reflection>-->
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+          </group>
+        </transform>
+        <transform>
+          <set>
+            <translate>0 -9 0</translate>
+            <rotate>-40 0 1 0</rotate>
+          </set>
+          <group>
+            <transform>
+              <set>
+                <translate>7 0 0</translate>
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.493 0.904 0.29</ambient>
+                  <diffuse>0.493 0.904 0.29</diffuse>
+                  <specular>0.493 0.904 0.29</specular>
+                  <absorption>.3</absorption>
+                  <reflection>.7</reflection>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <translate>-7 0 0</translate>
+                <!--<rotate>-120 1 0 0 </rotate>-->
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.542 0.29 0.341</ambient>
+                  <diffuse>0.542 0.29 0.341</diffuse>
+                  <specular>0.542 0.29 0.341</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>-90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>0 0 .5</ambient>
+                  <diffuse>0 0 .5</diffuse>
+                  <specular>0 0 .5</specular>
+                  <absorption>0.2</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>.5 0 0</ambient>
+                  <diffuse>.5 0 0 </diffuse>
+                  <specular>.5 0 0 </specular>
+                  <absorption>0.2</absorption>
+                  <!--<reflection>1</reflection>-->
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+          </group>
+        </transform>
+        <transform>
+          <set>
+            <translate>0 -13.5 0</translate>
+            <rotate>-60 0 1 0</rotate>
+          </set>
+          <group>
+            <transform>
+              <set>
+                <translate>7 0 0</translate>
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.598 0.405 0.12</ambient>
+                  <diffuse>0.598 0.405 0.12</diffuse>
+                  <specular>0.598 0.405 0.12</specular>
+                  <absorption>.3</absorption>
+                  <reflection>.7</reflection>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <translate>-7 0 0</translate>
+                <!--<rotate>-120 1 0 0 </rotate>-->
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.64 0.062 0.978</ambient>
+                  <diffuse>0.64 0.062 0.978</diffuse>
+                  <specular>0.64 0.062 0.978</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>-90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>0 0 .5</ambient>
+                  <diffuse>0 0 .5</diffuse>
+                  <specular>0 0 .5</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>.5 0 0</ambient>
+                  <diffuse>.5 0 0 </diffuse>
+                  <specular>.5 0 0 </specular>
+                  <absorption>0.3</absorption>
+                  <!--<reflection>1</reflection>-->
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+          </group>
+        </transform>
+        <transform>
+          <set>
+            <translate>0 -18 0</translate>
+            <rotate>-80 0 1 0</rotate>
+          </set>
+          <group>
+            <transform>
+              <set>
+                <translate>7 0 0</translate>
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.731 0.106 0.655</ambient>
+                  <diffuse>0.731 0.106 0.655</diffuse>
+                  <specular>0.731 0.106 0.655</specular>
+                  <absorption>.3</absorption>
+                  <reflection>.7</reflection>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <translate>-7 0 0</translate>
+                <!--<rotate>-120 1 0 0 </rotate>-->
+                <scale>2 2 2</scale>
+              </set>
+              <object instanceof="sphere">
+                <material>
+                  <ambient>0.813 0.672 0.507</ambient>
+                  <diffuse>0.813 0.672 0.507</diffuse>
+                  <specular>0.813 0.672 0.507</specular>
+                  <absorption>0.3</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>-90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>0 0 .5</ambient>
+                  <diffuse>0 0 .5</diffuse>
+                  <specular>0 0 .5</specular>
+                  <absorption>0.2</absorption>
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+            <transform>
+              <set>
+                <rotate>90 0 0 1 0 </rotate>
+                <translate>0 .5 0</translate>
+                <scale>.5 4.5 .5</scale>
+              </set>
+              <object instanceof="cylinder">
+                <material>
+                  <ambient>.5 0 0</ambient>
+                  <diffuse>.5 0 0 </diffuse>
+                  <specular>.5 0 0 </specular>
+                  <absorption>0.2</absorption>
+                  <!--<reflection>1</reflection>-->
+                  <refractive>1.55</refractive>
+                  <shininess>100</shininess>
+                </material>
+              </object>
+            </transform>
+          </group>
+        </transform>
+
+
+      </group>
     </group>
   </transform>
 </scene>

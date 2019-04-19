@@ -26,7 +26,7 @@ public class JOGLFrame extends JFrame {
   public JOGLFrame(String title, String configPath) {
     //routine JFrame setting stuff
     super(title);
-    setSize(400, 400);
+    setSize(1500, 1500);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //when X is pressed, close program
 
     //Our View class is the actual driver of the OpenGL stuff
@@ -210,7 +210,6 @@ public class JOGLFrame extends JFrame {
      */
     void applyConfig(View view, GLAutoDrawable glAutoDrawable) throws Exception {
       InputStream in = getClass().getClassLoader().getResourceAsStream(objectPath);
-//      InputStream in = getClass().getClassLoader().getResourceAsStream("scenegraphmodels/cone.xml");
       System.out.println(objectPath);
       view.initScenegraph(glAutoDrawable, in);
       float[] fixed_camera = new float[3];
